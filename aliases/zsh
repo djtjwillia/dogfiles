@@ -13,9 +13,37 @@ alias sgc="source ~/.gitconfig"
 #history
 alias hgrep="history 100 | grep --color=auto"
 
+#app shortcuts
+alias tf="terraform"
+alias tg="terragrunt"
+alias k="kubectl"
+
+#troubleshooting
+alias netshoot='kubectl run netshoot --rm -i --tty --image nicolaka/netshoot -- /bin/bash'
+
+#git
+alias gits='git status'
+alias gitb='git branch'
+alias gitl='git log --oneline --graph --decorate'
+alias gitf='git fetch'
+alias gitp='git pull'
+alias gitpu='git push -u origin HEAD'
+alias gitca='git commit -a -m'
+alias gitco='git commit'
+alias gitc='git checkout'
+alias gitcb='git checkout -b'
+alias gita='git add .'
+alias gitd='git diff'
+alias gitds='git diff --staged'
+
+# color aliases
+alias ls='ls -G'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
 #filesystem viewing
-alias lsl="ls -al"
-alias ls.="ls -ald .*"
+alias ll="ls -alh -G"
 alias lsd="ls -ald .*"
 
 alias t="tree -C"
