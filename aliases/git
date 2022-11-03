@@ -1,0 +1,5 @@
+# Note that if omzsh is being used, there are a great number of pre-defined git aliases available
+# A list of them can be viewed by running the following: 
+#       alias | grep git
+#
+# Additional ones can be added here and will be loaded 
