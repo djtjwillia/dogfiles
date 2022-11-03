@@ -1,0 +1,11 @@
+# auto-complete for listing contents of the defined git workspace  
+# allows users to quickly get to git projects from any directory
+gws () {
+   cd $GIT_WORKSPACE/$1; tree -dCL 1
+}
+
+_gws () {
+   ((CURRENT == 2)) &&
+   _files -/ -W $GIT_WORKSPACE
+}
+compdef _gws gws
