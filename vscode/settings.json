@@ -1,0 +1,17 @@
+{
+  "editor.formatOnSave": true,
+  "editor.guides.bracketPairs": true,
+  "editor.suggest.preview": true,
+  "snyk.advanced.cliPath": "/Users/ytxw077/Library/Application Support/snyk-ls/snyk-macos",
+  "snyk.yesWelcomeNotification": false,
+  "editor.fontSize": 18,
+  "terminal.integrated.fontSize": 18,
+  "indentRainbow.colors": [
+    "rgba(204, 153, 201, 0.25)",
+    "rgba(155, 246, 255, 0.25)",
+    "rgba(158, 224, 158, 0.25)",
+    "rgba(253, 253, 151, 0.25)",
+    "rgba(254, 177, 68, 0.25)",
+    "rgba(255, 102, 99, 0.25)"
+  ]
+}
