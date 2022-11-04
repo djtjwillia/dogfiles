@@ -3,6 +3,10 @@ eamodio.gitlens
 esbenp.prettier-vscode
 formulahendry.auto-close-tag
 formulahendry.auto-rename-tag
+GitHub.vscode-codeql
+golang.go
+GrapeCity.gc-excelviewer
+hashicorp.terraform
 johnpapa.vscode-peacock
 ms-azuretools.vscode-docker
 ms-kubernetes-tools.vscode-kubernetes-tools
@@ -16,7 +20,11 @@ ms-toolsai.vscode-jupyter-cell-tags
 ms-toolsai.vscode-jupyter-slideshow
 ms-vscode-remote.remote-containers
 ms-vsliveshare.vsliveshare
+njpwerner.autodocstring
 oderwat.indent-rainbow
 pranaygp.vscode-css-peek
 redhat.vscode-yaml
 snyk-security.snyk-vulnerability-scanner
+SonarSource.sonarlint-vscode
+VisualStudioExptTeam.intellicode-api-usage-examples
+VisualStudioExptTeam.vscodeintellicode
