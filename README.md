@@ -1,5 +1,6 @@
 # dogfiles
 this cowdog has dotfiles!
+![hank the cowdog](http://2.bp.blogspot.com/-qsXKNYQ4xZc/TpfFkRYfcqI/AAAAAAAALbY/h8tydti83oA/s1600/hankthecowdog.gif)
 
 ## Setup
 
