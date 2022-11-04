@@ -36,5 +36,20 @@ this cowdog has dotfiles!
     ```shell
     ./scripts/init-dot-files.sh -p; ./scripts/init-dot-dirs.sh -p
     ```
+    
+6. Run the setup script for vscode
+
+    ```shell
+    chmod +x ./scripts/init-vscode.sh
+    ```
+    To test out the scripts without overwriting existing settings
+    ```shell
+    ./scripts/init-vscode.sh -t
+    ```
+    To deploy the scripts to the home directory
+    ```shell
+    ./scripts/init-vscode.sh -p
+    ```
+    
 ## Usage
 Once the init scripts have been ran, the files can be interacted with normally.  The added bonus is that there is an option to track the changes to files within the project. 
