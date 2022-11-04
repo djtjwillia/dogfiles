@@ -26,15 +26,15 @@ this cowdog has dotfiles!
     Scripts will need to have permissions modified so they can be ran.  The example commands below assume that they are being executed within the project directory.
 
     ```shell
-    chmod +x init-dot-files.sh init-dot-dirs.sh
+    chmod +x ./scripts/init-dot-files.sh ./scripts/init-dot-dirs.sh
     ```
     To test out the scripts without overwriting existing dotfiles
     ```shell
-    ./init-dot-files.sh -t; ./init-dot-dirs.sh -t
+    ./scripts/init-dot-files.sh -t; ./scripts/init-dot-dirs.sh -t
     ```
     To deploy the scripts to the home directory
     ```shell
-    ./init-dot-files.sh -p; ./init-dot-dirs.sh -p
+    ./scripts/init-dot-files.sh -p; ./scripts/init-dot-dirs.sh -p
     ```
 ## Usage
 Once the init scripts have been ran, the files can be interacted with normally.  The added bonus is that there is an option to track the changes to files within the project. 
