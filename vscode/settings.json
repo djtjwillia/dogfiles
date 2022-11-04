@@ -1,11 +1,19 @@
 {
+  "codeQL.telemetry.enableTelemetry": false,
+  "editor.detectIndentation": false,
+  "editor.fontSize": 18,
+  "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "editor.guides.bracketPairs": true,
+  "editor.minimap.enabled": false,
+  "editor.rulers": [79, 119],
   "editor.suggest.preview": true,
-  "snyk.advanced.cliPath": "/Users/ytxw077/Library/Application Support/snyk-ls/snyk-macos",
-  "snyk.yesWelcomeNotification": false,
-  "editor.fontSize": 18,
-  "terminal.integrated.fontSize": 18,
+  "editor.suggestSelection": "first",
+  "editor.tabCompletion": "on",
+  "editor.tabSize": 2,
+  "files.autoSave": "onFocusChange",
+  "files.trimTrailingWhitespace": true,
+  "go.toolsManagement.autoUpdate": true,
   "indentRainbow.colors": [
     "rgba(204, 153, 201, 0.25)",
     "rgba(155, 246, 255, 0.25)",
@@ -13,5 +21,25 @@
     "rgba(253, 253, 151, 0.25)",
     "rgba(254, 177, 68, 0.25)",
     "rgba(255, 102, 99, 0.25)"
-  ]
+  ],
+  "liveshare.showInStatusBar": "whileCollaborating",
+  "python.defaultInterpreterPath": "python3",
+  "python.disableInstallationCheck": true,
+  "python.languageServer": "Pylance",
+  "python.testing.cwd": "",
+  "python.testing.pytestEnabled": true,
+  "python.venvFolders": [".venv"],
+  "redhat.telemetry.enabled": false,
+  "snyk.advanced.autoScanOpenSourceSecurity": true,
+  "snyk.advanced.cliPath": "/Users/username/Library/Application Support/snyk-ls/snyk-macos",
+  "snyk.yesWelcomeNotification": false,
+  "terminal.integrated.fontSize": 18,
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "workbench.colorCustomizations": {
+    "editorRuler.foreground": "#4ec802"
+  },
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter.notebook.ipynb"
+  },
+  "workbench.startupEditor": "none"  
 }
