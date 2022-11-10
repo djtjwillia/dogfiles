@@ -9,10 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          cache: npm
-          node-version: 16
-      - run: npx semantic-release
+      - name: Setup semantic-release
+        run: |
+          npm i @semantic-release/changelog \
+            @semantic-release/git \
+            semantic-release-export-data
+      - name: calculate next version
+        run: npx semantic-release --dry-run
+        id: next-version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: release
+        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
