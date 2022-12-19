@@ -33,4 +33,4 @@ this cowdog has dotfiles!
     ```
     
 ## Usage
-Once the init scripts have been ran, the files can be interacted with normally.  The added bonus is that there is an option to track the changes to files within the project. 
+Once the init scripts have been run, the files can be interacted with normally.  The added bonus is that there is an option to track the changes to files within the project. 
