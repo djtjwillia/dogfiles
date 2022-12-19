@@ -38,8 +38,5 @@
   "workbench.colorCustomizations": {
     "editorRuler.foreground": "#4ec802"
   },
-  "workbench.editorAssociations": {
-    "*.ipynb": "jupyter.notebook.ipynb"
-  },
   "workbench.startupEditor": "none"  
 }
