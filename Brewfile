@@ -15,6 +15,8 @@ brew "hadolint"
 brew "helm"
 brew "kind"
 brew "kubernetes-cli"
+brew "kustomize"
+brew "k9s"
 brew "openssl@1.1"
 brew "pkg-config"
 brew "terragrunt", args: ["ignore-dependencies"]
