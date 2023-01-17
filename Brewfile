@@ -27,6 +27,7 @@ brew "wget"
 brew "xz"
 brew "yamllint"
 
+cask "1password"
 cask "brave-browser"
 cask "discord"
 cask "docker"
