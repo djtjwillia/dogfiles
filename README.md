@@ -19,7 +19,7 @@ this cowdog has dotfiles!
 
     To test out the scripts without overwriting existing dotfiles
     ```shell
-    ./init.sh -t;
+    ./init.sh -t -t
     ```
     To run brew bundle, deploy the scripts to the home directory, and setup vscode
     ```shell
