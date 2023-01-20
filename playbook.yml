@@ -2,3 +2,12 @@
   connection: local
   roles:
   - macbook
+  vars:
+    gitconfig:
+      - filename: .gitconfig-extra-filename
+        username: 
+        email: 
+    sshconfig:
+      - host: 
+        hostname: 
+        identity: 

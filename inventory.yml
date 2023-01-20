@@ -1,9 +1,0 @@
-gitconfig:
-  - filename:
-    user:
-    email:
-
-sshconfig:
-  - host:
-    hostname:
-    identity:
