@@ -12,6 +12,7 @@ else
     echo "brew is installed"
 fi
 
-# brew bundle
-chmod +x  ./scripts/init-dot-files.sh ./scripts/init-vscode.sh
-./scripts/init-dot-files.sh $1; ./scripts/init-vscode.sh $2
+brew bundle
+
+chmod +x ./playbook.yml
+ansible-playbook playbook.yml -i inventory

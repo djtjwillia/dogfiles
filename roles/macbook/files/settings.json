@@ -1,5 +1,6 @@
 {
   "codeQL.telemetry.enableTelemetry": false,
+  "docker.commands.build": "${containerCommand} build --pull --rm -f \"${dockerfile}\" -t ${tag} \"${context}\"",
   "editor.detectIndentation": false,
   "editor.fontSize": 18,
   "editor.formatOnPaste": true,
@@ -12,7 +13,11 @@
   "editor.tabCompletion": "on",
   "editor.tabSize": 2,
   "files.autoSave": "onFocusChange",
+  "files.exclude": {
+    "**/.git": false
+  },
   "files.trimTrailingWhitespace": true,
+  "gitlens.gitCommands.search.showResultsInSideBar": false,
   "go.toolsManagement.autoUpdate": true,
   "indentRainbow.colors": [
     "rgba(204, 153, 201, 0.25)",
@@ -38,5 +43,5 @@
   "workbench.colorCustomizations": {
     "editorRuler.foreground": "#4ec802"
   },
-  "workbench.startupEditor": "none"  
+  "workbench.startupEditor": "none"
 }

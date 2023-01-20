@@ -1,0 +1,18 @@
+- name: Check for VSCode settings
+  stat:
+    path: ~/Library/Application\ Support/Code/User/settings.json
+  register: vscode_settings
+
+- name: Archive Current VSCode Settings
+  copy:
+    src: ~/Library/Application\ Support/Code/User/settings.json
+    dest: "{{playbook_dir}}/settings.json.old"
+  when: vscode_settings.stat.exists
+
+- name: Configure VSCode Settings
+  copy:
+    src: ../files/settings.json
+    dest: ~/Library/Application\ Support/Code/User/settings.json
+
+- name: Configure VSCode Extensions
+  command: cat ../files/extensions.list | xargs -L1 code --install-extension

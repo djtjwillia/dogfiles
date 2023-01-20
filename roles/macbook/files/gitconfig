@@ -1,3 +1,9 @@
+[includeIf "gitdir: ~/Code/Clients/RitchieBros"]
+  path = ~/.gitconfig-ritchiebros
+[includeIf "gitdir: ~/Code/Liatrio/"]
+  path = ~/.gitconfig-liatrio
+[includeIf "gitdir: ~/Code/Projects/"]
+  path = ~/.gitconfig-liatrio
 [filter "lfs"]
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
@@ -5,13 +11,9 @@
 	clean = git-lfs clean -- %f
 [user]
 	name  = "Taylor J Williams"
-	email = 
+	email =
 [pager]
   branch = false
-# [includeIf "gitdir:<directory to trigger load of alternet gitconfig>"]
-# 	path = <path to alternate gitconfig>
-# [includeIf "gitdir:<directory to trigger load of alternet gitconfig>"]
-# 	path = <path to alternate gitconfig>
 [init]
     defaultBranch = main
 [alias]
