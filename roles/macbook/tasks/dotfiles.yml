@@ -1,0 +1,27 @@
+# - name: Create .zshrc
+#   template:
+#     src: ../templates/zshrc.j2
+#     dest: ~/.zshrc
+
+- name: Check for SSH folder
+  stat:
+    path: ~/.ssh
+  register: ssh
+
+- name: Create SSH folder
+  when: not ssh.stat.exists
+  file:
+    path: ~/.ssh
+    state: directory
+
+- name: Setup SSH Config
+  template:
+    src: ../templates/ssh_config.j2
+    dest: ~/.ssh/config
+  with_items: "{{ sshconfig }}"
+
+- name: Setup Git Configs
+  template:
+    src: ../templates/gitconfig-template.j2
+    dest: "~/{{ item.filename }}"
+  with_items: "{{ gitconfig }}"

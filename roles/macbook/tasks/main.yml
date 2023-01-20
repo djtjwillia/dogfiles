@@ -1,0 +1,5 @@
+- debug:
+    msg: "playbook dir is {{ playbook_dir }}"
+
+- name: Configure dotfiles
+  import_tasks: dotfiles.yml

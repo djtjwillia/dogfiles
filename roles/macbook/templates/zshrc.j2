@@ -1,6 +1,4 @@
-# Should be set by init-dot-files.sh 
-# If #setme# is still here, either run the script or change this manually
-DOT_FILES_PROJECT_DIRECTORY=/Users/djtjwillia/Code/dogfiles
+DOT_FILES_PROJECT_DIRECTORY={{ playbook_dir }}
 #omzsh
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME=""
@@ -10,6 +8,6 @@ source $ZSH/oh-my-zsh.sh
 # source all global variables
 for f in $DOT_FILES_PROJECT_DIRECTORY/globals/*; do source "$f"; done;
 # source all functions
-for f in $DOT_FILES_PROJECT_DIRECTORY/fuunctions/*; do source "$f"; done;
+for f in $DOT_FILES_PROJECT_DIRECTORY/functions/*; do source "$f"; done;
 # souorce all aliases
 for f in $DOT_FILES_PROJECT_DIRECTORY/aliases/*; do source "$f"; done;
