@@ -1,6 +1,0 @@
-[user]
-  name = "Taylor J Williams"
-  email = taylorwilliams_rba@ritchiebros.com
-Host rb.github.com
-  Hostname github.com
-  IdentityFile ~/.ssh/ritchiebros_gh_rsa
