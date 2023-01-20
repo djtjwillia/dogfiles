@@ -15,4 +15,4 @@ fi
 brew bundle
 
 chmod +x ./playbook.yml
-ansible-playbook playbook.yml -i inventory
+ansible-playbook playbook.yml
