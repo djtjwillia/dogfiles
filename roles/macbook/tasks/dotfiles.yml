@@ -1,7 +1,7 @@
-# - name: Create .zshrc
-#   template:
-#     src: ../templates/zshrc.j2
-#     dest: ~/.zshrc
+- name: Create .zshrc
+  template:
+    src: ../templates/zshrc.j2
+    dest: ~/.zshrc
 
 - name: Check for SSH folder
   stat:
@@ -20,7 +20,12 @@
     dest: ~/.ssh/config
   with_items: "{{ sshconfig }}"
 
-- name: Setup Git Configs
+- name: Setup gitconfig
+  copy:
+    src: ../files/gitconfig
+    dest: ~/.gitconfig
+
+- name: Setup Other Git Configs
   template:
     src: ../templates/gitconfig-template.j2
     dest: "~/{{ item.filename }}"
