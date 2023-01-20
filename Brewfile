@@ -1,4 +1,5 @@
 brew "act"
+brew "ansible"
 brew "automake"
 brew "awscli"
 brew "aws-iam-authenticator"
