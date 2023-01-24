@@ -2,7 +2,7 @@
   "codeQL.telemetry.enableTelemetry": false,
   "docker.commands.build": "${containerCommand} build --pull --rm -f \"${dockerfile}\" -t ${tag} \"${context}\"",
   "editor.detectIndentation": false,
-  "editor.fontSize": 18,
+  "editor.fontSize": 24,
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "editor.guides.bracketPairs": true,
