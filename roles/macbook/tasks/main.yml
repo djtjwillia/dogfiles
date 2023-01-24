@@ -3,3 +3,6 @@
 
 - name: Configure dotfiles
   import_tasks: dotfiles.yml
+
+- name: Configure VSCode
+  import_tasks: vscode.yml

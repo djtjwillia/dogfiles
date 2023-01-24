@@ -18,7 +18,6 @@
   template:
     src: ../templates/ssh_config.j2
     dest: ~/.ssh/config
-  with_items: "{{ sshconfig }}"
 
 - name: Setup gitconfig
   copy:
