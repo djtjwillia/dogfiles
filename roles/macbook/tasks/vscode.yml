@@ -12,7 +12,7 @@
 - name: Configure VSCode Settings
   copy:
     src: ../files/settings.json
-    dest: ~/Library/Application\ Support/Code/User/settings.json
+    dest: "~/Library/Application Support/Code/User/settings.json"
 
 - name: Configure VSCode Extensions
-  command: cat ../files/extensions.list | xargs -L1 code --install-extension
+  shell: "cat roles/macbook/files/extensions.list | xargs -L1 code --install-extension"

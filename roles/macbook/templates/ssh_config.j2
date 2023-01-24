@@ -1,6 +1,9 @@
+{% for item in sshconfig %}
 Host {{ item.host }}
   Hostname {{ item.hostname }}
   AddKeysToAgent yes
   UseKeychain yes
   IdentitiesOnly yes
   IdentityFile ~/.ssh/{{ item.identity }}
+
+{% endfor %}
