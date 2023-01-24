@@ -4,5 +4,8 @@
 - name: Configure dotfiles
   import_tasks: dotfiles.yml
 
+- name: Configure iterm2
+  import_tasks: iterm2.yml
+
 - name: Configure VSCode
   import_tasks: vscode.yml
