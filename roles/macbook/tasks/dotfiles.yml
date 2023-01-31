@@ -43,15 +43,15 @@
 
 - name: Move aliases into dotfiles
   copy:
-    src: ../files/aliases
-    dest: ~/.dotfiles/aliases
+    src: ../files/aliases/
+    dest: ~/.dotfiles/aliases/
 
 - name: Move functions into dotfiles
   copy:
-    src: ../files/functions
-    dest: ~/.dotfiles/functions
+    src: ../files/functions/
+    dest: ~/.dotfiles/functions/
 
 - name: Move globals into dotfiles
   copy:
-    src: ../files/globals
-    dest: ~/.dotfiles/globals
+    src: ../files/globals/
+    dest: ~/.dotfiles/globals/
