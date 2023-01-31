@@ -15,21 +15,6 @@ alias k='kubectl'
 #troubleshooting
 alias netshoot='kubectl run netshoot --rm -i --tty --image nicolaka/netshoot -- /bin/bash'
 
-#git
-alias gits='git status'
-alias gitb='git branch'
-alias gitl='git log --oneline --graph --decorate'
-alias gitf='git fetch'
-alias gitp='git pull'
-alias gitpu='git push -u origin HEAD'
-alias gitca='git commit -a -m'
-alias gitco='git commit'
-alias gitc='git checkout'
-alias gitcb='git checkout -b'
-alias gita='git add .'
-alias gitd='git diff'
-alias gitds='git diff --staged'
-
 # color aliases
 alias ls='ls -G'
 alias grep='grep --color=auto'
