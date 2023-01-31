@@ -29,3 +29,29 @@
     src: ../templates/gitconfig-template.j2
     dest: "~/{{ item.filename }}"
   with_items: "{{ gitconfig }}"
+
+- name: Check for dotfiles folder
+  stat:
+    path: ~/.dotfiles
+  register: dotfiles
+
+- name: Create dotfiles folder
+  when: not dotfiles.stat.exists
+  file:
+    path: ~/.dotfiles
+    state: directory
+
+- name: Move aliases into dotfiles
+  copy:
+    src: ../files/aliases
+    dest: ~/.dotfiles/aliases
+
+- name: Move functions into dotfiles
+  copy:
+    src: ../files/functions
+    dest: ~/.dotfiles/functions
+
+- name: Move globals into dotfiles
+  copy:
+    src: ../files/globals
+    dest: ~/.dotfiles/globals

@@ -2,7 +2,7 @@
   "codeQL.telemetry.enableTelemetry": false,
   "docker.commands.build": "${containerCommand} build --pull --rm -f \"${dockerfile}\" -t ${tag} \"${context}\"",
   "editor.detectIndentation": false,
-  "editor.fontSize": 24,
+  "editor.fontSize": 20,
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "editor.guides.bracketPairs": true,
@@ -12,6 +12,7 @@
   "editor.suggestSelection": "first",
   "editor.tabCompletion": "on",
   "editor.tabSize": 2,
+  "window.zoomLevel": 2,
   "files.autoSave": "onFocusChange",
   "files.exclude": {
     "**/.git": false
@@ -36,7 +37,7 @@
   "python.venvFolders": [".venv"],
   "redhat.telemetry.enabled": false,
   "snyk.advanced.autoScanOpenSourceSecurity": true,
-  "snyk.advanced.cliPath": "/Users/username/Library/Application Support/snyk-ls/snyk-macos",
+  "snyk.advanced.cliPath": "/Users/taylorjwilliams/Library/Application Support/snyk-ls/snyk-macos",
   "snyk.yesWelcomeNotification": false,
   "terminal.integrated.fontSize": 18,
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
