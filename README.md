@@ -7,8 +7,9 @@ this cowdog has dotfiles!
 ## Setup
 
 1. Setup your variables:
-   a. Go into inventory.yml and fill in any info.
-   b. If using mulitple SSH configs, add the appropriate number of blocks to roles/macbook/templates/ssh_config.j2
+   a. Go into playbook.yml and fill in gitconfig and sshconfig.
+   b. Fill in username and email in roles/macbook/files/gitconfig
+   **Note: You will not want to commit your changes to these two files!"**
 
 2. Make sure the init script is exectuable:
 
@@ -27,3 +28,13 @@ this cowdog has dotfiles!
 ## Usage
 
 Once the init script has been run, the files can be interacted with normally. The added bonus is that there is an option to track the changes to files within the project. The recommended use is to not manually interact with these files, instead keep this repo up to date and use it to manage all your config.
+
+## Apps under consideration:
+
+- Wally
+- Flux
+- Krisp
+- AWS VPN
+- Intellij
+- Gather
+- Postman
