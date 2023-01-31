@@ -3,6 +3,7 @@
 #       alias | grep git
 #
 # Additional ones can be added here and will be loaded
+alias gs='git status'
 alias gits='git status'
 alias gitb='git branch'
 alias gitl='git log --oneline --graph --decorate'

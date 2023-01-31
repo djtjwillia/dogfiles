@@ -19,6 +19,12 @@
   },
   "files.trimTrailingWhitespace": true,
   "gitlens.gitCommands.search.showResultsInSideBar": false,
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": false,
+    "plaintext": false,
+    "markdown": false
+  },
   "go.toolsManagement.autoUpdate": true,
   "indentRainbow.colors": [
     "rgba(204, 153, 201, 0.25)",
