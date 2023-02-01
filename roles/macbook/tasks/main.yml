@@ -1,11 +1,8 @@
-- debug:
-    msg: "playbook dir is {{ playbook_dir }}"
-
 - name: Configure dotfiles
-  import_tasks: dotfiles.yml
+  ansible.builtin.import_tasks: dotfiles.yml
 
 - name: Configure iterm2
-  import_tasks: iterm2.yml
+  ansible.builtin.import_tasks: iterm2.yml
 
 - name: Configure VSCode
-  import_tasks: vscode.yml
+  ansible.builtin.import_tasks: vscode.yml

@@ -1,57 +1,66 @@
 - name: Create .zshrc
-  template:
+  ansible.builtin.template:
     src: ../templates/zshrc.j2
     dest: ~/.zshrc
+    mode: 0644
 
 - name: Check for SSH folder
-  stat:
+  ansible.builtin.stat:
     path: ~/.ssh
   register: ssh
 
 - name: Create SSH folder
   when: not ssh.stat.exists
-  file:
+  ansible.builtin.file:
     path: ~/.ssh
     state: directory
+    mode: 0644
 
 - name: Setup SSH Config
-  template:
+  ansible.builtin.template:
     src: ../templates/ssh_config.j2
     dest: ~/.ssh/config
+    mode: 0644
 
 - name: Setup gitconfig
-  copy:
+  ansible.builtin.copy:
     src: ../files/gitconfig
     dest: ~/.gitconfig
+    mode: 0644
 
 - name: Setup Other Git Configs
-  template:
+  ansible.builtin.template:
     src: ../templates/gitconfig-template.j2
     dest: "~/{{ item.filename }}"
+    mode: 0644
   with_items: "{{ gitconfig }}"
 
 - name: Check for dotfiles folder
-  stat:
+  ansible.builtin.stat:
     path: ~/.dotfiles
   register: dotfiles
 
 - name: Create dotfiles folder
   when: not dotfiles.stat.exists
-  file:
+  ansible.builtin.file:
     path: ~/.dotfiles
     state: directory
+    mode: 0644
 
 - name: Move aliases into dotfiles
-  copy:
+  ansible.builtin.copy:
     src: ../files/aliases/
     dest: ~/.dotfiles/aliases/
+    mode: 0644
 
 - name: Move functions into dotfiles
-  copy:
+  ansible.builtin.copy:
     src: ../files/functions/
     dest: ~/.dotfiles/functions/
+    mode: 0644
 
 - name: Move globals into dotfiles
-  copy:
+  ansible.builtin.copy:
     src: ../files/globals/
     dest: ~/.dotfiles/globals/
+    mode: 0644
