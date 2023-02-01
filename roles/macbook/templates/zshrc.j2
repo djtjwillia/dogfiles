@@ -11,3 +11,7 @@ for f in $DOT_FILES_PROJECT_DIRECTORY/globals/*; do source "$f"; done;
 for f in $DOT_FILES_PROJECT_DIRECTORY/functions/*; do source "$f"; done;
 # souorce all aliases
 for f in $DOT_FILES_PROJECT_DIRECTORY/aliases/*; do source "$f"; done;
+
+#load pyenv and pyenv-virtualenv
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
