@@ -1,4 +1,5 @@
-- hosts: localhost
+- name: Configure Macbook
+  hosts: localhost
   connection: local
   roles:
   - macbook
@@ -7,6 +8,7 @@
       - filename: .gitconfig-extra-filename
         username: 
         email: 
+        signingkey:
     sshconfig:
       - host: 
         hostname: 
