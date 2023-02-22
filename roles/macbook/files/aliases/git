@@ -8,12 +8,17 @@ alias gs='git status'
 alias gpu='git push --set-upstream origin $(git_current_branch)'
 alias glo='git log --oneline --graph --decorate'
 alias gcm='git commit --message'
+alias lga="git log --abbrev-commit --decorate --graph --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset)%C(white)%s %C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
+alias lg="git log --abbrev-commit --decorate --graph --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset)%C(white)%s %C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'"
 # in place of prior, longer aliases use these from zsh
 # gsw - git switch
 # gswc - git switch -c
 # ga - git add
 # gf - git fetch
 # grb - git rebase
+# gpr - git pull --rebase
 # gd - git diff
 # gds - git diff staged
 # gdb - git branch delete
+# gsta - git stash push
+# gstaa - git stash apply
