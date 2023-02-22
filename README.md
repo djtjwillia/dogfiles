@@ -6,24 +6,38 @@ this cowdog has dotfiles!
 
 ## Setup
 
-1. Setup your variables:
+1. Setup your ssh keys.
+   a. make sure your ssh keys are generated
+   b. make sure your signing keys are generated.
+   c. if using separate signing keys from your auth keys,
+   make sure to add them to the ssh agent using `ssh-add`
+
+2. Setup your variables:
    a. Go into playbook.yml and fill in gitconfig and sshconfig.
    b. Fill in username and email in roles/macbook/files/gitconfig
    **Note: You will not want to commit your changes to these two files!"**
 
-2. Make sure the init script is exectuable:
+3. Make sure the init script is exectuable:
 
    ```shell
    chmod +x ./init.sh
    ```
 
-3. Run the init script
+4. Run the init script
    This command will do the following:
+
    - install [oh-my-zsh](https://ohmyz.sh/#install) if it is not installed
    - install [Brew](https://docs.brew.sh/Installation) if it is not installed
    - run brew bundle
    - setup dotfiles
    - configure vscode
+
+5. Do some manual config/fixing.
+
+NPM:
+
+- `nvm install --lts`
+- `nvm use v18.14.0`
 
 ## Usage
 
