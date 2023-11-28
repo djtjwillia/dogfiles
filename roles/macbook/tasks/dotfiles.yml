@@ -10,25 +10,28 @@
   register: ssh
 
 - name: Create SSH folder
-  when: not ssh.stat.exists
+  when: not ssh.stat.exists and config_ssh == "true"
   ansible.builtin.file:
     path: ~/.ssh
     state: directory
     mode: 0644
 
 - name: Setup SSH Config
+  when: config_ssh == "true"
   ansible.builtin.template:
     src: ../templates/ssh_config.j2
     dest: ~/.ssh/config
     mode: 0644
 
 - name: Setup gitconfig
+  when: config_git == "true"
   ansible.builtin.copy:
     src: ../files/gitconfig
     dest: ~/.gitconfig
     mode: 0644
 
 - name: Setup Other Git Configs
+  when: config_ssh == "true"
   ansible.builtin.template:
     src: ../templates/gitconfig-template.j2
     dest: "~/{{ item.filename }}"
@@ -45,25 +48,25 @@
   ansible.builtin.file:
     path: ~/.dotfiles
     state: directory
-    mode: 0644
+    mode: 0744
 
 - name: Move aliases into dotfiles
   ansible.builtin.copy:
     src: ../files/aliases/
     dest: ~/.dotfiles/aliases/
-    mode: 0644
+    mode: 0744
 
 - name: Move functions into dotfiles
   ansible.builtin.copy:
     src: ../files/functions/
     dest: ~/.dotfiles/functions/
-    mode: 0644
+    mode: 0744
 
 - name: Move globals into dotfiles
   ansible.builtin.copy:
     src: ../files/globals/
     dest: ~/.dotfiles/globals/
-    mode: 0644
+    mode: 0744
 
 - name: Create NVM folder
   ansible.builtin.file:
