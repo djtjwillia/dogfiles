@@ -35,6 +35,8 @@ brew "virtualenv"
 brew "wget"
 brew "xz"
 brew "yamllint"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
 
 cask "1password"
 cask "brave-browser"
