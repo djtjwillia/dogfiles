@@ -2,8 +2,29 @@ DOT_FILES_PROJECT_DIRECTORY=~/.dotfiles
 #omzsh
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME=""
-plugins=(git aws docker iterm2 terraform python kubectl)
+plugins=(
+  git
+  aws
+  docker
+  iterm2
+  terraform
+  python
+  kubectl
+)
 source $ZSH/oh-my-zsh.sh
+
+#trim whitespace before adding commadns to history
+setopt HIST_REDUCE_BLANKS
+#allow prompt substitution
+setopt prompt_subst
+
+#basically the robbyrussell theme with your user name
+PROMPT="%(?:%{$fg_bold[green]%}%1{➜%} :%{$fg_bold[red]%}%1{➜%}) %{$fg[green]%}%n %{$fg[cyan]%}%c%{$reset_color%} "
+PROMPT+='$(git_prompt_info)'
+ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[blue]%}git:(%{$fg[red]%}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "
+ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[blue]%}) %{$fg[yellow]%}%1{✗%}"
+ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[blue]%})"
 
 # source all global variables
 for f in $DOT_FILES_PROJECT_DIRECTORY/globals/*; do source "$f"; done;
