@@ -2,14 +2,16 @@
   hosts: localhost
   connection: local
   roles:
-  - macbook
+    - macbook
   vars:
+    config_git: false
+    config_ssh: false
     gitconfig:
       - filename: .gitconfig-extra-filename
-        username: 
-        email: 
+        username:
+        email:
         signingkey:
     sshconfig:
-      - host: 
-        hostname: 
-        identity: 
+      - host:
+        hostname:
+        identity:
