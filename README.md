@@ -19,9 +19,9 @@ this cowdog has dotfiles!
 
 3. Make sure the init script is exectuable:
 
-   ```shell
-   chmod +x ./init.sh
-   ```
+```shell
+  chmod +x ./init.sh
+```
 
 4. Run the init script
    This command will do the following:
@@ -33,6 +33,10 @@ this cowdog has dotfiles!
    - configure vscode
 
 5. Do some manual config/fixing.
+
+Terminal:
+
+- Open iTerm2, under `iTerm2` in the menu bar, select `Make iTerm2 Default Term`
 
 NPM:
 
