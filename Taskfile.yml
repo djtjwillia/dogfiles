@@ -1,0 +1,303 @@
+version: '3'
+
+# Load persona/env vars automatically if present
+dotenv:
+  - .env
+  - env/.env
+
+vars:
+  DRY_RUN: '{{default "false" .DRY_RUN}}'
+  DOTFILES_HOME: '{{default "$HOME/.dotfiles" .DOTFILES_HOME}}'
+  DOTFILES_SRC: '{{default (printf "%s/dotfiles" .TASKFILE_DIR) .DOTFILES_SRC}}'
+  DOTFILES_TEMPLATE_ROOT: '{{default (printf "%s/dotfiles" .TASKFILE_DIR) .DOTFILES_TEMPLATE_ROOT}}'
+  ZSH_TEMPLATE: '{{default "templates/zshrc.tmpl" .ZSH_TEMPLATE}}'
+  GIT_TEMPLATE: '{{default "templates/gitconfig.tmpl" .GIT_TEMPLATE}}'
+  SSH_TEMPLATE: '{{default "templates/ssh_config.tmpl" .SSH_TEMPLATE}}'
+  PERSONA: '{{default "personal" .PERSONA}}'
+  CONFIG_GIT: '{{default "true" .CONFIG_GIT}}'
+  CONFIG_SSH: '{{default "true" .CONFIG_SSH}}'
+  WINDSURF_SRC: '{{default "windsurf" .WINDSURF_SRC}}'
+  WINDSURF_DEST: '{{default "$HOME/Library/Application Support/Windsurf/User" .WINDSURF_DEST}}'
+  ITERM2_SRC: '{{default "iterm2/com.googlecode.iterm2.plist" .ITERM2_SRC}}'
+  ITERM2_DEST: '{{default "$HOME/Library/Preferences/com.googlecode.iterm2.plist" .ITERM2_DEST}}'
+
+silent: true
+
+tasks:
+  default:
+    desc: Alias for `task init`
+    deps:
+      - init
+
+  init:
+    desc: Run full bootstrap (prereqs → brew → dotfiles)
+    cmds:
+      - task: bootstrap:prereqs
+      - task: brew:bundle
+      - task: dotfiles:sync
+      - task: tools:zshrc
+      - task: config:git
+      - task: config:ssh
+      - task: tools:windsurf
+      - task: tools:iterm2
+
+  "bootstrap:prereqs":
+    desc: Ensure oh-my-zsh and Homebrew are installed
+    cmds:
+      - |
+        set -euo pipefail
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would install oh-my-zsh"
+        else
+          if [ ! -d "$HOME/.oh-my-zsh" ]; then
+            echo "[bootstrap] Installing oh-my-zsh"
+            RUNZSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+          else
+            echo "[bootstrap] oh-my-zsh already installed"
+          fi
+        fi
+      - |
+        set -euo pipefail
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would install Homebrew"
+        else
+          if command -v brew >/dev/null 2>&1; then
+            echo "[bootstrap] Homebrew already installed"
+          else
+            echo "[bootstrap] Installing Homebrew"
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          fi
+        fi
+
+  "brew:bundle":
+    desc: Install packages defined in Brewfile
+    deps:
+      - "bootstrap:prereqs"
+    cmds:
+      - |
+        set -euo pipefail
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would run brew bundle"
+        else
+          echo "[brew] Running brew bundle"
+          brew bundle --file Brewfile
+        fi
+    sources:
+      - Brewfile
+    generates:
+      - Brewfile.lock.json
+
+  "brew:dump":
+    desc: Refresh Brewfile from current system state
+    cmds:
+      - |
+        set -euo pipefail
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would regenerate Brewfile"
+        else
+          echo "[brew] Dumping Brewfile"
+          brew bundle dump --file Brewfile --force
+        fi
+
+  "dotfiles:sync":
+    desc: Copy aliases/functions/globals into ~/.dotfiles
+    cmds:
+      - |
+        set -euo pipefail
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would ensure {{.DOTFILES_HOME}} exists"
+          echo "[dry-run] Would sync dotfiles from {{.DOTFILES_SRC}}"
+        else
+          echo "[dotfiles] Syncing to {{.DOTFILES_HOME}}"
+          mkdir -p {{.DOTFILES_HOME}}/aliases {{.DOTFILES_HOME}}/functions {{.DOTFILES_HOME}}/globals
+          rsync -a {{.DOTFILES_SRC}}/aliases/ {{.DOTFILES_HOME}}/aliases/
+          rsync -a {{.DOTFILES_SRC}}/functions/ {{.DOTFILES_HOME}}/functions/
+          rsync -a {{.DOTFILES_SRC}}/globals/ {{.DOTFILES_HOME}}/globals/
+        fi
+    sources:
+      - '{{.DOTFILES_SRC}}/aliases/**'
+      - '{{.DOTFILES_SRC}}/functions/**'
+      - '{{.DOTFILES_SRC}}/globals/**'
+
+  "dotfiles:pull":
+    desc: Copy home dotfiles back into repo for editing
+    cmds:
+      - |
+        set -euo pipefail
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would copy from {{.DOTFILES_HOME}} back to repo"
+        else
+          echo "[dotfiles] Pulling from {{.DOTFILES_HOME}}"
+          rsync -a {{.DOTFILES_HOME}}/aliases/ {{.DOTFILES_SRC}}/aliases/
+          rsync -a {{.DOTFILES_HOME}}/functions/ {{.DOTFILES_SRC}}/functions/
+          rsync -a {{.DOTFILES_HOME}}/globals/ {{.DOTFILES_SRC}}/globals/
+        fi
+
+  "tools:zshrc":
+    desc: Render zshrc template into ~/.zshrc
+    cmds:
+      - |
+        set -euo pipefail
+        TARGET="$HOME/.zshrc"
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would render {{.ZSH_TEMPLATE}} to $TARGET"
+        else
+          echo "[shell] Rendering {{.ZSH_TEMPLATE}} to $TARGET"
+          mkdir -p "$(dirname "$TARGET")"
+          if ! command -v envsubst >/dev/null 2>&1; then
+            echo "[shell] envsubst is required for template rendering" >&2
+            exit 1
+          fi
+          DOT_FILES_SRC="{{.DOTFILES_SRC}}" envsubst '${DOT_FILES_SRC}' < {{.ZSH_TEMPLATE}} > "$TARGET"
+        fi
+
+  "config:git":
+    desc: Generate persona-specific gitconfig files
+    cmds:
+      - |
+        set -euo pipefail
+        if [ "{{.CONFIG_GIT}}" != "true" ]; then
+          echo "[identities] CONFIG_GIT=false; skipping git setup"
+          exit 0
+        fi
+        if ! command -v envsubst >/dev/null 2>&1; then
+          echo "[identities] envsubst is required for git templating" >&2
+          exit 1
+        fi
+        dry="{{.DRY_RUN}}"
+        persona="{{.PERSONA}}"
+        case "$persona" in
+          both) personas="personal work" ;;
+          personal|work) personas="$persona" ;;
+          *) echo "[identities] Unknown PERSONA=$persona" >&2; exit 1 ;;
+        esac
+        base_src="dotfiles/gitconfig"
+        if [ ! -f "$base_src" ]; then
+          echo "[identities] Missing $base_src" >&2
+          exit 1
+        fi
+        if [ "$dry" = "true" ]; then
+          echo "[dry-run] Would copy $base_src to $HOME/.gitconfig"
+        else
+          echo "[identities] Installing base gitconfig"
+          install -m 0644 "$base_src" "$HOME/.gitconfig"
+        fi
+        get_var() {
+          eval "printf '%s' \"\${$1:-}\""
+        }
+        for p in $personas; do
+          upper=$(printf '%s' "$p" | tr '[:lower:]' '[:upper:]')
+          name=$(get_var "GIT_USER_${upper}")
+          email=$(get_var "GIT_EMAIL_${upper}")
+          signing=$(get_var "GIT_SIGNINGKEY_${upper}")
+          extra=$(get_var "GIT_EXTRA_${upper}")
+          if [ -z "$name" ] || [ -z "$email" ] || [ -z "$signing" ]; then
+            echo "[identities] Missing git env vars for persona $p" >&2
+            exit 1
+          fi
+          target="$HOME/.gitconfig-$p"
+          if [ "$dry" = "true" ]; then
+            echo "[dry-run] Would render git persona $p -> $target"
+          else
+            echo "[identities] Rendering git persona $p -> $target"
+            GIT_NAME="$name" GIT_EMAIL="$email" GIT_SIGNINGKEY="$signing" GIT_EXTRA="$extra" envsubst < {{.GIT_TEMPLATE}} > "$target"
+            chmod 0644 "$target"
+          fi
+        done
+
+  "config:ssh":
+    desc: Generate persona-specific SSH config
+    cmds:
+      - |
+        set -euo pipefail
+        if [ "{{.CONFIG_SSH}}" != "true" ]; then
+          echo "[identities] CONFIG_SSH=false; skipping ssh setup"
+          exit 0
+        fi
+        if ! command -v envsubst >/dev/null 2>&1; then
+          echo "[identities] envsubst is required for ssh templating" >&2
+          exit 1
+        fi
+        dry="{{.DRY_RUN}}"
+        persona="{{.PERSONA}}"
+        case "$persona" in
+          both) personas="personal work" ;;
+          personal|work) personas="$persona" ;;
+          *) echo "[identities] Unknown PERSONA=$persona" >&2; exit 1 ;;
+        esac
+        mkdir -p "$HOME/.ssh"
+        chmod 700 "$HOME/.ssh"
+        if [ "$dry" != "true" ]; then
+          tmp=$(mktemp)
+          trap 'rm -f "$tmp"' EXIT
+        fi
+        get_var() {
+          eval "printf '%s' \"\${$1:-}\""
+        }
+        rendered=false
+        for p in $personas; do
+          upper=$(printf '%s' "$p" | tr '[:lower:]' '[:upper:]')
+          host=$(get_var "SSH_HOST_${upper}")
+          hostname=$(get_var "SSH_HOSTNAME_${upper}")
+          identity=$(get_var "SSH_IDENTITY_${upper}")
+          extra=$(get_var "SSH_EXTRA_${upper}")
+          if [ -z "$host" ] || [ -z "$hostname" ] || [ -z "$identity" ]; then
+            echo "[identities] Missing SSH env vars for persona $p; skipping"
+            continue
+          fi
+          if [ "$dry" = "true" ]; then
+            echo "[dry-run] Would add SSH host $host ($p)"
+          else
+            SSH_HOST="$host" SSH_HOSTNAME="$hostname" SSH_IDENTITY="$identity" SSH_EXTRA="$extra" envsubst < {{.SSH_TEMPLATE}} >> "$tmp"
+            echo >> "$tmp"
+            rendered=true
+          fi
+        done
+        if [ "$dry" = "true" ]; then
+          echo "[dry-run] Would write SSH config to $HOME/.ssh/config"
+        else
+          if [ "$rendered" = true ]; then
+            install -m 0600 "$tmp" "$HOME/.ssh/config"
+            echo "[identities] Updated $HOME/.ssh/config"
+          else
+            echo "[identities] No SSH entries rendered; existing config left untouched"
+          fi
+        fi
+
+  "tools:windsurf":
+    desc: Sync Windsurf settings/keybindings/snippets into the user profile
+    cmds:
+      - |
+        set -euo pipefail
+        src="{{.WINDSURF_SRC}}"
+        dest="{{.WINDSURF_DEST}}"
+        if [ ! -d "$src" ]; then
+          echo "[ides] Windsurf source folder $src not found; skipping"
+          exit 0
+        fi
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would sync Windsurf settings from $src to $dest"
+          exit 0
+        fi
+        mkdir -p "$dest"
+        rsync -a --delete "$src"/ "$dest"/
+        echo "[ides] Synced Windsurf settings to $dest"
+
+  "tools:iterm2":
+    desc: Install iTerm2 preferences plist
+    cmds:
+      - |
+        set -euo pipefail
+        src="{{.ITERM2_SRC}}"
+        dest="{{.ITERM2_DEST}}"
+        if [ ! -f "$src" ]; then
+          echo "[tools] iTerm2 source $src not found; skipping"
+          exit 0
+        fi
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would copy $src to $dest"
+          exit 0
+        fi
+        mkdir -p "$(dirname "$dest")"
+        install -m 0600 "$src" "$dest"
+        echo "[tools] Installed iTerm2 preferences to $dest"

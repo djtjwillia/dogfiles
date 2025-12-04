@@ -1,0 +1,15 @@
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+[pager]
+  branch = false
+[init]
+    defaultBranch = main
+[push]
+	autoSetupRemote = true
+[includeIf "gitdir:~/Code/Liatrio/**"]
+  path = ~/.gitconfig-liatrio
+[includeIf "gitdir:~/Code/Projects/**"]
+  path = ~/.gitconfig-personal

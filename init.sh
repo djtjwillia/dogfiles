@@ -1,20 +1,33 @@
 #!/bin/bash
-if [ -d ~/.oh-my-zsh ]; then
-    echo "oh-my-zsh is installed"
-else
-    echo "oh-my-zsh is not installed"
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-fi
+set -euo pipefail
 
-if ! command -v brew &> /dev/null
-then
-    echo "brew could not be found, installing"
+ensure_brew() {
+    if command -v brew >/dev/null 2>&1; then
+        echo "[init] Homebrew already installed"
+        return
+    fi
+
+    echo "[init] Installing Homebrew"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-else
-    echo "brew is installed"
+}
+
+ensure_task() {
+    if command -v task >/dev/null 2>&1; then
+        echo "[init] go-task already installed"
+        return
+    fi
+
+    echo "[init] Installing go-task"
+    ensure_brew
+    brew install go-task/tap/go-task
+}
+
+ensure_task
+
+if [ ! -f Taskfile.yml ]; then
+    echo "[init] Taskfile.yml not found; please run from repo root"
+    exit 1
 fi
 
-brew bundle
-
-chmod +x ./playbook.yml
-ansible-playbook playbook.yml
+echo "[init] Running task init"
+task init "$@"
