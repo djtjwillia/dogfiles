@@ -1,10 +1,6 @@
 {
-  "codeQL.telemetry.enableTelemetry": false,
   "docker.commands.build": "${containerCommand} build --pull --rm -f \"${dockerfile}\" -t ${tag} \"${context}\"",
   "editor.detectIndentation": false,
-  "editor.fontSize": 20,
-  "editor.formatOnPaste": true,
-  "editor.formatOnSave": true,
   "editor.guides.bracketPairs": true,
   "editor.minimap.enabled": false,
   "editor.rulers": [79, 119],
@@ -12,7 +8,6 @@
   "editor.suggestSelection": "first",
   "editor.tabCompletion": "on",
   "editor.tabSize": 2,
-  "window.zoomLevel": 2,
   "files.autoSave": "onFocusChange",
   "files.exclude": {
     "**/.git": false
@@ -37,7 +32,7 @@
   "liveshare.showInStatusBar": "whileCollaborating",
   "python.defaultInterpreterPath": "python3",
   "python.disableInstallationCheck": true,
-  "python.languageServer": "Pylance",
+  "python.languageServer": "Jedi",
   "python.testing.cwd": "",
   "python.testing.pytestEnabled": true,
   "python.venvFolders": [".venv"],
@@ -45,10 +40,37 @@
   "snyk.advanced.autoScanOpenSourceSecurity": true,
   "snyk.advanced.cliPath": "/Users/taylorjwilliams/Library/Application Support/snyk-ls/snyk-macos",
   "snyk.yesWelcomeNotification": false,
-  "terminal.integrated.fontSize": 18,
+  "terminal.integrated.fontSize": 14,
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "workbench.colorCustomizations": {
     "editorRuler.foreground": "#4ec802"
   },
-  "workbench.startupEditor": "none"
+  "workbench.startupEditor": "none",
+  "[python]": {
+    "editor.formatOnType": true
+  },
+  "editor.inlineSuggest.enabled": true,
+  "window.zoomLevel": 2,
+  "prettier.bracketSpacing": false,
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "yaml.format.bracketSpacing": false,
+  "vs-kubernetes": {
+    "vs-kubernetes.crd-code-completion": "disabled"
+  },
+  "workbench.colorTheme": "Visual Studio Dark",
+  "windsurf.explainAndFixInCurrentConversation": true,
+  "windsurf.autocompleteSpeed": "fast",
+  "sonarlint.connectedMode.connections.sonarqube": [
+    {
+      "serverUrl": "https://sonarqube.dev.jerseymikes.com"
+    }
+  ],
+  "containers.commands.build": "${containerCommand} build --pull --rm -f \"${dockerfile}\" -t ${tag} \"${context}\"",
+  "editor.fontSize": 14,
+  "editor.fontLigatures": false
 }

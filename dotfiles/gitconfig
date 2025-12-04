@@ -9,8 +9,6 @@
     defaultBranch = main
 [push]
 	autoSetupRemote = true
-[includeIf "gitdir:~/Code/Clients/RitchieBros/**"]
-  path = ~/.gitconfig-ritchiebros
 [includeIf "gitdir:~/Code/Liatrio/**"]
   path = ~/.gitconfig-liatrio
 [includeIf "gitdir:~/Code/Projects/**"]

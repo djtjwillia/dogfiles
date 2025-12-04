@@ -1,5 +1,0 @@
-- name: Copy iterm2 user prefs
-  ansible.builtin.copy:
-    src: ../files/com.googlecode.iterm2.plist
-    dest: ~/Library/Preferences/com.googlecode.iterm2.plist
-    mode: 0600

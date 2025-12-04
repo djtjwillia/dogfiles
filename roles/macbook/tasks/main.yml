@@ -1,8 +1,0 @@
-- name: Configure dotfiles
-  ansible.builtin.import_tasks: dotfiles.yml
-
-- name: Configure iterm2
-  ansible.builtin.import_tasks: iterm2.yml
-
-- name: Configure VSCode
-  ansible.builtin.import_tasks: vscode.yml
