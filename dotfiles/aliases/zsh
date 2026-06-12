@@ -11,6 +11,9 @@ alias hgrep='history 100 | grep --color=auto'
 alias tf='terraform'
 alias tg='terragrunt'
 alias k='kubectl'
+alias cc='claude'
+alias ccc='claude --continue'
+alias ccr='claude --resume'
 
 #troubleshooting
 alias netshoot='kubectl run netshoot --rm -i --tty --image nicolaka/netshoot -- /bin/bash'
