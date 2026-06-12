@@ -83,7 +83,7 @@ Rewrite `claude/CLAUDE.md` into a lean always-loaded core and externalize detail
 - [x] 1.10 Run `task tools:claude` (or `DRY_RUN=true` first) to propagate the lean core + `charter-details.md` to `~/.claude/`, reconciling the synced copy with the repo source of truth.
 - [x] 1.11 Fresh-session verification: with only the lean core loaded, confirm `"rotate the auth token"` routes to Marsh before any implementer and a vague-perf prompt escalates — capture the transcript as the proof artifact. **Report + prompt `/compact`.**
 
-### [ ] 2.0 Author `synod-jasnah` — the reviewer agent
+### [x] 2.0 Author `synod-jasnah` — the reviewer agent
 
 Create the new `claude/agents/synod-jasnah.md` reviewer agent (Jasnah Kholin persona): opus tier, routable PR/diff/code-quality-review `description`, full self-verifying body (Core Function / Coordination / Self-Check / Confidence / Output with `Not in scope:` line), bidirectional Coordination linking to Elend (architecture), Marsh (security), and Vin (implementation). **Advisory authority, not veto.** Created before Tasks 3.0–5.0 so existing agents can reference Jasnah in their Coordination maps in a single pass. (Spec Unit 3 roster growth.)
 
@@ -95,12 +95,12 @@ Create the new `claude/agents/synod-jasnah.md` reviewer agent (Jasnah Kholin per
 
 #### 2.0 Tasks
 
-- [ ] 2.1 Create `claude/agents/synod-jasnah.md` frontmatter: `name: synod-jasnah`, `model: opus`, `effort: high`, `disallowedTools: [Edit, Write]`, a distinct unused `color`, and a keyword-rich `description` (PR review, diff review, code quality, readability, maintainability, pre-merge review, code smells, style/consistency) — explicitly distinct from Elend's architecture and Marsh's security.
-- [ ] 2.2 Write the **Jasnah Kholin** persona body (exacting, evidence-first, renders firm verdicts without apology) in the Sazed/Mistborn voice; address the user as **Mistborn**/**Seeker**; include the required response-opening identity block used by the other agents.
-- [ ] 2.3 Add a **Core Function** section scoping Jasnah to code-quality / PR / diff review (correctness-at-the-line, readability, maintainability, test adequacy, consistency) — handing architecture to Elend and security to Marsh.
-- [ ] 2.4 Add a **bidirectional Coordination** map: Jasnah → Elend (escalate architectural concerns), → Marsh (escalate security concerns), → Vin (hand off fixes); and document which agents route review work *to* her.
-- [ ] 2.5 Add **Self-Check**, **Confidence levels** (HIGH/MEDIUM/LOW), and an **Output Format** ending in a `Not in scope:` line. Use **advisory** verdict language only — no veto/block phrasing (consistent with Wax).
-- [ ] 2.6 Verification: confirm `"review this diff for code quality before merge"` auto-routes to Jasnah, and that an invocation on a sample diff passes her Self-Check, emits a Confidence level, and renders an advisory (non-blocking) verdict. **Report + prompt `/compact`.**
+- [x] 2.1 Create `claude/agents/synod-jasnah.md` frontmatter: `name: synod-jasnah`, `model: opus`, `effort: high`, `disallowedTools: [Edit, Write]`, a distinct unused `color`, and a keyword-rich `description` (PR review, diff review, code quality, readability, maintainability, pre-merge review, code smells, style/consistency) — explicitly distinct from Elend's architecture and Marsh's security. *(Note: all 8 standard agent colors are in use; `purple` chosen deliberately as the opus review-only tier color shared by Elend/TenSoon — also Jasnah's canonical Elsecaller violet. Rationale in proof.)*
+- [x] 2.2 Write the **Jasnah Kholin** persona body (exacting, evidence-first, renders firm verdicts without apology) in the Sazed/Mistborn voice; address the user as **Mistborn**/**Seeker**; include the required response-opening identity block used by the other agents.
+- [x] 2.3 Add a **Core Function** section scoping Jasnah to code-quality / PR / diff review (correctness-at-the-line, readability, maintainability, test adequacy, consistency) — handing architecture to Elend and security to Marsh.
+- [x] 2.4 Add a **bidirectional Coordination** map: Jasnah → Elend (escalate architectural concerns), → Marsh (escalate security concerns), → Vin (hand off fixes); and document which agents route review work *to* her.
+- [x] 2.5 Add **Self-Check**, **Confidence levels** (HIGH/MEDIUM/LOW), and an **Output Format** ending in a `Not in scope:` line. Use **advisory** verdict language only — no veto/block phrasing (consistent with Wax).
+- [x] 2.6 Verification: confirm `"review this diff for code quality before merge"` auto-routes to Jasnah, and that an invocation on a sample diff passes her Self-Check, emits a Confidence level, and renders an advisory (non-blocking) verdict. **Report + prompt `/compact`.**
 
 ### [ ] 3.0 Standardize agent Group A — Router & review-only agents (kelsier, elend, marsh, tensoon, vendell)
 
