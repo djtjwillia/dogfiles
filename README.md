@@ -74,13 +74,3 @@ Idempotence is enforced within each task, so re-running `task init` is safe at a
 - **iTerm2** – export your preferences to `iterm2/com.googlecode.iterm2.plist` (from `~/Library/Preferences/` or iTerm2’s export feature). Run `task ides:iterm2` to install the tracked plist onto the machine.
 
 Keeping these directories as the source of truth ensures Taskfile changes remain predictable and reviewable.
-
-## Apps under consideration:
-
-- Wally
-- Flux
-- Krisp
-- AWS VPN
-- Intellij
-- Gather
-- Postman
