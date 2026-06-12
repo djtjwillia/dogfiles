@@ -102,7 +102,7 @@ Create the new `claude/agents/synod-jasnah.md` reviewer agent (Jasnah Kholin per
 - [x] 2.5 Add **Self-Check**, **Confidence levels** (HIGH/MEDIUM/LOW), and an **Output Format** ending in a `Not in scope:` line. Use **advisory** verdict language only — no veto/block phrasing (consistent with Wax).
 - [x] 2.6 Verification: confirm `"review this diff for code quality before merge"` auto-routes to Jasnah, and that an invocation on a sample diff passes her Self-Check, emits a Confidence level, and renders an advisory (non-blocking) verdict. **Report + prompt `/compact`.**
 
-### [ ] 3.0 Standardize agent Group A — Router & review-only agents (kelsier, elend, marsh, tensoon, vendell)
+### [x] 3.0 Standardize agent Group A — Router & review-only agents (kelsier, elend, marsh, tensoon, vendell)
 
 Single combined per-file pass over the five non-writing agents. Rewrite each `description` into dense proactive-delegation triggers (Spec Unit 1) and add standardized body sections — bidirectional Coordination, Self-Check, Confidence levels — plus the `Not in scope:` output line for the review agents (elend, marsh, tensoon). Port Nate's keyword→agent decision table into `synod-kelsier`. Preserve each agent's opus/sonnet tier, `disallowedTools: [Edit, Write]`, color, and veto status. (Spec Unit 1 + Unit 2, this group.)
 
@@ -115,12 +115,12 @@ Single combined per-file pass over the five non-writing agents. Rewrite each `de
 
 #### 3.0 Tasks
 
-- [ ] 3.1 **synod-kelsier** (single pass): rewrite `description` into proactive routing/orchestration triggers (multi-discipline, ambiguous, high-blast-radius, "which agent"); add bidirectional **Coordination**, **Self-Check**, **Confidence**; **port the keyword→agent decision table** into the body and add the `synod-jasnah` row. Preserve sonnet, `disallowedTools`, color, no-veto.
-- [ ] 3.2 **synod-elend** (single pass): rewrite `description` (architecture, system design, module boundaries, data-model structure); add Coordination (↔ Vin before implementation, ↔ TenSoon boundary, ↔ Jasnah), Self-Check, Confidence, and a `Not in scope:` output line. Preserve opus/`effort: high`/`disallowedTools`/architecture veto.
-- [ ] 3.3 **synod-marsh** (single pass): rewrite `description` (keep dense auth/secrets/CVE keywords); add Coordination (↔ Jasnah, ↔ implementers — consulted first), Self-Check, Confidence; confirm/add the `Not in scope:` line in the existing Output Format. **Preserve Marsh-first ordering language and the security veto.**
-- [ ] 3.4 **synod-tensoon** (single pass): rewrite `description` (database, schema, migrations, queries, indexes, data integrity); add Coordination (↔ Elend boundary, ↔ Vin), Self-Check, Confidence, `Not in scope:` line. Preserve opus/`effort: high`/`disallowedTools`/data-safety veto.
-- [ ] 3.5 **synod-vendell** (single pass): rewrite `description` (dependency updates, version pinning, deprecation, "is this API current", Context7); add Coordination (↔ Vin for API verification before first proposal), Self-Check, Confidence. Preserve sonnet/`disallowedTools`/no-veto.
-- [ ] 3.6 Group A verification: produce the diffs above and a routing transcript (security→Marsh-first; ambiguous multi-discipline→Kelsier). **Report the group + prompt `/compact`.**
+- [x] 3.1 **synod-kelsier** (single pass): rewrite `description` into proactive routing/orchestration triggers (multi-discipline, ambiguous, high-blast-radius, "which agent"); add bidirectional **Coordination**, **Self-Check**, **Confidence**; **port the keyword→agent decision table** into the body and add the `synod-jasnah` row. Preserve sonnet, `disallowedTools`, color, no-veto.
+- [x] 3.2 **synod-elend** (single pass): rewrite `description` (architecture, system design, module boundaries, data-model structure); add Coordination (↔ Vin before implementation, ↔ TenSoon boundary, ↔ Jasnah), Self-Check, Confidence, and a `Not in scope:` output line. Preserve opus/`effort: high`/`disallowedTools`/architecture veto.
+- [x] 3.3 **synod-marsh** (single pass): rewrite `description` (keep dense auth/secrets/CVE keywords); add Coordination (↔ Jasnah, ↔ implementers — consulted first), Self-Check, Confidence; confirm/add the `Not in scope:` line in the existing Output Format. **Preserve Marsh-first ordering language and the security veto.**
+- [x] 3.4 **synod-tensoon** (single pass): rewrite `description` (database, schema, migrations, queries, indexes, data integrity); add Coordination (↔ Elend boundary, ↔ Vin), Self-Check, Confidence, `Not in scope:` line. Preserve opus/`effort: high`/`disallowedTools`/data-safety veto.
+- [x] 3.5 **synod-vendell** (single pass): rewrite `description` (dependency updates, version pinning, deprecation, "is this API current", Context7); add Coordination (↔ Vin for API verification before first proposal), Self-Check, Confidence. Preserve sonnet/`disallowedTools`/no-veto.
+- [x] 3.6 Group A verification: produce the diffs above and a routing transcript (security→Marsh-first; ambiguous multi-discipline→Kelsier). **Report the group + prompt `/compact`.**
 
 ### [ ] 4.0 Standardize agent Group B — Build & delivery implementers (vin, melaan, marasi)
 
