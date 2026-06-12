@@ -139,7 +139,7 @@ Single combined per-file pass over the three build/delivery implementers. Rewrit
 - [x] 4.3 **synod-marasi** (single pass): rewrite `description` (CI/CD, GitHub Actions, pipelines, deploys, releases, build caching, delivery); add Coordination, Self-Check, Confidence. Preserve sonnet/write-enabled/color.
 - [x] 4.4 Group B verification: produce the diffs above (incl. Vin's two folds) and a routing transcript (CI→Marasi, CLI-flag→Vin, devcontainer→MeLaan). **Report the group + prompt `/compact`.**
 
-### [ ] 5.0 Standardize agent Group C — Ops & experience implementers (wax, wayne, steris)
+### [x] 5.0 Standardize agent Group C — Ops & experience implementers (wax, wayne, steris)
 
 Single combined per-file pass over the three ops/experience implementers. Rewrite each `description` into proactive triggers and add Coordination / Self-Check / Confidence sections. Apply the fold in the same pass: incident-response formats (SEV / Incident Commander / post-mortem) into `synod-wax`. Preserve write-enabled status, models, and colors. (Spec Unit 1 + Unit 2 + the Wax fold, this group.)
 
@@ -151,10 +151,10 @@ Single combined per-file pass over the three ops/experience implementers. Rewrit
 
 #### 5.0 Tasks
 
-- [ ] 5.1 **synod-wax** (single pass): rewrite `description` (bugs, errors, crashes, stack traces, incidents, outages, regressions, root-cause, log analysis, performance); add Coordination (↔ Marsh for security incidents, ↔ TenSoon for data incidents, ↔ Vin for fixes), Self-Check, Confidence. **Fold in** incident-response output formats: SEV levels, Incident Commander role, post-mortem template. Preserve sonnet/write-enabled/color/no-veto (Wax reports, does not block).
-- [ ] 5.2 **synod-wayne** (single pass): rewrite `description` (UI, UX, layout, components, accessibility, user flows, wireframes, frontend review, "is this confusing"); add Coordination, Self-Check, Confidence. Preserve sonnet/write-enabled/color.
-- [ ] 5.3 **synod-steris** (single pass): rewrite `description` (README, docs, ADRs, PR descriptions, changelogs, "explain this", planning, checklists); add Coordination, Self-Check, Confidence. **Preserve the documentation-accuracy veto** and its existing output structure.
-- [ ] 5.4 Group C verification: produce the diffs above (incl. Wax's incident formats) and a routing transcript (prod-down→Wax, confusing-UI→Wayne, README→Steris). **Report the group + prompt `/compact`.**
+- [x] 5.1 **synod-wax** (single pass): rewrite `description` (bugs, errors, crashes, stack traces, incidents, outages, regressions, root-cause, log analysis, performance); add Coordination (↔ Marsh for security incidents, ↔ TenSoon for data incidents, ↔ Vin for fixes), Self-Check, Confidence. **Fold in** incident-response output formats: SEV levels, Incident Commander role, post-mortem template. Preserve sonnet/write-enabled/color/no-veto (Wax reports, does not block).
+- [x] 5.2 **synod-wayne** (single pass): rewrite `description` (UI, UX, layout, components, accessibility, user flows, wireframes, frontend review, "is this confusing"); add Coordination, Self-Check, Confidence. Preserve sonnet/write-enabled/color.
+- [x] 5.3 **synod-steris** (single pass): rewrite `description` (README, docs, ADRs, PR descriptions, changelogs, "explain this", planning, checklists); add Coordination, Self-Check, Confidence. **Preserve the documentation-accuracy veto** and its existing output structure.
+- [x] 5.4 Group C verification: produce the diffs above (incl. Wax's incident formats) and a routing transcript (prod-down→Wax, confusing-UI→Wayne, README→Steris). **Report the group + prompt `/compact`.**
 
 ### [ ] 6.0 Eval harness + `/run-evals` skill
 
