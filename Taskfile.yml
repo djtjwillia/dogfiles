@@ -20,6 +20,9 @@ vars:
   WINDSURF_DEST: '{{default "$HOME/Library/Application Support/Windsurf/User" .WINDSURF_DEST}}'
   ITERM2_SRC: '{{default "iterm2/com.googlecode.iterm2.plist" .ITERM2_SRC}}'
   ITERM2_DEST: '{{default "$HOME/Library/Preferences/com.googlecode.iterm2.plist" .ITERM2_DEST}}'
+  CLAUDE_SRC: '{{default "claude" .CLAUDE_SRC}}'
+  CLAUDE_DEST: '{{default "$HOME/.claude" .CLAUDE_DEST}}'
+  CLAUDE_SCHEDULED_DEST: '{{default "$HOME/Claude/Scheduled" .CLAUDE_SCHEDULED_DEST}}'
 
 silent: true
 
@@ -40,6 +43,7 @@ tasks:
       - task: config:ssh
       - task: tools:windsurf
       - task: tools:iterm2
+      - task: tools:claude
 
   "bootstrap:prereqs":
     desc: Ensure oh-my-zsh and Homebrew are installed
@@ -301,3 +305,69 @@ tasks:
         mkdir -p "$(dirname "$dest")"
         install -m 0600 "$src" "$dest"
         echo "[tools] Installed iTerm2 preferences to $dest"
+
+  "tools:claude":
+    desc: Sync Claude config, agents, and scheduled scripts into place
+    cmds:
+      - |
+        set -euo pipefail
+        src="{{.CLAUDE_SRC}}"
+        dest="{{.CLAUDE_DEST}}"
+        scheduled_dest="{{.CLAUDE_SCHEDULED_DEST}}"
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would mkdir -p $dest"
+          echo "[dry-run] Would install -m 0644 $src/CLAUDE.md $dest/CLAUDE.md"
+          echo "[dry-run] Would install -m 0644 $src/settings.json $dest/settings.json"
+          echo "[dry-run] Would rsync --dry-run --delete-after $src/agents/ $dest/agents/"
+          echo "[dry-run] Would rsync $src/scheduled/ $scheduled_dest/"
+          exit 0
+        fi
+        mkdir -p "$dest"
+        install -m 0644 "$src/CLAUDE.md" "$dest/CLAUDE.md"
+        echo "[claude] Installed CLAUDE.md to $dest"
+        install -m 0644 "$src/settings.json" "$dest/settings.json"
+        echo "[claude] Installed settings.json to $dest"
+        AGENTS_DEST="$dest/agents/"
+        case "$AGENTS_DEST" in
+          */agents/) ;;
+          *) echo "[claude] ERROR: refusing delete — target is not an agents/ leaf: $AGENTS_DEST" >&2; exit 1 ;;
+        esac
+        mkdir -p "$AGENTS_DEST"
+        rsync -a --delete-after --filter='P .DS_Store' "$src/agents/" "$AGENTS_DEST"
+        echo "[claude] Synced agents/ to $AGENTS_DEST"
+        mkdir -p "$scheduled_dest"
+        rsync -a "$src/scheduled/" "$scheduled_dest/"
+        echo "[claude] Synced scheduled/ to $scheduled_dest"
+
+  "scheduled:install":
+    desc: Install and load the daily briefing launch agent (run manually — not part of init)
+    cmds:
+      - |
+        set -euo pipefail
+        plist_src="{{.CLAUDE_SCHEDULED_DEST}}/taylor-morning-briefing/com.taylor.daily-briefing.plist"
+        plist_dest="$HOME/Library/LaunchAgents/com.taylor.daily-briefing.plist"
+        script="{{.CLAUDE_SCHEDULED_DEST}}/taylor-morning-briefing/run-briefing.sh"
+        output_logs="$HOME/Claude/briefing-output/.logs"
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would mkdir -p $output_logs"
+          echo "[dry-run] Would backup $plist_dest to /tmp/com.taylor.daily-briefing.plist.bak"
+          echo "[dry-run] Would launchctl unload $plist_dest"
+          echo "[dry-run] Would install -m 0644 $plist_src $plist_dest"
+          echo "[dry-run] Would chmod +x $script"
+          echo "[dry-run] Would launchctl load $plist_dest"
+          exit 0
+        fi
+        mkdir -p "$output_logs"
+        echo "[scheduled] Created $output_logs"
+        if [ -f "$plist_dest" ]; then
+          cp "$plist_dest" "/tmp/com.taylor.daily-briefing.plist.bak"
+          echo "[scheduled] Backed up existing plist to /tmp/com.taylor.daily-briefing.plist.bak"
+        fi
+        launchctl unload "$plist_dest" 2>/dev/null || true
+        echo "[scheduled] Unloaded existing agent (if any)"
+        install -m 0644 "$plist_src" "$plist_dest"
+        echo "[scheduled] Installed plist to $plist_dest"
+        chmod +x "$script"
+        echo "[scheduled] Set +x on $script"
+        launchctl load "$plist_dest"
+        echo "[scheduled] Loaded com.taylor.daily-briefing"
