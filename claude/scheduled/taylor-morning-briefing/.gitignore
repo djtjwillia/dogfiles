@@ -1,0 +1,7 @@
+# Generated briefing output and logs are runtime state — never tracked.
+# Source of truth here is: SKILL.md, run-briefing.sh, the plist, INSTALL.md.
+briefing-*.md
+output/
+.logs/
+*.log
+.DS_Store
