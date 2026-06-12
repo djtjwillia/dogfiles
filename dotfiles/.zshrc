@@ -1,4 +1,4 @@
-DOT_FILES_SRC="/Users/taylor/Code/liatrio/dogfiles-main/dotfiles"
+DOT_FILES_SRC="/Users/taylor/Code/liatrio/dogfiles/dotfiles"
 #omzsh
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="awesomepanda"
