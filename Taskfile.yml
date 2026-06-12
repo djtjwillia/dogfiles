@@ -9,8 +9,6 @@ vars:
   DRY_RUN: '{{default "false" .DRY_RUN}}'
   DOTFILES_HOME: '{{default "$HOME/.dotfiles" .DOTFILES_HOME}}'
   DOTFILES_SRC: '{{default (printf "%s/dotfiles" .TASKFILE_DIR) .DOTFILES_SRC}}'
-  DOTFILES_TEMPLATE_ROOT: '{{default (printf "%s/dotfiles" .TASKFILE_DIR) .DOTFILES_TEMPLATE_ROOT}}'
-  ZSH_TEMPLATE: '{{default "templates/zshrc.tmpl" .ZSH_TEMPLATE}}'
   GIT_TEMPLATE: '{{default "templates/gitconfig.tmpl" .GIT_TEMPLATE}}'
   SSH_TEMPLATE: '{{default "templates/ssh_config.tmpl" .SSH_TEMPLATE}}'
   PERSONA: '{{default "personal" .PERSONA}}'
@@ -104,7 +102,7 @@ tasks:
         fi
 
   "dotfiles:sync":
-    desc: Copy aliases/functions/globals into ~/.dotfiles
+    desc: Copy dotfiles config into ~/.dotfiles
     cmds:
       - |
         set -euo pipefail
@@ -113,15 +111,13 @@ tasks:
           echo "[dry-run] Would sync dotfiles from {{.DOTFILES_SRC}}"
         else
           echo "[dotfiles] Syncing to {{.DOTFILES_HOME}}"
-          mkdir -p {{.DOTFILES_HOME}}/aliases {{.DOTFILES_HOME}}/functions {{.DOTFILES_HOME}}/globals
-          rsync -a {{.DOTFILES_SRC}}/aliases/ {{.DOTFILES_HOME}}/aliases/
-          rsync -a {{.DOTFILES_SRC}}/functions/ {{.DOTFILES_HOME}}/functions/
-          rsync -a {{.DOTFILES_SRC}}/globals/ {{.DOTFILES_HOME}}/globals/
+          mkdir -p {{.DOTFILES_HOME}}
+          rsync -a {{.DOTFILES_SRC}}/config.sh {{.DOTFILES_HOME}}/config.sh
+          rsync -a {{.DOTFILES_SRC}}/gitconfig {{.DOTFILES_HOME}}/gitconfig
         fi
     sources:
-      - '{{.DOTFILES_SRC}}/aliases/**'
-      - '{{.DOTFILES_SRC}}/functions/**'
-      - '{{.DOTFILES_SRC}}/globals/**'
+      - "{{.DOTFILES_SRC}}/config.sh"
+      - "{{.DOTFILES_SRC}}/gitconfig"
 
   "dotfiles:pull":
     desc: Copy home dotfiles back into repo for editing
@@ -132,27 +128,22 @@ tasks:
           echo "[dry-run] Would copy from {{.DOTFILES_HOME}} back to repo"
         else
           echo "[dotfiles] Pulling from {{.DOTFILES_HOME}}"
-          rsync -a {{.DOTFILES_HOME}}/aliases/ {{.DOTFILES_SRC}}/aliases/
-          rsync -a {{.DOTFILES_HOME}}/functions/ {{.DOTFILES_SRC}}/functions/
-          rsync -a {{.DOTFILES_HOME}}/globals/ {{.DOTFILES_SRC}}/globals/
+          rsync -a {{.DOTFILES_HOME}}/config.sh {{.DOTFILES_SRC}}/config.sh
+          rsync -a {{.DOTFILES_HOME}}/gitconfig {{.DOTFILES_SRC}}/gitconfig
         fi
 
   "tools:zshrc":
-    desc: Render zshrc template into ~/.zshrc
+    desc: Copy zshrc into ~/.zshrc
     cmds:
       - |
         set -euo pipefail
         TARGET="$HOME/.zshrc"
+        SRC="{{.DOTFILES_SRC}}/.zshrc"
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would render {{.ZSH_TEMPLATE}} to $TARGET"
+          echo "[dry-run] Would copy $SRC to $TARGET"
         else
-          echo "[shell] Rendering {{.ZSH_TEMPLATE}} to $TARGET"
-          mkdir -p "$(dirname "$TARGET")"
-          if ! command -v envsubst >/dev/null 2>&1; then
-            echo "[shell] envsubst is required for template rendering" >&2
-            exit 1
-          fi
-          DOT_FILES_SRC="{{.DOTFILES_SRC}}" envsubst '${DOT_FILES_SRC}' < {{.ZSH_TEMPLATE}} > "$TARGET"
+          echo "[shell] Copying $SRC to $TARGET"
+          install -m 0644 "$SRC" "$TARGET"
         fi
 
   "config:git":
