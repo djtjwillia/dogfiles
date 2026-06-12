@@ -122,7 +122,7 @@ Single combined per-file pass over the five non-writing agents. Rewrite each `de
 - [x] 3.5 **synod-vendell** (single pass): rewrite `description` (dependency updates, version pinning, deprecation, "is this API current", Context7); add Coordination (↔ Vin for API verification before first proposal), Self-Check, Confidence. Preserve sonnet/`disallowedTools`/no-veto.
 - [x] 3.6 Group A verification: produce the diffs above and a routing transcript (security→Marsh-first; ambiguous multi-discipline→Kelsier). **Report the group + prompt `/compact`.**
 
-### [ ] 4.0 Standardize agent Group B — Build & delivery implementers (vin, melaan, marasi)
+### [x] 4.0 Standardize agent Group B — Build & delivery implementers (vin, melaan, marasi)
 
 Single combined per-file pass over the three build/delivery implementers. Rewrite each `description` into proactive triggers and add Coordination / Self-Check / Confidence sections. Apply the folds in the same pass: browser/e2e testing scope **and** Context7 doc-lookup into `synod-vin`. Preserve write-enabled status, models, and colors. (Spec Unit 1 + Unit 2 + the Vin folds, this group.)
 
@@ -134,10 +134,10 @@ Single combined per-file pass over the three build/delivery implementers. Rewrit
 
 #### 4.0 Tasks
 
-- [ ] 4.1 **synod-vin** (single pass): rewrite `description` (implementation, feature dev, tests, CLI flags, safe refactors, browser/e2e); add Coordination (↔ Elend before structural work, ↔ Marsh when security in scope, ↔ Jasnah for review, ↔ Vendell/Context7 for APIs), Self-Check, Confidence. **Fold in** Context7 doc-lookup ("verify library APIs before the first proposal") **and** browser/e2e testing scope (pairs with the `agent-browser` skill). Preserve sonnet/write-enabled/color.
-- [ ] 4.2 **synod-melaan** (single pass): rewrite `description` (Dockerfile, Docker Compose, devcontainers, local setup, onboarding, Makefile/Taskfile, "works on my machine"); add Coordination, Self-Check, Confidence. Preserve sonnet/write-enabled/color.
-- [ ] 4.3 **synod-marasi** (single pass): rewrite `description` (CI/CD, GitHub Actions, pipelines, deploys, releases, build caching, delivery); add Coordination, Self-Check, Confidence. Preserve sonnet/write-enabled/color.
-- [ ] 4.4 Group B verification: produce the diffs above (incl. Vin's two folds) and a routing transcript (CI→Marasi, CLI-flag→Vin, devcontainer→MeLaan). **Report the group + prompt `/compact`.**
+- [x] 4.1 **synod-vin** (single pass): rewrite `description` (implementation, feature dev, tests, CLI flags, safe refactors, browser/e2e); add Coordination (↔ Elend before structural work, ↔ Marsh when security in scope, ↔ Jasnah for review, ↔ Vendell/Context7 for APIs), Self-Check, Confidence. **Fold in** Context7 doc-lookup ("verify library APIs before the first proposal") **and** browser/e2e testing scope (pairs with the `agent-browser` skill). Preserve sonnet/write-enabled/color.
+- [x] 4.2 **synod-melaan** (single pass): rewrite `description` (Dockerfile, Docker Compose, devcontainers, local setup, onboarding, Makefile/Taskfile, "works on my machine"); add Coordination, Self-Check, Confidence. Preserve sonnet/write-enabled/color.
+- [x] 4.3 **synod-marasi** (single pass): rewrite `description` (CI/CD, GitHub Actions, pipelines, deploys, releases, build caching, delivery); add Coordination, Self-Check, Confidence. Preserve sonnet/write-enabled/color.
+- [x] 4.4 Group B verification: produce the diffs above (incl. Vin's two folds) and a routing transcript (CI→Marasi, CLI-flag→Vin, devcontainer→MeLaan). **Report the group + prompt `/compact`.**
 
 ### [ ] 5.0 Standardize agent Group C — Ops & experience implementers (wax, wayne, steris)
 
