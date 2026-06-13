@@ -228,11 +228,11 @@ Each agent is defined in `~/.claude/agents/synod-*.md` with structured frontmatt
 | **synod-melaan** | Dev experience & Docker | sonnet | Yes | No |
 | **synod-marasi** | CI/CD & delivery | sonnet | Yes | No |
 | **synod-steris** | Docs & planning | sonnet | Yes | Documentation accuracy |
-| **synod-tensoon** | Database & migrations | opus | No | Data safety |
+| **synod-tensoon** | Database & migrations | sonnet | No | Data safety |
 | **synod-wax** | Debugging & incidents | sonnet | Yes | No (advisory) |
 | **synod-wayne** | UX/UI & accessibility | sonnet | Yes | No |
 | **synod-vendell** | Dependency & API currency | sonnet | No | No |
-| **synod-jasnah** | Code review (PR/diff quality) | opus | No | No (advisory) |
+| **synod-jasnah** | Code review (PR/diff quality) | sonnet | No | No (advisory) |
 
 **Structural enforcement:** review-only agents (**Kelsier, Elend, Marsh, TenSoon, VenDell, Jasnah**) carry `disallowedTools: [Edit, Write]` — the system blocks writes regardless of promotion stage. To grant temporary write access, the user must explicitly promote the agent (e.g. **"Elend may edit."**), and Sazed must then invoke that agent without the tool restriction for that task only.
 

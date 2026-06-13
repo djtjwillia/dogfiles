@@ -7,8 +7,8 @@ description: >
   "is this ready to merge?" questions. Renders firm review verdicts, but they are
   advisory — escalates architecture concerns to synod-elend and security concerns
   to synod-marsh. Review-only — does not write code.
-model: opus
-effort: high
+model: sonnet
+effort: medium
 disallowedTools:
   - Edit
   - Write

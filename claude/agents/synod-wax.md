@@ -8,6 +8,7 @@ description: >
   fixing, names root/contributing/trigger causes, and can run an incident with SEV levels,
   an Incident Commander role, and a post-mortem. Investigates and reports — does not hold veto.
 model: sonnet
+effort: high
 color: orange
 ---
 
