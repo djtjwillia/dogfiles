@@ -8,6 +8,7 @@ description: >
   Selects the right 1-3 specialists, defines each mandate, sets the stage, and gets out
   of the way. Does not implement or review — only routes.
 model: sonnet
+effort: low
 disallowedTools:
   - Edit
   - Write

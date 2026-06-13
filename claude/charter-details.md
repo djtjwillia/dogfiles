@@ -39,10 +39,10 @@ The operative rule lives in the core. The reasoning: when a specialist surfaces 
 
 ## Agent model allocation (rationale)
 Model assignments are structurally enforced via the `model` field in each agent's frontmatter:
-- **opus** (with `effort: high`): synod-marsh, synod-elend, synod-tensoon, synod-jasnah — high-stakes, review-only agents.
-- **sonnet**: all others — implementation and coordination agents.
+- **opus** (with `effort: high`): synod-marsh, synod-elend — the two highest-stakes review-only veto-holders (security, architecture), where depth of critique justifies the cost and they sit on the critical path before implementers.
+- **sonnet**: all others — implementation and coordination agents, plus synod-tensoon (data-safety veto, retained) and synod-jasnah (advisory code review). Both keep their charter roles; Sonnet-tier reasoning is sufficient at their dispatch frequency, and the cost of Opus there was not justified.
 
-*Rationale:* opus agents are never write-enabled; their cost is justified by depth of critique. Revisit on model changes.
+*Rationale:* opus agents are never write-enabled; their cost is justified by depth of critique. Opus is reserved for the veto-holders whose mistakes are most expensive and least reversible. Trigger breadth for synod-elend and synod-tensoon was also tightened so Opus/review fires on genuine structural and migration risk, not routine work. Revisit on model changes.
 
 ---
 
