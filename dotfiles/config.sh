@@ -23,14 +23,17 @@ alias ccr='claude --resume'
 alias netshoot='kubectl run netshoot --rm -i --tty --image nicolaka/netshoot -- /bin/bash'
 
 # color aliases
-alias ls='ls -G'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 #filesystem viewing
-alias ll='ls -alh -G'
+alias ls='eza --icons'
+alias ll='eza -la --icons --git'
+alias lt='eza --tree --level=2 --icons'
+alias la='eza -a --icons'
 alias lsd='ls -ald .*'
+alias cat='bat --paging=never'
 
 alias t='tree -C'
 alias t1='tree -LC 1'
@@ -39,16 +42,17 @@ alias t3='tree -LC 3'
 alias td1='tree -dLC 1'
 alias td2='tree -dLC 2'
 alias td3='tree -dLC 3'
-alias ta='tree -C'
-alias t1a='tree -LC 1'
-alias t2a='tree -LC 2'
-alias t3a='tree -LC 3'
-alias td1a='tree -dLC 1'
-alias td2a='tree -dLC 2'
-alias td3a='tree -dLC 3'
 
 #delete
 alias rmd='rm -rf'
+
+# tmux
+alias ta='tmux attach -t'
+alias tl='tmux list-sessions'
+alias tn='tmux new -s'
+alias ts='sesh connect $(sesh list | fzf)'
+alias dev='~/.local/bin/dev'
+
 
 # argocd commands
 alias argos='kubectl -n argocd get secret argocd-initial-admin-secret -o json | jq -r .data.password | base64 -d | cut -d % -f 1  | pbcopy'

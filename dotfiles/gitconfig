@@ -3,6 +3,21 @@
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
+[core]
+    pager = delta
+
+[delta]
+    navigate = true
+    line-numbers = true
+    side-by-side = true
+    syntax-theme = Dracula
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
 [pager]
   branch = false
 [init]
