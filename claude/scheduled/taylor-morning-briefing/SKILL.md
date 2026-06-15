@@ -58,24 +58,24 @@ Structure:
 
 ## Daily Tidbits
 
-### Spanish / Costa Rican Phrase
+### 🇨🇷 Spanish / Costa Rican Phrase
 **[Word/Phrase]** — [Pronunciation]
 [Meaning + usage example]
 
-### This Day in History
+### 📜 This Day in History
 [One interesting fact from today's date in history]
 
-### AP Overnight Headlines
+### 📰 AP Overnight Headlines
 - [Headline 1] — [Source]
 - [Headline 2] — [Source]
 - [Headline 3] — [Source]
 
 ---
 
-## Today's Calendar
+## 📅 Today's Calendar
 [List today's events with times in MT and attendees]
 
-## Slack Highlights
+## 💬 Slack Highlights
 
 ### #liatrio-engineering
 [Key updates, decisions, open threads — or "Quiet" if nothing notable]
@@ -89,10 +89,10 @@ Structure:
 ### Other / Direct Mentions
 [Any urgent or notable items directed at Taylor]
 
-## Prep Needed
+## ⚡ Prep Needed
 [Bulleted list of specific, actionable prep items]
 
-## Open Loops
+## 🔁 Open Loops
 [Unanswered questions, pending decisions, items awaiting follow-up]
 ```
 
