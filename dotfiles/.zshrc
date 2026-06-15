@@ -5,7 +5,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-DOT_FILES_SRC="/Users/taylor/Code/liatrio/dogfiles/dotfiles"
+DOT_FILES_SRC="/Users/taylor/Code/projects/dogfiles/dotfiles"
 #omzsh
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME=""
@@ -49,8 +49,6 @@ export NVM_DIR="$HOME/.nvm"
 
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# Added by Windsurf
-export PATH="/Users/taylor/.codeium/windsurf/bin:$PATH"
 
 source <(/Users/taylor/.kpv3-cli/bin/kpv3-cli source)
 if ! [ -s /Users/taylor/.kpv3-cli/consent.yaml ]; then
