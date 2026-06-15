@@ -1,0 +1,12 @@
+# Liatrio identity — auto-included for repos under ~/Code/liatrio/**
+# (wired via includeIf in ~/.gitconfig)
+[user]
+  name = Taylor J Williams
+  email = taylorw@liatrio.com
+  signingkey = ~/.ssh/liatrio_signing_ed25519.pub
+[gpg]
+  format = ssh
+[gpg "ssh"]
+  allowedSignersFile = ~/.ssh/allowed_signers
+[commit]
+  gpgsign = true

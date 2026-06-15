@@ -9,7 +9,12 @@
     defaultBranch = main
 [push]
 	autoSetupRemote = true
-[includeIf "gitdir:~/Code/Liatrio/**"]
+[user]
+	# Never auto-guess identity from OS/hostname — require an explicit include.
+	# Makes an unconfigured area (e.g. ~/Code/projects before the scaffold is filled)
+	# fail loud instead of committing under an invented identity.
+	useConfigOnly = true
+[includeIf "gitdir:~/Code/liatrio/**"]
   path = ~/.gitconfig-liatrio
-[includeIf "gitdir:~/Code/Projects/**"]
+[includeIf "gitdir:~/Code/projects/**"]
   path = ~/.gitconfig-personal
