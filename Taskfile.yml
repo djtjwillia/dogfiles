@@ -133,60 +133,25 @@ tasks:
         fi
 
   "config:git":
-    desc: Install base gitconfig + per-identity includes, merge allowed_signers
+    desc: Install base gitconfig + per-identity includes + allowed_signers
     cmds:
       - |
         set -euo pipefail
-        dry="{{.DRY_RUN}}"
-        src="{{.DOTFILES_SRC}}"
-        base_src="$src/gitconfig"
-        if [ ! -f "$base_src" ]; then
-          echo "[identities] Missing $base_src" >&2
-          exit 1
-        fi
-        # 1) Base ~/.gitconfig — repo is source of truth, overwrite.
-        if [ "$dry" = "true" ]; then
-          echo "[dry-run] Would copy $base_src to $HOME/.gitconfig"
+        SRC="{{.DOTFILES_SRC}}"
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would copy $SRC/gitconfig to $HOME/.gitconfig"
+          echo "[dry-run] Would copy $SRC/gitconfig-liatrio to $HOME/.gitconfig-liatrio"
+          echo "[dry-run] Would copy $SRC/gitconfig-personal to $HOME/.gitconfig-personal"
+          echo "[dry-run] Would copy $SRC/allowed_signers to $HOME/.ssh/allowed_signers"
         else
           echo "[identities] Installing base gitconfig"
-          install -m 0644 "$base_src" "$HOME/.gitconfig"
-        fi
-        # 2) Per-identity include files — single identity each, overwrite.
-        for id in liatrio personal; do
-          f="$src/gitconfig-$id"
-          [ -f "$f" ] || { echo "[identities] (skip) $f not present"; continue; }
-          if [ "$dry" = "true" ]; then
-            echo "[dry-run] Would copy $f to $HOME/.gitconfig-$id"
-          else
-            install -m 0644 "$f" "$HOME/.gitconfig-$id"
-            echo "[identities] Installed ~/.gitconfig-$id"
-          fi
-        done
-        # 3) allowed_signers — MERGE-append-dedupe by key blob, never clobber.
-        #    Other machines may hold signer entries this repo does not know about
-        #    (e.g. client-specific keys); a blind overwrite would erase them and
-        #    break verification of their past signed commits.
-        as_src="$src/allowed_signers"
-        as_dst="$HOME/.ssh/allowed_signers"
-        if [ -f "$as_src" ]; then
-          if [ "$dry" = "true" ]; then
-            echo "[dry-run] Would merge $as_src into $as_dst (append new keys, keep existing)"
-          else
-            mkdir -p "$HOME/.ssh"; chmod 700 "$HOME/.ssh"
-            touch "$as_dst"
-            added=0
-            while IFS= read -r line; do
-              [ -z "$line" ] && continue
-              key=$(printf '%s' "$line" | grep -oE 'ssh-[a-z0-9-]+ [A-Za-z0-9+/=]+' || true)
-              if [ -n "$key" ] && grep -qF "$key" "$as_dst"; then
-                continue
-              fi
-              printf '%s\n' "$line" >> "$as_dst"
-              added=$((added + 1))
-            done < "$as_src"
-            chmod 0644 "$as_dst"
-            echo "[identities] Merged allowed_signers: $added new entr(y/ies) added"
-          fi
+          install -m 0644 "$SRC/gitconfig" "$HOME/.gitconfig"
+          echo "[identities] Installing per-identity includes"
+          install -m 0644 "$SRC/gitconfig-liatrio" "$HOME/.gitconfig-liatrio"
+          install -m 0644 "$SRC/gitconfig-personal" "$HOME/.gitconfig-personal"
+          echo "[identities] Installing allowed_signers"
+          mkdir -p "$HOME/.ssh"; chmod 700 "$HOME/.ssh"
+          install -m 0644 "$SRC/allowed_signers" "$HOME/.ssh/allowed_signers"
         fi
 
   "tools:iterm2":
@@ -217,36 +182,26 @@ tasks:
         dest="{{.CLAUDE_DEST}}"
         scheduled_dest="{{.CLAUDE_SCHEDULED_DEST}}"
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would mkdir -p $dest"
-          echo "[dry-run] Would install -m 0644 $src/CLAUDE.md $dest/CLAUDE.md"
-          echo "[dry-run] Would install -m 0644 $src/charter-details.md $dest/charter-details.md"
-          echo "[dry-run] Would install -m 0644 $src/settings.json $dest/settings.json"
-          echo "[dry-run] Would rsync --dry-run --delete-after $src/agents/ $dest/agents/"
-          echo "[dry-run] Would rsync (additive, no --delete) $src/commands/ $dest/commands/"
-          echo "[dry-run] Would rsync $src/scheduled/ $scheduled_dest/"
+          echo "[dry-run] Would install CLAUDE.md, charter-details.md, settings.json to $dest"
+          echo "[dry-run] Would rsync --delete $src/agents/ to $dest/agents/"
+          echo "[dry-run] Would rsync (additive) $src/commands/ to $dest/commands/"
+          echo "[dry-run] Would rsync $src/scheduled/ to $scheduled_dest/"
           exit 0
         fi
         mkdir -p "$dest"
         install -m 0644 "$src/CLAUDE.md" "$dest/CLAUDE.md"
-        echo "[claude] Installed CLAUDE.md to $dest"
         install -m 0644 "$src/charter-details.md" "$dest/charter-details.md"
-        echo "[claude] Installed charter-details.md to $dest"
         install -m 0644 "$src/settings.json" "$dest/settings.json"
-        echo "[claude] Installed settings.json to $dest"
-        AGENTS_DEST="$dest/agents/"
-        case "$AGENTS_DEST" in
-          */agents/) ;;
-          *) echo "[claude] ERROR: refusing delete — target is not an agents/ leaf: $AGENTS_DEST" >&2; exit 1 ;;
-        esac
-        mkdir -p "$AGENTS_DEST"
-        rsync -a --delete-after --filter='P .DS_Store' "$src/agents/" "$AGENTS_DEST"
-        echo "[claude] Synced agents/ to $AGENTS_DEST"
-        # commands/ is ADDITIVE — no --delete. The installed ~/.claude/commands/ also
-        # holds SDD-* commands sourced from elsewhere; a --delete sync would erase them.
+        echo "[claude] Installed config files to $dest"
+        # agents/ is a mirror — --delete prunes agents removed from the repo.
+        mkdir -p "$dest/agents/"
+        rsync -a --delete-after --filter='P .DS_Store' "$src/agents/" "$dest/agents/"
+        echo "[claude] Synced agents/ (mirror) to $dest/agents/"
+        # commands/ is ADDITIVE — no --delete; SDD-* commands live here from elsewhere.
         if [ -d "$src/commands" ]; then
           mkdir -p "$dest/commands/"
           rsync -a --filter='P .DS_Store' "$src/commands/" "$dest/commands/"
-          echo "[claude] Synced commands/ to $dest/commands/ (additive)"
+          echo "[claude] Synced commands/ (additive) to $dest/commands/"
         fi
         mkdir -p "$scheduled_dest"
         rsync -a "$src/scheduled/" "$scheduled_dest/"
