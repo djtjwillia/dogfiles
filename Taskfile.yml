@@ -63,6 +63,7 @@ tasks:
         set -euo pipefail
         ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
         if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would clone tpm"
           echo "[dry-run] Would clone zsh-autosuggestions"
           echo "[dry-run] Would clone zsh-syntax-highlighting"
         else
