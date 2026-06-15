@@ -1,0 +1,13 @@
+# Personal identity — auto-included for repos under ~/Code/projects/**
+# (wired via includeIf in ~/.gitconfig)
+#
+[user]
+  name = Taylor J Williams
+  email = 23586790+djtjwillia@users.noreply.github.com
+  signingkey = ~/.ssh/personal_signing_ed25519.pub
+[gpg]
+  format = ssh
+[gpg "ssh"]
+  allowedSignersFile = ~/.ssh/allowed_signers
+[commit]
+  gpgsign = true
