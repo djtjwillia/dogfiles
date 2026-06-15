@@ -31,6 +31,7 @@ tasks:
       - task: tools:tmux
       - task: tools:dev-script
       - task: tools:claude
+      - task: tools:node
 
   "bootstrap:prereqs":
     desc: Ensure oh-my-zsh and Homebrew are installed
@@ -283,6 +284,27 @@ tasks:
         mkdir -p "$scheduled_dest"
         rsync -a "$src/scheduled/" "$scheduled_dest/"
         echo "[claude] Synced scheduled/ to $scheduled_dest"
+
+  "tools:node":
+    desc: Install LTS Node via NVM and global npm packages (agent-browser)
+    cmds:
+      - |
+        set -euo pipefail
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would run nvm install --lts"
+          echo "[dry-run] Would run npm install -g agent-browser"
+        else
+          echo "[node] Installing LTS Node via NVM"
+          bash -c '
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"
+            nvm install --lts
+            nvm use --lts
+            echo "[node] Installing global npm packages"
+            npm install -g agent-browser
+            echo "[node] Node setup complete"
+          '
+        fi
 
   "scheduled:install":
     desc: Install and load the daily briefing launch agent (run manually — not part of init)

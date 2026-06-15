@@ -1,7 +1,7 @@
 DOT_EDITOR='dv'
 
 #Aliases
-alias cls='clear'
+alias cl='clear'
 
 #sourcing
 alias szrc='source ~/.zshrc'
