@@ -1,0 +1,22 @@
+#!/bin/bash
+# Starts or attaches to the standard work session layout
+SESSION="work"
+
+if ! tmux has-session -t $SESSION 2>/dev/null; then
+  tmux new-session -d -s $SESSION -n shell
+
+  # Window 1: shell + AI split (70/30)
+  tmux split-window -h -t $SESSION:shell -p 30
+  tmux send-keys -t $SESSION:shell.2 'echo "AI pane ready. Use: ai \"question\" or aic \"follow-up\""' Enter
+  tmux select-pane -t $SESSION:shell.1
+
+  # Window 2: infra
+  tmux new-window -t $SESSION -n infra
+
+  # Window 3: forge
+  tmux new-window -t $SESSION -n forge
+
+  tmux select-window -t $SESSION:shell
+fi
+
+tmux attach -t $SESSION
