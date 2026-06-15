@@ -1,21 +1,9 @@
 version: '3'
 
-# Load persona/env vars automatically if present
-dotenv:
-  - .env
-  - env/.env
-
 vars:
   DRY_RUN: '{{default "false" .DRY_RUN}}'
   DOTFILES_HOME: '{{default "$HOME/.dotfiles" .DOTFILES_HOME}}'
   DOTFILES_SRC: '{{default (printf "%s/dotfiles" .TASKFILE_DIR) .DOTFILES_SRC}}'
-  GIT_TEMPLATE: '{{default "templates/gitconfig.tmpl" .GIT_TEMPLATE}}'
-  SSH_TEMPLATE: '{{default "templates/ssh_config.tmpl" .SSH_TEMPLATE}}'
-  PERSONA: '{{default "personal" .PERSONA}}'
-  CONFIG_GIT: '{{default "true" .CONFIG_GIT}}'
-  CONFIG_SSH: '{{default "true" .CONFIG_SSH}}'
-  WINDSURF_SRC: '{{default "windsurf" .WINDSURF_SRC}}'
-  WINDSURF_DEST: '{{default "$HOME/Library/Application Support/Windsurf/User" .WINDSURF_DEST}}'
   ITERM2_SRC: '{{default "iterm2/com.googlecode.iterm2.plist" .ITERM2_SRC}}'
   ITERM2_DEST: '{{default "$HOME/Library/Preferences/com.googlecode.iterm2.plist" .ITERM2_DEST}}'
   CLAUDE_SRC: '{{default "claude" .CLAUDE_SRC}}'
@@ -38,8 +26,6 @@ tasks:
       - task: dotfiles:sync
       - task: tools:zshrc
       - task: config:git
-      - task: config:ssh
-      - task: tools:windsurf
       - task: tools:iterm2
       - task: tools:claude
 
@@ -147,136 +133,26 @@ tasks:
         fi
 
   "config:git":
-    desc: Generate persona-specific gitconfig files
+    desc: Install base gitconfig + per-identity includes + allowed_signers
     cmds:
       - |
         set -euo pipefail
-        if [ "{{.CONFIG_GIT}}" != "true" ]; then
-          echo "[identities] CONFIG_GIT=false; skipping git setup"
-          exit 0
-        fi
-        if ! command -v envsubst >/dev/null 2>&1; then
-          echo "[identities] envsubst is required for git templating" >&2
-          exit 1
-        fi
-        dry="{{.DRY_RUN}}"
-        persona="{{.PERSONA}}"
-        case "$persona" in
-          both) personas="personal work" ;;
-          personal|work) personas="$persona" ;;
-          *) echo "[identities] Unknown PERSONA=$persona" >&2; exit 1 ;;
-        esac
-        base_src="dotfiles/gitconfig"
-        if [ ! -f "$base_src" ]; then
-          echo "[identities] Missing $base_src" >&2
-          exit 1
-        fi
-        if [ "$dry" = "true" ]; then
-          echo "[dry-run] Would copy $base_src to $HOME/.gitconfig"
+        SRC="{{.DOTFILES_SRC}}"
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would copy $SRC/gitconfig to $HOME/.gitconfig"
+          echo "[dry-run] Would copy $SRC/gitconfig-liatrio to $HOME/.gitconfig-liatrio"
+          echo "[dry-run] Would copy $SRC/gitconfig-personal to $HOME/.gitconfig-personal"
+          echo "[dry-run] Would copy $SRC/allowed_signers to $HOME/.ssh/allowed_signers"
         else
           echo "[identities] Installing base gitconfig"
-          install -m 0644 "$base_src" "$HOME/.gitconfig"
+          install -m 0644 "$SRC/gitconfig" "$HOME/.gitconfig"
+          echo "[identities] Installing per-identity includes"
+          install -m 0644 "$SRC/gitconfig-liatrio" "$HOME/.gitconfig-liatrio"
+          install -m 0644 "$SRC/gitconfig-personal" "$HOME/.gitconfig-personal"
+          echo "[identities] Installing allowed_signers"
+          mkdir -p "$HOME/.ssh"; chmod 700 "$HOME/.ssh"
+          install -m 0644 "$SRC/allowed_signers" "$HOME/.ssh/allowed_signers"
         fi
-        get_var() {
-          eval "printf '%s' \"\${$1:-}\""
-        }
-        for p in $personas; do
-          upper=$(printf '%s' "$p" | tr '[:lower:]' '[:upper:]')
-          name=$(get_var "GIT_USER_${upper}")
-          email=$(get_var "GIT_EMAIL_${upper}")
-          signing=$(get_var "GIT_SIGNINGKEY_${upper}")
-          extra=$(get_var "GIT_EXTRA_${upper}")
-          if [ -z "$name" ] || [ -z "$email" ] || [ -z "$signing" ]; then
-            echo "[identities] Missing git env vars for persona $p" >&2
-            exit 1
-          fi
-          target="$HOME/.gitconfig-$p"
-          if [ "$dry" = "true" ]; then
-            echo "[dry-run] Would render git persona $p -> $target"
-          else
-            echo "[identities] Rendering git persona $p -> $target"
-            GIT_NAME="$name" GIT_EMAIL="$email" GIT_SIGNINGKEY="$signing" GIT_EXTRA="$extra" envsubst < {{.GIT_TEMPLATE}} > "$target"
-            chmod 0644 "$target"
-          fi
-        done
-
-  "config:ssh":
-    desc: Generate persona-specific SSH config
-    cmds:
-      - |
-        set -euo pipefail
-        if [ "{{.CONFIG_SSH}}" != "true" ]; then
-          echo "[identities] CONFIG_SSH=false; skipping ssh setup"
-          exit 0
-        fi
-        if ! command -v envsubst >/dev/null 2>&1; then
-          echo "[identities] envsubst is required for ssh templating" >&2
-          exit 1
-        fi
-        dry="{{.DRY_RUN}}"
-        persona="{{.PERSONA}}"
-        case "$persona" in
-          both) personas="personal work" ;;
-          personal|work) personas="$persona" ;;
-          *) echo "[identities] Unknown PERSONA=$persona" >&2; exit 1 ;;
-        esac
-        mkdir -p "$HOME/.ssh"
-        chmod 700 "$HOME/.ssh"
-        if [ "$dry" != "true" ]; then
-          tmp=$(mktemp)
-          trap 'rm -f "$tmp"' EXIT
-        fi
-        get_var() {
-          eval "printf '%s' \"\${$1:-}\""
-        }
-        rendered=false
-        for p in $personas; do
-          upper=$(printf '%s' "$p" | tr '[:lower:]' '[:upper:]')
-          host=$(get_var "SSH_HOST_${upper}")
-          hostname=$(get_var "SSH_HOSTNAME_${upper}")
-          identity=$(get_var "SSH_IDENTITY_${upper}")
-          extra=$(get_var "SSH_EXTRA_${upper}")
-          if [ -z "$host" ] || [ -z "$hostname" ] || [ -z "$identity" ]; then
-            echo "[identities] Missing SSH env vars for persona $p; skipping"
-            continue
-          fi
-          if [ "$dry" = "true" ]; then
-            echo "[dry-run] Would add SSH host $host ($p)"
-          else
-            SSH_HOST="$host" SSH_HOSTNAME="$hostname" SSH_IDENTITY="$identity" SSH_EXTRA="$extra" envsubst < {{.SSH_TEMPLATE}} >> "$tmp"
-            echo >> "$tmp"
-            rendered=true
-          fi
-        done
-        if [ "$dry" = "true" ]; then
-          echo "[dry-run] Would write SSH config to $HOME/.ssh/config"
-        else
-          if [ "$rendered" = true ]; then
-            install -m 0600 "$tmp" "$HOME/.ssh/config"
-            echo "[identities] Updated $HOME/.ssh/config"
-          else
-            echo "[identities] No SSH entries rendered; existing config left untouched"
-          fi
-        fi
-
-  "tools:windsurf":
-    desc: Sync Windsurf settings/keybindings/snippets into the user profile
-    cmds:
-      - |
-        set -euo pipefail
-        src="{{.WINDSURF_SRC}}"
-        dest="{{.WINDSURF_DEST}}"
-        if [ ! -d "$src" ]; then
-          echo "[ides] Windsurf source folder $src not found; skipping"
-          exit 0
-        fi
-        if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would sync Windsurf settings from $src to $dest"
-          exit 0
-        fi
-        mkdir -p "$dest"
-        rsync -a --delete "$src"/ "$dest"/
-        echo "[ides] Synced Windsurf settings to $dest"
 
   "tools:iterm2":
     desc: Install iTerm2 preferences plist
@@ -306,36 +182,26 @@ tasks:
         dest="{{.CLAUDE_DEST}}"
         scheduled_dest="{{.CLAUDE_SCHEDULED_DEST}}"
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would mkdir -p $dest"
-          echo "[dry-run] Would install -m 0644 $src/CLAUDE.md $dest/CLAUDE.md"
-          echo "[dry-run] Would install -m 0644 $src/charter-details.md $dest/charter-details.md"
-          echo "[dry-run] Would install -m 0644 $src/settings.json $dest/settings.json"
-          echo "[dry-run] Would rsync --dry-run --delete-after $src/agents/ $dest/agents/"
-          echo "[dry-run] Would rsync (additive, no --delete) $src/commands/ $dest/commands/"
-          echo "[dry-run] Would rsync $src/scheduled/ $scheduled_dest/"
+          echo "[dry-run] Would install CLAUDE.md, charter-details.md, settings.json to $dest"
+          echo "[dry-run] Would rsync --delete $src/agents/ to $dest/agents/"
+          echo "[dry-run] Would rsync (additive) $src/commands/ to $dest/commands/"
+          echo "[dry-run] Would rsync $src/scheduled/ to $scheduled_dest/"
           exit 0
         fi
         mkdir -p "$dest"
         install -m 0644 "$src/CLAUDE.md" "$dest/CLAUDE.md"
-        echo "[claude] Installed CLAUDE.md to $dest"
         install -m 0644 "$src/charter-details.md" "$dest/charter-details.md"
-        echo "[claude] Installed charter-details.md to $dest"
         install -m 0644 "$src/settings.json" "$dest/settings.json"
-        echo "[claude] Installed settings.json to $dest"
-        AGENTS_DEST="$dest/agents/"
-        case "$AGENTS_DEST" in
-          */agents/) ;;
-          *) echo "[claude] ERROR: refusing delete — target is not an agents/ leaf: $AGENTS_DEST" >&2; exit 1 ;;
-        esac
-        mkdir -p "$AGENTS_DEST"
-        rsync -a --delete-after --filter='P .DS_Store' "$src/agents/" "$AGENTS_DEST"
-        echo "[claude] Synced agents/ to $AGENTS_DEST"
-        # commands/ is ADDITIVE — no --delete. The installed ~/.claude/commands/ also
-        # holds SDD-* commands sourced from elsewhere; a --delete sync would erase them.
+        echo "[claude] Installed config files to $dest"
+        # agents/ is a mirror — --delete prunes agents removed from the repo.
+        mkdir -p "$dest/agents/"
+        rsync -a --delete-after --filter='P .DS_Store' "$src/agents/" "$dest/agents/"
+        echo "[claude] Synced agents/ (mirror) to $dest/agents/"
+        # commands/ is ADDITIVE — no --delete; SDD-* commands live here from elsewhere.
         if [ -d "$src/commands" ]; then
           mkdir -p "$dest/commands/"
           rsync -a --filter='P .DS_Store' "$src/commands/" "$dest/commands/"
-          echo "[claude] Synced commands/ to $dest/commands/ (additive)"
+          echo "[claude] Synced commands/ (additive) to $dest/commands/"
         fi
         mkdir -p "$scheduled_dest"
         rsync -a "$src/scheduled/" "$scheduled_dest/"
