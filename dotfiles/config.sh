@@ -1,4 +1,4 @@
-DOT_EDITOR='ws'
+DOT_EDITOR='dv'
 
 #Aliases
 alias cls='clear'
@@ -14,7 +14,7 @@ alias hgrep='history 100 | grep --color=auto'
 alias tf='terraform'
 alias tg='terragrunt'
 alias k='kubectl'
-alias ws='windsurf'
+alias dv='devin-desktop'
 alias cc='claude'
 alias ccc='claude --continue'
 alias ccr='claude --resume'
