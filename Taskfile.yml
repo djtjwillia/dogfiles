@@ -27,6 +27,9 @@ tasks:
       - task: tools:zshrc
       - task: config:git
       - task: tools:iterm2
+      - task: tools:p10k
+      - task: tools:tmux
+      - task: tools:dev-script
       - task: tools:claude
 
   "bootstrap:prereqs":
@@ -54,6 +57,32 @@ tasks:
           else
             echo "[bootstrap] Installing Homebrew"
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          fi
+        fi
+      - |
+        set -euo pipefail
+        ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would clone zsh-autosuggestions"
+          echo "[dry-run] Would clone zsh-syntax-highlighting"
+        else
+          if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+            echo "[bootstrap] Cloning tpm (tmux plugin manager)"
+            git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+          else
+            echo "[bootstrap] tpm already present"
+          fi
+          if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
+            echo "[bootstrap] Cloning zsh-autosuggestions"
+            git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+          else
+            echo "[bootstrap] zsh-autosuggestions already present"
+          fi
+          if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
+            echo "[bootstrap] Cloning zsh-syntax-highlighting"
+            git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+          else
+            echo "[bootstrap] zsh-syntax-highlighting already present"
           fi
         fi
 
@@ -132,6 +161,38 @@ tasks:
           install -m 0644 "$SRC" "$TARGET"
         fi
 
+  "tools:tmux":
+    desc: Install .tmux.conf into ~/.tmux.conf
+    cmds:
+      - |
+        set -euo pipefail
+        SRC="{{.DOTFILES_SRC}}/.tmux.conf"
+        TARGET="$HOME/.tmux.conf"
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would copy $SRC to $TARGET"
+        else
+          echo "[tmux] Installing $SRC to $TARGET"
+          install -m 0644 "$SRC" "$TARGET"
+        fi
+
+  "tools:p10k":
+    desc: Install .p10k.zsh config into ~/.p10k.zsh
+    cmds:
+      - |
+        set -euo pipefail
+        SRC="{{.DOTFILES_SRC}}/.p10k.zsh"
+        TARGET="$HOME/.p10k.zsh"
+        if [ ! -f "$SRC" ]; then
+          echo "[p10k] No .p10k.zsh in dotfiles yet; skipping (run the p10k wizard then commit it)"
+          exit 0
+        fi
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would copy $SRC to $TARGET"
+        else
+          echo "[p10k] Installing $SRC to $TARGET"
+          install -m 0644 "$SRC" "$TARGET"
+        fi
+
   "config:git":
     desc: Install base gitconfig + per-identity includes + allowed_signers
     cmds:
@@ -172,6 +233,21 @@ tasks:
         mkdir -p "$(dirname "$dest")"
         install -m 0600 "$src" "$dest"
         echo "[tools] Installed iTerm2 preferences to $dest"
+
+  "tools:dev-script":
+    desc: Install dev workspace startup script to ~/.local/bin/dev
+    cmds:
+      - |
+        set -euo pipefail
+        SRC="{{.DOTFILES_SRC}}/dev"
+        TARGET="$HOME/.local/bin/dev"
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          echo "[dry-run] Would install $SRC to $TARGET"
+        else
+          mkdir -p "$HOME/.local/bin"
+          install -m 0755 "$SRC" "$TARGET"
+          echo "[dev] Installed workspace startup script to $TARGET"
+        fi
 
   "tools:claude":
     desc: Sync Claude config, agents, and scheduled scripts into place
