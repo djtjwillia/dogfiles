@@ -49,14 +49,3 @@ From the Scheduled tasks page, click the task and select **Run now**. Confirm a 
 - The task only runs while your **Mac is awake and Claude Desktop is open**. If either is closed at the scheduled time, Cowork will skip and retry when both are available again. Skipped runs appear in task history.
 - Output is posted to `#taylor-briefing` only — there is no local file saved to disk (unlike the legacy launchd approach).
 
----
-
-## Legacy launchd approach
-
-The original macOS launchd runner (`run-briefing.sh`, `com.taylor.daily-briefing.plist`) is kept in this directory as a reference and rollback path. It is no longer the active scheduling mechanism.
-
-To re-enable it if needed:
-
-```bash
-task tools:claude && task scheduled:install
-```
