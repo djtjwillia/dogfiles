@@ -30,8 +30,7 @@ tasks:
   init:
     desc: Run full bootstrap (prereqs → brew → dotfiles)
     cmds:
-      - task: bootstrap:prereqs
-      - task: brew:bundle
+      - task: brew:bundle        # brew:bundle deps bootstrap:prereqs — runs it once
       - task: dotfiles:sync
       - task: tools:zshrc
       - task: config:git
@@ -47,8 +46,23 @@ tasks:
     cmds:
       - |
         set -euo pipefail
+        ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would install oh-my-zsh"
+          [ -d "$HOME/.oh-my-zsh" ] \
+            && echo "[ok] oh-my-zsh: already installed" \
+            || echo "[change] oh-my-zsh: would install"
+          command -v brew >/dev/null 2>&1 \
+            && echo "[ok] Homebrew: already installed" \
+            || echo "[change] Homebrew: would install"
+          [ -d "$HOME/.tmux/plugins/tpm" ] \
+            && echo "[ok] tpm: already present" \
+            || echo "[change] tpm: would clone"
+          [ -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ] \
+            && echo "[ok] zsh-autosuggestions: already present" \
+            || echo "[change] zsh-autosuggestions: would clone"
+          [ -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ] \
+            && echo "[ok] zsh-syntax-highlighting: already present" \
+            || echo "[change] zsh-syntax-highlighting: would clone"
         else
           if [ ! -d "$HOME/.oh-my-zsh" ]; then
             echo "[bootstrap] Installing oh-my-zsh"
@@ -56,27 +70,12 @@ tasks:
           else
             echo "[bootstrap] oh-my-zsh already installed"
           fi
-        fi
-      - |
-        set -euo pipefail
-        if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would install Homebrew"
-        else
           if command -v brew >/dev/null 2>&1; then
             echo "[bootstrap] Homebrew already installed"
           else
             echo "[bootstrap] Installing Homebrew"
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           fi
-        fi
-      - |
-        set -euo pipefail
-        ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
-        if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would clone tpm"
-          echo "[dry-run] Would clone zsh-autosuggestions"
-          echo "[dry-run] Would clone zsh-syntax-highlighting"
-        else
           if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
             echo "[bootstrap] Cloning tpm (tmux plugin manager)"
             git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
@@ -105,7 +104,20 @@ tasks:
       - |
         set -euo pipefail
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would run brew bundle"
+          if HOMEBREW_NO_AUTO_UPDATE=1 brew bundle check --file Brewfile >/dev/null 2>&1; then
+            echo "[ok] brew bundle: all packages satisfied"
+          else
+            missing=$(HOMEBREW_NO_AUTO_UPDATE=1 brew bundle check --file Brewfile 2>&1 \
+              | grep -cE '^\s*(brew|cask|mas|tap):' || true)
+            echo "[change] brew bundle: $missing package(s) would be installed"
+          fi
+          outdated=$(HOMEBREW_NO_AUTO_UPDATE=1 brew outdated --quiet 2>/dev/null | wc -l | tr -d ' ')
+          if [ "$outdated" -gt 0 ]; then
+            echo "[change] brew outdated: $outdated package(s) have updates available"
+            HOMEBREW_NO_AUTO_UPDATE=1 brew outdated --quiet 2>/dev/null | sed 's/^/  /'
+          else
+            echo "[ok] brew outdated: all packages up to date"
+          fi
         else
           echo "[brew] Running brew bundle"
           brew bundle --file Brewfile
@@ -133,8 +145,17 @@ tasks:
       - |
         set -euo pipefail
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would ensure {{.DOTFILES_HOME}} exists"
-          echo "[dry-run] Would sync dotfiles from {{.DOTFILES_SRC}}"
+          for f in config.sh gitconfig; do
+            src_file="{{.DOTFILES_SRC}}/$f"
+            dest_file="{{.DOTFILES_HOME}}/$f"
+            if [ ! -f "$dest_file" ]; then
+              echo "[change] dotfiles/$f: would create (not present)"
+            elif cmp -s "$src_file" "$dest_file"; then
+              echo "[ok] dotfiles/$f: identical"
+            else
+              echo "[change] dotfiles/$f: would update"
+            fi
+          done
         else
           echo "[dotfiles] Syncing to {{.DOTFILES_HOME}}"
           mkdir -p {{.DOTFILES_HOME}}
@@ -163,10 +184,16 @@ tasks:
     cmds:
       - |
         set -euo pipefail
-        TARGET="$HOME/.zshrc"
         SRC="{{.DOTFILES_SRC}}/.zshrc"
+        TARGET="$HOME/.zshrc"
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would copy $SRC to $TARGET"
+          if [ ! -f "$TARGET" ]; then
+            echo "[change] .zshrc: would create (not present)"
+          elif cmp -s "$SRC" "$TARGET"; then
+            echo "[ok] .zshrc: identical"
+          else
+            echo "[change] .zshrc: would update"
+          fi
         else
           echo "[shell] Copying $SRC to $TARGET"
           install -m 0644 "$SRC" "$TARGET"
@@ -180,7 +207,13 @@ tasks:
         SRC="{{.DOTFILES_SRC}}/.tmux.conf"
         TARGET="$HOME/.tmux.conf"
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would copy $SRC to $TARGET"
+          if [ ! -f "$TARGET" ]; then
+            echo "[change] .tmux.conf: would create (not present)"
+          elif cmp -s "$SRC" "$TARGET"; then
+            echo "[ok] .tmux.conf: identical"
+          else
+            echo "[change] .tmux.conf: would update"
+          fi
         else
           echo "[tmux] Installing $SRC to $TARGET"
           install -m 0644 "$SRC" "$TARGET"
@@ -198,7 +231,13 @@ tasks:
           exit 0
         fi
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would copy $SRC to $TARGET"
+          if [ ! -f "$TARGET" ]; then
+            echo "[change] .p10k.zsh: would create (not present)"
+          elif cmp -s "$SRC" "$TARGET"; then
+            echo "[ok] .p10k.zsh: identical"
+          else
+            echo "[change] .p10k.zsh: would update"
+          fi
         else
           echo "[p10k] Installing $SRC to $TARGET"
           install -m 0644 "$SRC" "$TARGET"
@@ -211,10 +250,22 @@ tasks:
         set -euo pipefail
         SRC="{{.DOTFILES_SRC}}"
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would copy $SRC/gitconfig to $HOME/.gitconfig"
-          echo "[dry-run] Would copy $SRC/gitconfig-liatrio to $HOME/.gitconfig-liatrio"
-          echo "[dry-run] Would copy $SRC/gitconfig-personal to $HOME/.gitconfig-personal"
-          echo "[dry-run] Would copy $SRC/allowed_signers to $HOME/.ssh/allowed_signers"
+          for pair in \
+            "gitconfig:$HOME/.gitconfig" \
+            "gitconfig-liatrio:$HOME/.gitconfig-liatrio" \
+            "gitconfig-personal:$HOME/.gitconfig-personal" \
+            "allowed_signers:$HOME/.ssh/allowed_signers"; do
+            src_file="${pair%%:*}"
+            dest_file="${pair##*:}"
+            label="$(basename "$dest_file")"
+            if [ ! -f "$dest_file" ]; then
+              echo "[change] $label: would create (not present)"
+            elif cmp -s "$SRC/$src_file" "$dest_file"; then
+              echo "[ok] $label: identical"
+            else
+              echo "[change] $label: would update"
+            fi
+          done
         else
           echo "[identities] Installing base gitconfig"
           install -m 0644 "$SRC/gitconfig" "$HOME/.gitconfig"
@@ -238,7 +289,13 @@ tasks:
           exit 0
         fi
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would copy $src to $dest"
+          if [ ! -f "$dest" ]; then
+            echo "[change] iterm2 plist: would create (not present)"
+          elif cmp -s "$src" "$dest"; then
+            echo "[ok] iterm2 plist: identical"
+          else
+            echo "[change] iterm2 plist: would update"
+          fi
           exit 0
         fi
         mkdir -p "$(dirname "$dest")"
@@ -253,7 +310,13 @@ tasks:
         SRC="{{.DOTFILES_SRC}}/dev"
         TARGET="$HOME/.local/bin/dev"
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would install $SRC to $TARGET"
+          if [ ! -f "$TARGET" ]; then
+            echo "[change] dev: would create (not present)"
+          elif cmp -s "$SRC" "$TARGET"; then
+            echo "[ok] dev: identical"
+          else
+            echo "[change] dev: would update"
+          fi
         else
           mkdir -p "$HOME/.local/bin"
           install -m 0755 "$SRC" "$TARGET"
@@ -268,9 +331,47 @@ tasks:
         src="{{.CLAUDE_SRC}}"
         dest="{{.CLAUDE_DEST}}"
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would install CLAUDE.md, charter-details.md, settings.json to $dest"
-          echo "[dry-run] Would rsync --delete $src/agents/ to $dest/agents/"
-          echo "[dry-run] Would rsync (additive) $src/commands/ to $dest/commands/"
+          for f in CLAUDE.md charter-details.md settings.json; do
+            if [ ! -f "$dest/$f" ]; then
+              echo "[change] $f: would create (not present)"
+            elif cmp -s "$src/$f" "$dest/$f"; then
+              echo "[ok] $f: identical"
+            else
+              echo "[change] $f: would update"
+            fi
+          done
+          if [ -d "$dest/agents" ]; then
+            changes=$(rsync -a --delete-after --dry-run --itemize-changes \
+              --filter='P .DS_Store' "$src/agents/" "$dest/agents/" 2>/dev/null \
+              | grep -v '^$' | wc -l | tr -d ' ') || true
+            if [ "$changes" -eq 0 ]; then
+              echo "[ok] agents/: no changes"
+            else
+              echo "[change] agents/: $changes file(s) would change"
+              rsync -a --delete-after --dry-run --itemize-changes \
+                --filter='P .DS_Store' "$src/agents/" "$dest/agents/" 2>/dev/null \
+                | grep -v '^$' | sed 's/^/  /'
+            fi
+          else
+            echo "[change] agents/: would create and populate"
+          fi
+          if [ -d "$src/commands" ]; then
+            if [ -d "$dest/commands" ]; then
+              changes=$(rsync -a --dry-run --itemize-changes \
+                --filter='P .DS_Store' "$src/commands/" "$dest/commands/" 2>/dev/null \
+                | grep -v '^$' | wc -l | tr -d ' ') || true
+              if [ "$changes" -eq 0 ]; then
+                echo "[ok] commands/: no changes"
+              else
+                echo "[change] commands/: $changes file(s) would change"
+                rsync -a --dry-run --itemize-changes \
+                  --filter='P .DS_Store' "$src/commands/" "$dest/commands/" 2>/dev/null \
+                  | grep -v '^$' | sed 's/^/  /'
+              fi
+            else
+              echo "[change] commands/: would create and populate"
+            fi
+          fi
           exit 0
         fi
         mkdir -p "$dest"
@@ -295,8 +396,32 @@ tasks:
       - |
         set -euo pipefail
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would run nvm install --lts"
-          echo "[dry-run] Would run npm install -g agent-browser"
+          # Source nvm and check state inside a real bash subprocess — mvdan.cc/sh
+          # (task's embedded interpreter) panics on fd 3 which nvm opens internally.
+          nvm_info=$(bash -c '
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"
+            if command -v nvm >/dev/null 2>&1; then
+              lts_ver=$(nvm version lts 2>/dev/null || echo "N/A")
+              echo "nvm:$lts_ver"
+            else
+              echo "nvm:missing"
+            fi
+            npm list -g agent-browser >/dev/null 2>&1 \
+              && echo "agent-browser:ok" \
+              || echo "agent-browser:missing"
+          ' 2>/dev/null || true)
+          case "$nvm_info" in
+            *"nvm:missing"*)  echo "[change] node: nvm not found, would need Homebrew install first" ;;
+            *"nvm:N/A"*)      echo "[change] node: LTS not installed, would run nvm install --lts" ;;
+            *)
+              lts_ver=$(printf '%s' "$nvm_info" | grep "^nvm:" | cut -d: -f2)
+              echo "[ok] node: LTS ($lts_ver) already installed" ;;
+          esac
+          case "$nvm_info" in
+            *"agent-browser:ok"*)      echo "[ok] agent-browser: already installed globally" ;;
+            *"agent-browser:missing"*) echo "[change] agent-browser: would install globally" ;;
+          esac
         else
           echo "[node] Installing LTS Node via NVM"
           bash -c '
@@ -309,4 +434,3 @@ tasks:
             echo "[node] Node setup complete"
           '
         fi
-
