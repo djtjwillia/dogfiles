@@ -28,7 +28,7 @@ Search for the top 3–5 major news headlines from the past 12 hours. Use web se
 
 ## Step 2 — Check Slack
 
-Use the date and the Slack `oldest` timestamp provided at the top of this prompt. Read recent messages (last 18 hours, using the provided `oldest` unix timestamp) from these channels:
+Read recent messages from the last 18 hours. Compute the `oldest` Unix timestamp yourself (current time in seconds minus 64800). Read from these channels:
 - **#liatrio-engineering** (channel ID: C07930A44DV)
 - **#liatrio-forge** (channel ID: C0AE9CLD7CH)
 - **#liatrio-announcements** (channel ID: C05JELM6DFT)
@@ -40,7 +40,7 @@ Note: threads, decisions, action items, blockers, open questions, or anything re
 ---
 
 ## Step 3 — Check Google Calendar
-Pull calendar events for the date provided at the top of this prompt.
+Pull calendar events for today's date.
 
 **IMPORTANT: Taylor is in the Mountain Time zone (America/Denver). All event times must be converted to and displayed in Mountain Time (MT). The Google Calendar API may return times in UTC or other zones — always convert before displaying.**
 
@@ -118,4 +118,4 @@ Do NOT include any @mention of Taylor in the message — it will not trigger a n
 - Only flag prep items that are genuinely actionable.
 - If a channel has no notable activity, write "Quiet" — do not omit the section.
 - Output should be crisp and useful from the first line.
-- Use the date provided at the top of this prompt — do not compute or assume today's date independently.
+- Determine today's date from your system context. Taylor is in Mountain Time (America/Denver) — all times must be displayed in MT.

@@ -8,7 +8,6 @@ vars:
   ITERM2_DEST: '{{default "$HOME/Library/Preferences/com.googlecode.iterm2.plist" .ITERM2_DEST}}'
   CLAUDE_SRC: '{{default "claude" .CLAUDE_SRC}}'
   CLAUDE_DEST: '{{default "$HOME/.claude" .CLAUDE_DEST}}'
-  CLAUDE_SCHEDULED_DEST: '{{default "$HOME/Claude/Scheduled" .CLAUDE_SCHEDULED_DEST}}'
 
 silent: true
 
@@ -252,18 +251,16 @@ tasks:
         fi
 
   "tools:claude":
-    desc: Sync Claude config, agents, and scheduled scripts into place
+    desc: Sync Claude config, agents, and commands into place
     cmds:
       - |
         set -euo pipefail
         src="{{.CLAUDE_SRC}}"
         dest="{{.CLAUDE_DEST}}"
-        scheduled_dest="{{.CLAUDE_SCHEDULED_DEST}}"
         if [ "{{.DRY_RUN}}" = "true" ]; then
           echo "[dry-run] Would install CLAUDE.md, charter-details.md, settings.json to $dest"
           echo "[dry-run] Would rsync --delete $src/agents/ to $dest/agents/"
           echo "[dry-run] Would rsync (additive) $src/commands/ to $dest/commands/"
-          echo "[dry-run] Would rsync $src/scheduled/ to $scheduled_dest/"
           exit 0
         fi
         mkdir -p "$dest"
@@ -281,9 +278,6 @@ tasks:
           rsync -a --filter='P .DS_Store' "$src/commands/" "$dest/commands/"
           echo "[claude] Synced commands/ (additive) to $dest/commands/"
         fi
-        mkdir -p "$scheduled_dest"
-        rsync -a "$src/scheduled/" "$scheduled_dest/"
-        echo "[claude] Synced scheduled/ to $scheduled_dest"
 
   "tools:node":
     desc: Install LTS Node via NVM and global npm packages (agent-browser)
@@ -306,35 +300,3 @@ tasks:
           '
         fi
 
-  "scheduled:install":
-    desc: Install and load the daily briefing launch agent (run manually — not part of init)
-    cmds:
-      - |
-        set -euo pipefail
-        plist_src="{{.CLAUDE_SCHEDULED_DEST}}/taylor-morning-briefing/com.taylor.daily-briefing.plist"
-        plist_dest="$HOME/Library/LaunchAgents/com.taylor.daily-briefing.plist"
-        script="{{.CLAUDE_SCHEDULED_DEST}}/taylor-morning-briefing/run-briefing.sh"
-        output_logs="$HOME/Claude/briefing-output/.logs"
-        if [ "{{.DRY_RUN}}" = "true" ]; then
-          echo "[dry-run] Would mkdir -p $output_logs"
-          echo "[dry-run] Would backup $plist_dest to /tmp/com.taylor.daily-briefing.plist.bak"
-          echo "[dry-run] Would launchctl unload $plist_dest"
-          echo "[dry-run] Would install -m 0644 $plist_src $plist_dest"
-          echo "[dry-run] Would chmod +x $script"
-          echo "[dry-run] Would launchctl load $plist_dest"
-          exit 0
-        fi
-        mkdir -p "$output_logs"
-        echo "[scheduled] Created $output_logs"
-        if [ -f "$plist_dest" ]; then
-          cp "$plist_dest" "/tmp/com.taylor.daily-briefing.plist.bak"
-          echo "[scheduled] Backed up existing plist to /tmp/com.taylor.daily-briefing.plist.bak"
-        fi
-        launchctl unload "$plist_dest" 2>/dev/null || true
-        echo "[scheduled] Unloaded existing agent (if any)"
-        install -m 0644 "$plist_src" "$plist_dest"
-        echo "[scheduled] Installed plist to $plist_dest"
-        chmod +x "$script"
-        echo "[scheduled] Set +x on $script"
-        launchctl load "$plist_dest"
-        echo "[scheduled] Loaded com.taylor.daily-briefing"
