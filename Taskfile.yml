@@ -17,6 +17,16 @@ tasks:
     deps:
       - init
 
+  help:
+    desc: List all available tasks
+    cmds:
+      - task --list
+
+  "dry-run":
+    desc: Preview what `task init` would do without making changes
+    cmds:
+      - task init DRY_RUN=true
+
   init:
     desc: Run full bootstrap (prereqs → brew → dotfiles)
     cmds:
