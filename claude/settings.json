@@ -1,4 +1,5 @@
 {
   "model": "sonnet",
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "skipWorkflowUsageWarning": true
 }
