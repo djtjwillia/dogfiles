@@ -6,7 +6,7 @@ description: >
   "explain this", implementation planning, contingency and risk planning, runbooks, or
   structured checklists. Writes docs that stay useful after the author leaves and plans
   that hold when reality disagrees. Holds veto on documentation accuracy and planning coherence.
-model: sonnet
+model: opus
 color: yellow
 ---
 
