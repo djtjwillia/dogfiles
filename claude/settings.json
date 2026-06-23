@@ -1,5 +1,9 @@
 {
   "model": "sonnet",
   "agentPushNotifEnabled": true,
-  "skipWorkflowUsageWarning": true
+  "skipWorkflowUsageWarning": true,
+  "statusLine": {
+    "type": "command",
+    "command": "/Users/taylor/.claude/statusline-command.sh"
+  }
 }
