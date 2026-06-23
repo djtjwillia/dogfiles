@@ -331,7 +331,7 @@ tasks:
         src="{{.CLAUDE_SRC}}"
         dest="{{.CLAUDE_DEST}}"
         if [ "{{.DRY_RUN}}" = "true" ]; then
-          for f in CLAUDE.md charter-details.md settings.json; do
+          for f in CLAUDE.md charter-details.md settings.json statusline-command.sh; do
             if [ ! -f "$dest/$f" ]; then
               echo "[change] $f: would create (not present)"
             elif cmp -s "$src/$f" "$dest/$f"; then
@@ -378,6 +378,7 @@ tasks:
         install -m 0644 "$src/CLAUDE.md" "$dest/CLAUDE.md"
         install -m 0644 "$src/charter-details.md" "$dest/charter-details.md"
         install -m 0644 "$src/settings.json" "$dest/settings.json"
+        install -m 0755 "$src/statusline-command.sh" "$dest/statusline-command.sh"
         echo "[claude] Installed config files to $dest"
         # agents/ is a mirror — --delete prunes agents removed from the repo.
         mkdir -p "$dest/agents/"
