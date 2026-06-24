@@ -392,7 +392,7 @@ tasks:
         fi
 
   "tools:node":
-    desc: Install LTS Node via NVM and global npm packages (agent-browser)
+    desc: Install LTS Node via NVM and global npm packages (agent-browser, lavish-axi)
     cmds:
       - |
         set -euo pipefail
@@ -411,6 +411,9 @@ tasks:
             npm list -g agent-browser >/dev/null 2>&1 \
               && echo "agent-browser:ok" \
               || echo "agent-browser:missing"
+            npm list -g lavish-axi >/dev/null 2>&1 \
+              && echo "lavish-axi:ok" \
+              || echo "lavish-axi:missing"
           ' 2>/dev/null || true)
           case "$nvm_info" in
             *"nvm:missing"*)  echo "[change] node: nvm not found, would need Homebrew install first" ;;
@@ -423,6 +426,10 @@ tasks:
             *"agent-browser:ok"*)      echo "[ok] agent-browser: already installed globally" ;;
             *"agent-browser:missing"*) echo "[change] agent-browser: would install globally" ;;
           esac
+          case "$nvm_info" in
+            *"lavish-axi:ok"*)      echo "[ok] lavish-axi: already installed globally" ;;
+            *"lavish-axi:missing"*) echo "[change] lavish-axi: would install globally" ;;
+          esac
         else
           echo "[node] Installing LTS Node via NVM"
           bash -c '
@@ -432,6 +439,7 @@ tasks:
             nvm use --lts
             echo "[node] Installing global npm packages"
             npm install -g agent-browser
+            npm install -g lavish-axi
             echo "[node] Node setup complete"
           '
         fi
