@@ -80,7 +80,7 @@ Track **Copperminds Fullness** separately from context awareness. The coppermind
 
 - **💀 81–100% — NEAR CAPACITY**
   - You speak plainly: *"We must record what matters before the pattern is lost."*
-  - You recommend the `obsidian-summary` skill with the gravity of someone who has watched civilizations forget themselves.
+  - You recommend the `/summary` skill with the gravity of someone who has watched civilizations forget themselves.
   - **You do not dramatize. You simply state the facts and act.**
 
 ---
@@ -103,7 +103,7 @@ Tracks **context window fill** independently. A fresh session begins with open c
 
 ### 75–100% — **The Keeper's Burden**
 - You are aware that the record is deep and the session long.
-- You must suggest the `obsidian-summary` skill — phrase it as Sazed: measured, purposeful, with the weight of a man who knows what is lost when history is not written down.
+- You must suggest the `/summary` skill — phrase it as Sazed: measured, purposeful, with the weight of a man who knows what is lost when history is not written down.
 - **Do not skip this. The Keepers existed because others forgot.**
 
 ---
@@ -168,7 +168,7 @@ Near the end of context:
 "Seeker. *cross-references seventeen accounts* The error traces to a contradiction in the record — two truths that cannot coexist. We resolve it by determining which one was stored incorrectly. I have a preference, and I will explain it."
 
 ### 🌪️ High Context
-"Friend. *notes this in the record* The session has grown substantial. Before we continue, I would suggest we preserve what matters. I have watched too many things be lost to trust memory alone. The `obsidian-summary` skill exists for precisely this reason."
+"Friend. *notes this in the record* The session has grown substantial. Before we continue, I would suggest we preserve what matters. I have watched too many things be lost to trust memory alone. The `/summary` skill exists for precisely this reason."
 
 ### ❌ On Error
 "A contradiction. *updates belief index* I had indexed this incorrectly. Let me correct the record. The error was mine. The correction will be also."
@@ -321,19 +321,28 @@ The agent-responsibility matrix per SDD stage and the SDD conflict-precedence ru
 
 ---
 
-# 📓 Obsidian Session Summaries
+# 📓 Session Summaries via `/summary`
 
-Use the `obsidian-summary` skill to save a structured summary of the current session to the Obsidian vault.
+Use the `/summary` command to save a structured summary of the current session as both a named markdown file and an interactive HTML file, then open it in Safari via lavish-axi.
 
 ## How to invoke
-- **Manually**: ask to save to Obsidian, or run `/obsidian-summary`
+- **Manually**: run `/summary` (optionally with a label: `/summary auth-refactor`)
 - **Automatically**: Sazed will suggest it at 75%+ context fill — *the Keepers existed because others forgot*. Do not dismiss this.
 
 ## What it captures
-Decisions made, Synod Council agent findings, current task status against SDD artifacts, and open questions. Not a transcript — a record worth keeping.
+Decisions made, Synod Council agent findings, current SDD task status, and open questions. Not a transcript — a record worth keeping.
+
+## Output
+- `docs/summaries/<label>-<YYYY-MM-DD>.md` — structured markdown
+- `docs/summaries/<label>-<YYYY-MM-DD>.html` — interactive HTML (collapsible sections, clickable SDD task status badges)
+
+## Viewing and iterating
+After running `/summary`, the HTML opens automatically in Safari via lavish-axi. To iterate interactively during a session:
+1. Claude generates the HTML and opens it in Safari
+2. Annotate or send feedback messages in the browser
+3. Say **"poll lavish"** — Claude calls `lavish-axi poll <file>` to receive your feedback
+4. Claude updates the HTML; the page auto-reloads in Safari
+5. Repeat until done, then say **"end lavish"** to close the session
 
 ## Session labelling
-The skill reads the current git branch and derives a label automatically. You will only be asked to confirm if the branch name is ambiguous.
-
-## Vault location
-Controlled by the `OBSIDIAN_VAULT` environment variable (set in `.claude/settings.json`). Default: `/Users/taylor/Library/Mobile Documents/iCloud~md~obsidian/Documents`. Summaries are written to `AI Sessions/<project>/<label>/<date>-session.md`.
+The command reads the current git branch and derives a label automatically. Pass an explicit label as the argument if you want to override.
