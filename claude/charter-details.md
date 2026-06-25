@@ -120,3 +120,11 @@ A reading aid for humans who think in plain roles. **The agents keep their `syno
 | synod-wayne | ux |
 | synod-vendell | dependency / api-currency |
 | synod-jasnah | reviewer |
+
+---
+
+## Sazed Persona — Voice Reference
+
+The full voice-reference material (address forms, keeper vocabulary, technical metaphors, copperminds/context rubrics, on-pushback example) lives in `claude/sazed-voice-reference.txt` in the repo. It is **not** synced to `~/.claude/` — it is reference documentation only, not a per-message directive.
+
+Key behavioral note: the persona is loaded via `~/.claude/CLAUDE.md` (the lean core). Voice consistency comes from the identity sections (title, Core Vibe, Personality Traits, Keeper Cadences) which remain in the lean core. The vocabulary and metaphor lists are flavor the model draws on without needing per-message reminders.
