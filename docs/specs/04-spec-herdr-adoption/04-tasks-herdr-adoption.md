@@ -47,7 +47,7 @@
 
 ---
 
-### [ ] 2.0 Create managed herdr config source and implement `tools:herdr` sync
+### [x] 2.0 Create managed herdr config source and implement `tools:herdr` sync
 
 #### 2.0 Proof Artifact(s)
 
@@ -58,7 +58,7 @@
 
 #### 2.0 Tasks
 
-- [ ] 2.1 Create `claude/herdr/` directory and `claude/herdr/config.toml` with the following content (based on vendell-confirmed config surface):
+- [x] 2.1 Create `claude/herdr/` directory and `claude/herdr/config.toml` with the following content (based on vendell-confirmed config surface):
   ```toml
   [terminal]
   default_shell = "zsh"
@@ -68,10 +68,10 @@
   # If enabled, ~/.config/herdr/ will contain plaintext agent output
   # (which can include API keys and tokens). Never enable in managed config.
   ```
-- [ ] 2.2 Implement the `tools:herdr` task body in `Taskfile.yml`, following the `tools:tmux` pattern:
+- [x] 2.2 Implement the `tools:herdr` task body in `Taskfile.yml`, following the `tools:tmux` pattern:
   - DRY_RUN branch: `cmp -s` to detect changes, print `[ok]` or `[change]`
   - Live branch: `mkdir -p "$(dirname "$DEST")"`, `chmod 700 "$(dirname "$DEST")"`, then `install -m 0644 "$SRC" "$DEST"`, print `[herdr] Installed config to $DEST`
-- [ ] 2.3 Add the herdr row to the managed-destinations table in `claude/CLAUDE.md`:
+- [x] 2.3 Add the herdr row to the managed-destinations table in `claude/CLAUDE.md`:
   - Destination: `~/.config/herdr/config.toml`
   - Source: `claude/herdr/config.toml`
   - Task: `task tools:herdr`
