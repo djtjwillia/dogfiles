@@ -66,7 +66,7 @@ The `claude/CLAUDE.md` cascading-halt section gains a trigger sentence + pointer
 
 ---
 
-### [ ] 3.0 Extend synod-kelsier.md with concurrent-flow mediator role
+### [x] 3.0 Extend synod-kelsier.md with concurrent-flow mediator role
 
 `claude/agents/synod-kelsier.md` gains a **Concurrent-Flow Mediation** section covering registry maintenance, routing-by-flow-id, S4 halt application, per-flow agent ceiling, and cross-flow veto handling.
 
@@ -77,15 +77,15 @@ The `claude/CLAUDE.md` cascading-halt section gains a trigger sentence + pointer
 
 #### 3.0 Tasks
 
-- [ ] 3.1 Read `claude/agents/synod-kelsier.md` and identify the insertion point (after the existing Veto Notification Protocol section, before "What You Never Do")
-- [ ] 3.2 Draft the `## Concurrent-Flow Mediation` section with:
+- [x] 3.1 Read `claude/agents/synod-kelsier.md` and identify the insertion point (after the existing Veto Notification Protocol section, before "What You Never Do")
+- [x] 3.2 Draft the `## Concurrent-Flow Mediation` section with:
   - **Registry:** when 2+ flows are live, Kelsier maintains the session-scoped live-flow registry (7 fields per flow from S2 in `charter-details.md`); reconcile on every routing decision
   - **Routing-by-flow-id:** Sazed routes dispatches into a flow by flow id; Kelsier ensures the dispatch lands in that flow's worktree/branch; never crosses into another flow's worktree
   - **S4 halt application:** on any surface event, record `blocked` in the registry for that flow; check the shared-resource test; if B touches the same resource, suspend B and surface a unified position; if B is unaffected, B continues
   - **Per-flow ceiling:** the ≤3-agents-per-task ceiling and one-vin-per-SDD-task rule apply **per flow independently**
   - **Cross-flow vetoes (OQ5):** if two flows simultaneously raise vetoes, apply the existing veto-notification protocol per flow; if both vetoes concern a shared resource, present both positions together to the user
-- [ ] 3.3 Dispatch synod-vin to insert the drafted section into `claude/agents/synod-kelsier.md` at the identified location
-- [ ] 3.4 Verify: `grep -n "flow registry\|flow id\|shared-resource" claude/agents/synod-kelsier.md` returns ≥ 3 distinct lines
+- [x] 3.3 Dispatch synod-vin to insert the drafted section into `claude/agents/synod-kelsier.md` at the identified location
+- [x] 3.4 Verify: `grep -n "flow registry\|flow id\|shared-resource" claude/agents/synod-kelsier.md` returns ≥ 3 distinct lines
 
 ---
 
