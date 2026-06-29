@@ -40,7 +40,7 @@ The `claude/CLAUDE.md` cascading-halt section gains a trigger sentence + pointer
 
 ---
 
-### [ ] 2.0 Write full S1–S4 concurrency protocol into charter-details.md
+### [x] 2.0 Write full S1–S4 concurrency protocol into charter-details.md
 
 `claude/charter-details.md` gains a new **Multi-Flow Concurrency Protocol** section containing all four protocol parts, the live-flow registry schema, herdr pane mapping, cross-flow halt rule, and reversibility/bound. Treehouse is excluded; S1 covers native isolation only.
 
@@ -52,8 +52,8 @@ The `claude/CLAUDE.md` cascading-halt section gains a trigger sentence + pointer
 
 #### 2.0 Tasks
 
-- [ ] 2.1 Read `claude/charter-details.md` to identify the best insertion point for the new section (after the existing Cascading halt narrative, before any alias map or end-of-file content)
-- [ ] 2.2 Draft the `## Multi-Flow Concurrency Protocol` section with:
+- [x] 2.1 Read `claude/charter-details.md` to identify the best insertion point for the new section (after the existing Cascading halt narrative, before any alias map or end-of-file content)
+- [x] 2.2 Draft the `## Multi-Flow Concurrency Protocol` section with:
   - **S1 — Isolation:** every concurrent flow runs in its own git worktree on its own branch via `isolation: "worktree"` on agent dispatches; primary working tree is untouched when 2+ flows are live; Treehouse out of scope
   - **S2 — Live-flow registry:** Kelsier maintains the session-scoped registry; include the 7-field table (flow id, SDD stage, current task, branch, worktree path, pane, state)
   - **S3 — Herdr pane mapping:** one pane = one SDD task flow; pane state (blocked/working/done/idle) reflects registry `state`; degrades gracefully when herdr is absent
@@ -61,8 +61,8 @@ The `claude/CLAUDE.md` cascading-halt section gains a trigger sentence + pointer
   - **AR3:** isolation codification sentence (one isolation layer, mandatory when 2+ flows are live)
   - **AR6:** reversibility (fall back to single-flow serial SDD by not starting a second flow) and bound (default max: 2–3 concurrent flows, tunable empirically)
   - **Assumptions:** inline notes for OQ2 (max 2–3), OQ4 (per-flow ceiling), OQ5 (simultaneous cross-flow vetoes extend veto-notification protocol)
-- [ ] 2.3 Dispatch synod-vin to append the drafted section to `claude/charter-details.md` at the identified insertion point
-- [ ] 2.4 Verify the 7-field registry table is present and all 4 subsection headings exist: `grep -c "^### S[1-4]" claude/charter-details.md` returns 4
+- [x] 2.3 Dispatch synod-vin to append the drafted section to `claude/charter-details.md` at the identified insertion point
+- [x] 2.4 Verify the 7-field registry table is present and all 4 subsection headings exist: `grep -c "^### S[1-4]" claude/charter-details.md` returns 4
 
 ---
 

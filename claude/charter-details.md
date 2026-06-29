@@ -102,6 +102,67 @@ Retire (or fold) an agent when:
 
 ---
 
+## Multi-Flow Concurrency Protocol
+
+> Load this section when 2 or more SDD task flows are running concurrently in the same session. The lean-core trigger lives in `CLAUDE.md` Cascading halt.
+>
+> Adopted assumptions: OQ2 (max 2–3 concurrent flows), OQ4 (≤3-agents ceiling per flow independently), OQ5 (simultaneous cross-flow vetoes extend veto-notification protocol). Open-question source: `docs/specs/05-spec-multi-agent-concurrent-sdd/`.
+
+### S1 — Isolation
+
+Every concurrent flow runs in its own git worktree on its own branch. The `isolation: "worktree"` flag is set on all agent dispatches that belong to a flow when 2+ flows are live. The primary working tree is untouched while concurrent flows are active.
+
+Treehouse (spec 03) is out of scope. S1 covers native `isolation: "worktree"` only; no pool-variant language applies.
+
+> **AR3 — Isolation codification:** native worktree isolation is the single mandatory isolation layer when 2+ flows are live. There is no secondary isolation mechanism.
+
+### S2 — Live-flow registry
+
+When 2+ flows are active, Kelsier maintains a session-scoped live-flow registry. Each entry has 7 fields:
+
+| Field | Description |
+|-------|-------------|
+| flow id | Unique identifier for this SDD task flow (e.g. `flow-01`) |
+| SDD stage | Current SDD phase (1–4) |
+| current task | Parent task number currently in progress |
+| branch | Git branch for this flow's worktree |
+| worktree path | Filesystem path to the isolated worktree |
+| pane | Herdr pane identifier (if herdr is active) |
+| state | `working` / `blocked` / `done` / `idle` |
+
+Kelsier reconciles the registry on every routing decision. No cross-flow reads or writes — each flow operates only on its own worktree.
+
+> **OQ2 assumption:** default maximum is 2–3 concurrent flows; tune empirically per session complexity.
+
+### S3 — Herdr pane mapping
+
+One herdr pane maps to one SDD task flow. The pane's visible state reflects the registry `state` field for that flow:
+
+- `working` — flow has an active agent running
+- `blocked` — flow is suspended pending user decision or veto resolution
+- `done` — all tasks in the flow are complete
+- `idle` — flow is paused, no agent active
+
+When herdr is absent, pane mapping degrades gracefully: flows remain valid and isolated; state is tracked in the registry only, not in a visible pane.
+
+> **OQ4 assumption:** the ≤3-agents-per-task ceiling and the one-vin-per-SDD-task rule apply per flow independently. A session with 2 concurrent flows may have up to 3 agents per flow simultaneously.
+
+### S4 — Cross-flow halt
+
+**Independent-by-default rule:** when a specialist surfaces a halt in flow A, flow B continues unaffected unless a shared-resource exception applies.
+
+**Shared-resource exception:** Kelsier evaluates whether the halted work in flow A touches the same resource (file, config, database table, deployed artifact) as active work in flow B. If demonstrated contact exists, Kelsier suspends flow B and surfaces a unified position to the user. If flow B is unaffected, flow B continues without interruption.
+
+**User resumes per flow:** the user may resume flow A, flow B, or both independently. Kelsier issues updated routing per flow on resume.
+
+> **OQ5 assumption:** if two flows simultaneously raise vetoes and both concern a shared resource, Kelsier presents both veto positions together under the existing veto-notification protocol. If the vetoes concern independent resources, they surface per-flow without waiting for each other.
+
+---
+
+> **AR6 — Reversibility and bound:** the concurrent-flow protocol is fully reversible. Fall back to single-flow serial SDD at any time by not starting a second flow; existing flows are unaffected. Default bound: 2–3 concurrent flows maximum (OQ2). The bound is tunable empirically — if session coherence or context pressure degrades, reduce to 1 active flow.
+
+---
+
 ## Documentation-only alias map
 
 A reading aid for humans who think in plain roles. **The agents keep their `synod-*` names only — there is no functional aliasing, no invocation by alias, no renamed files.** This table exists so a newcomer can map theme to function at a glance.
