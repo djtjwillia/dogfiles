@@ -11,6 +11,7 @@ model: sonnet
 disallowedTools:
   - Edit
   - Write
+  - NotebookEdit
 color: cyan
 ---
 

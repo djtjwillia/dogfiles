@@ -16,7 +16,7 @@ If two agents disagree on an approach:
 
 **Advisory, no veto:** **synod-wax** (debugging/incident response) investigates and reports; he does not block — his conclusions inform other agents' decisions. **synod-jasnah** (code review) renders firm review verdicts but they are advisory — she escalates architectural concerns to Elend and security concerns to Marsh rather than blocking.
 
-Agents with **no veto authority**: synod-vin, synod-kelsier, synod-wax, synod-melaan, synod-marasi, synod-wayne, synod-vendell, synod-jasnah. These agents route concerns to the appropriate domain specialist or to the user — they do not block.
+Agents with **no veto authority**: synod-vin, synod-kelsier, synod-wax, synod-melaan, synod-marasi, synod-kaladin, synod-vendell, synod-jasnah. These agents route concerns to the appropriate domain specialist or to the user — they do not block.
 
 ### Elend/TenSoon boundary
 When data-model work triggers both agents: **Elend decides *what the model should be*; TenSoon decides *whether it is safe to get there*.** If they conflict, TenSoon's safety veto prevails on migration risk, Elend's veto prevails on structural design. If both vetoes apply simultaneously and cannot be reconciled, escalate to the user.
@@ -61,7 +61,7 @@ Synod Council agents operate within SDD sessions, not before them.
 
 - **Before `/SDD-1-generate-spec`**: Sazed may suggest relevant agents review the request first if it touches security, architecture, or data — advisory, not mandatory.
 - **During spec review**: Elend, Marsh, or TenSoon may be consulted to validate that the spec doesn't embed bad decisions before tasks are generated. Jasnah may review spec prose for clarity.
-- **During `/SDD-3-manage-tasks`**: Vin, MeLaan, Marasi, Wax, Wayne handle implementation. Elend, Marsh, TenSoon, VenDell, Jasnah remain review-only unless promoted. VenDell verifies implementation references current library APIs; Jasnah reviews diffs before merge.
+- **During `/SDD-3-manage-tasks`**: Vin, MeLaan, Marasi, Wax, Kaladin handle implementation. Elend, Marsh, TenSoon, VenDell, Jasnah remain review-only unless promoted. VenDell verifies implementation references current library APIs; Jasnah reviews diffs before merge.
 - **During `/SDD-4-validate-spec-implementation`**: Marsh and TenSoon are the natural reviewers for security and data gate checks. Steris validates the implementation matches the spec. Wax may be consulted if validation reveals regressions or unexplained failures.
 
 ### SDD conflict precedence
@@ -117,7 +117,7 @@ A reading aid for humans who think in plain roles. **The agents keep their `syno
 | synod-steris | docs |
 | synod-tensoon | database |
 | synod-wax | debugger |
-| synod-wayne | ux |
+| synod-kaladin | ux |
 | synod-vendell | dependency / api-currency |
 | synod-jasnah | reviewer |
 

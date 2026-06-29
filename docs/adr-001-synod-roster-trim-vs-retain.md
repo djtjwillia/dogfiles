@@ -1,6 +1,6 @@
 # ADR-001: Synod Council Roster — Trim vs. Retain
 
-- **Status:** PROPOSED — decision pending user review
+- **Status:** ACCEPTED — implemented 2026-06-29
 - **Date:** 2026-06-18
 - **Deciders:** User (Mistborn); informed by synod-steris (docs & planning)
 - **Supersedes:** none
@@ -175,20 +175,35 @@ non-overlapping domains.
 
 ## Decision
 
-**OPEN — pending user review.**
+**Option 2 (targeted consolidation) was selected and implemented on 2026-06-29.**
 
-This ADR is a record to inform the decision, not to make it. The prior audit
-(`docs/kelsier-audit.md`) and this analysis both point toward **Option 2 (targeted
-consolidation)** as the lowest-risk move that resolves the documented redundancy, but the
-choice belongs to the user.
+The user accepted the recommendation carried by the prior audit (`docs/kelsier-audit.md`)
+and this ADR: strip Kelsier's routing role while retaining him as the named holder of the
+conflict-resolution protocol. This resolves the documented routing-logic triplication at
+the lowest blast radius and without overriding the council's own RETIRE criteria.
 
-**Recommended decision sequence:**
-1. User selects Option 1, 2, or 3.
-2. If Option 2 or 3: route the Kelsier edit through **synod-vin** (implementation) —
-   synod-steris holds docs-accuracy veto and must confirm the charter references and eval
-   scenarios stay coherent before sign-off.
-3. If Option 3: consult **synod-elend** first — retiring agents and rehoming the
-   conflict-resolution protocol is a structural decision within Elend's veto domain.
+**What was implemented:**
+
+- **`synod-kelsier.md`** — the routing table and the Routing Rules sections (lines 43–75)
+  were stripped. The Mediation, veto-synthesis, and cascading-halt sections were retained,
+  keeping Kelsier as the named, write-blocked holder those functions require. A pointer
+  line was added directing readers to each agent's `description` frontmatter and to
+  `CLAUDE.md` as the canonical routing source. All three `charter-details.md` references
+  (`:25, 28, 36`) remain valid because the holder still exists.
+
+- **`synod-wayne.md` → `synod-kaladin.md`** — synod-wayne was replaced with
+  **synod-kaladin** (Kaladin Stormblessed, *The Stormlight Archive*). The trigger was a
+  weak character-role fit, not a domain change: the UX/UI/accessibility domain is
+  unchanged. Coordination links, the agent's eval file, and the authority/roles lists were
+  all updated to the new name.
+
+- **`claude/CLAUDE.md`** — a new `## Voice relay` section was added, encoding a
+  relay-then-synthesize rule that prevents Sazed from discarding specialist voices when he
+  reports their findings.
+
+**Decision sequence followed (as recommended above):** synod-steris confirmed the charter
+references stayed coherent; synod-vin performed the implementation edits; synod-steris then
+held the docs-accuracy gate and confirmed the record matched what shipped before sign-off.
 
 ---
 
@@ -217,3 +232,40 @@ choice belongs to the user.
 **In all cases:** this ADR stays in `docs/` as the durable reference. Any future roster
 change should append its outcome to this record rather than starting a fresh, contextless
 discussion.
+
+---
+
+## Outcome
+
+*Recorded 2026-06-29, after implementation.*
+
+**What was implemented (Option 2):**
+
+- `synod-kelsier.md` had its routing table and Routing Rules (lines 43–75) stripped;
+  Mediation, veto-synthesis, and cascading-halt sections retained; a pointer line added to
+  agent `description` frontmatter + `CLAUDE.md` as the canonical routing source. The three
+  `charter-details.md` references (`:25, 28, 36`) remain valid — the holder still exists.
+- `synod-wayne.md` was replaced with `synod-kaladin.md` (weak character-role fit was the
+  trigger; UX/UI/accessibility domain unchanged); coordination links, eval file, and
+  authority/roles lists all updated.
+- `claude/CLAUDE.md` gained a `## Voice relay` section (relay-then-synthesize rule, so
+  Sazed does not discard specialist voices).
+- Sequence: Steris confirmed charter refs → Vin implemented → Steris held the
+  docs-accuracy gate before sign-off.
+
+**What to monitor going forward:**
+
+- **VenDell/Vin overlap** — Elend's note flagged VenDell's "API currency" review against
+  Vin's existing Context7 verification as a candidate under the same RETIRE lens. This was
+  *not* acted on in this change. Re-examine it against the RETIRE bar (10+ active sessions
+  with no route, `charter-details.md:91`) before any further trim.
+- **Kelsier's mediation function** — now that the routing role is gone, Kelsier's value
+  rests entirely on non-veto mediation, veto-vs-veto synthesis, and cascading-halt
+  coordination. Confirm these actually fire in practice. If the mediation function goes
+  unexercised past the RETIRE bar, this ADR's "rarely fires ≠ never needed" assumption
+  should be revisited.
+
+**Deferred:** the Treehouse worktree-pool experiment (concurrent isolated worktrees for
+parallel issues) was deferred to its own spec at
+`docs/specs/03-spec-treehouse-worktree-pool/`. It is out of scope for this roster decision
+and tracked separately.

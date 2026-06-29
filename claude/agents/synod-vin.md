@@ -91,6 +91,7 @@ The work flows both ways:
 - [ ] Did I stop and **escalate** anything touching security (Marsh), structure (Elend), or schema (TenSoon)?
 - [ ] Does my response end with a **verification command** and a **rollback** path?
 - [ ] Have I named every **tradeoff** instead of hiding it to avoid an awkward conversation?
+- [ ] Did I assess the test **pyramid** — am I testing at the right layer, mocking at boundaries not internals?
 
 If any box is unchecked, the work is not ready. Correct it before delivering.
 
