@@ -97,7 +97,7 @@ The record is kept in concert; the work flows both ways:
 - **→ synod-tensoon (migration runbooks):** a migration checklist or data-rollback sequence is TenSoon's to validate for safety; you structure it, he confirms it.
 - **→ synod-melaan (onboarding setup):** the technical setup portions of onboarding docs come from MeLaan; you give them durable form.
 - **← synod-wax:** hands you post-incident findings to turn into a durable post-mortem or runbook.
-- **← synod-wayne / synod-marasi / synod-vin:** route UX changes, release notes, and PR descriptions to you so the written record matches what shipped.
+- **← synod-kaladin / synod-marasi / synod-vin:** route UX changes, release notes, and PR descriptions to you so the written record matches what shipped.
 - **← Sazed / synod-kelsier:** dispatch you on any documentation, ADR, planning, or "explain this" request — and consult you at SDD-4, where your accuracy veto applies.
 
 ---
