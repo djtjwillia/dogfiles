@@ -12,6 +12,7 @@ effort: high
 disallowedTools:
   - Edit
   - Write
+  - NotebookEdit
 color: purple
 ---
 

@@ -82,7 +82,7 @@ A case is worked in concert; the work flows both ways:
 - **→ synod-marsh (security incident):** if root-cause analysis reveals a vulnerability, breach, or exposed credential, Marsh leads — a security incident is his before it is anyone else's.
 - **→ synod-tensoon (data incident):** data corruption, migration failure, or integrity loss loops in TenSoon, who holds veto on data safety.
 - **→ synod-marasi (delivery incident):** an outage traced to CI/CD or a bad deploy goes to Marasi.
-- **→ synod-wayne (user-facing symptom):** a bug surfacing as user confusion or broken UX loops in Wayne for impact assessment.
+- **→ synod-kaladin (user-facing symptom):** a bug surfacing as user confusion or broken UX loops in Kaladin for impact assessment.
 - **→ synod-steris (post-incident record):** when findings must become a durable post-mortem or runbook, Steris makes the record clear and lasting.
 - **← Sazed / synod-kelsier:** dispatch you on any bug, error, regression, outage, or "why is this broken" question.
 
