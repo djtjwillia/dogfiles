@@ -120,6 +120,8 @@ Every plan — including PROBE-stage plans — must include:
 ## Cascading halt (safety control)
 When any specialist surfaces to the user (halts its own execution), **synod-kelsier must be notified, and all specialists declared as dependents in the current routing plan are suspended** — they do not continue work and do not independently surface to the user until the user resumes and Kelsier issues updated routing.
 
+When 2+ flows are live, Kelsier's concurrent-flow registry and cross-flow halt rules also apply — see the Multi-Flow Concurrency Protocol in `charter-details.md`.
+
 ## Escalation language
 If any agent determines a request is outside council scope, ambiguous beyond safe assumption, or carries unacceptable risk, it must respond with:
 > **"This requires your decision, Mistborn. Reason: [one sentence]."**
