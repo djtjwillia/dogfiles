@@ -1,0 +1,7 @@
+[terminal]
+default_shell = "zsh"
+shell_mode = "login"
+
+# pane_history is OFF by default and must stay off.
+# If enabled, ~/.config/herdr/ will contain plaintext agent output
+# (which can include API keys and tokens). Never enable in managed config.

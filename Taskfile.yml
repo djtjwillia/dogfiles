@@ -8,6 +8,8 @@ vars:
   ITERM2_DEST: '{{default "$HOME/Library/Preferences/com.googlecode.iterm2.plist" .ITERM2_DEST}}'
   CLAUDE_SRC: '{{default "claude" .CLAUDE_SRC}}'
   CLAUDE_DEST: '{{default "$HOME/.claude" .CLAUDE_DEST}}'
+  HERDR_SRC: '{{default "claude/herdr/config.toml" .HERDR_SRC}}'
+  HERDR_DEST: '{{default "$HOME/.config/herdr/config.toml" .HERDR_DEST}}'
 
 silent: true
 
@@ -39,6 +41,7 @@ tasks:
       - task: tools:tmux
       - task: tools:dev-script
       - task: tools:claude
+      - task: tools:herdr
       - task: tools:node
 
   "bootstrap:prereqs":
@@ -389,6 +392,28 @@ tasks:
           mkdir -p "$dest/commands/"
           rsync -a --filter='P .DS_Store' "$src/commands/" "$dest/commands/"
           echo "[claude] Synced commands/ (additive) to $dest/commands/"
+        fi
+
+  "tools:herdr":
+    desc: Sync herdr config into place
+    cmds:
+      - |
+        set -euo pipefail
+        SRC="{{.HERDR_SRC}}"
+        DEST="{{.HERDR_DEST}}"
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          if [ ! -f "$DEST" ]; then
+            echo "[change] herdr config: would create (not present)"
+          elif cmp -s "$SRC" "$DEST"; then
+            echo "[ok] herdr config: identical"
+          else
+            echo "[change] herdr config: would update"
+          fi
+        else
+          mkdir -p "$(dirname "$DEST")"
+          chmod 700 "$(dirname "$DEST")"
+          install -m 0644 "$SRC" "$DEST"
+          echo "[herdr] Installed config to $DEST"
         fi
 
   "tools:node":
