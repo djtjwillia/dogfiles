@@ -79,7 +79,7 @@
 
 ---
 
-### [ ] 3.0 Verify full zsh environment in herdr panes and plain iTerm windows
+### [x] 3.0 Verify full zsh environment in herdr panes and plain iTerm windows
 
 This task is performed manually and produces the proof transcript. It is the empirical gate for vendell's Q3 (does `shell_mode = "login"` actually source `.zshrc`?) and the Marsh credential guardrail.
 
@@ -95,17 +95,17 @@ This task is performed manually and produces the proof transcript. It is the emp
 
 #### 3.0 Tasks
 
-- [ ] 3.1 Run `task init` (or `brew install herdr && task tools:herdr`) to deploy herdr and its config
-- [ ] 3.2 Launch herdr inside iTerm2 (`herdr` in a terminal); open a new pane
-- [ ] 3.3 **If `shell_mode = "login"` does not source `.zshrc`** (aliases missing in pane): investigate whether a `.zprofile` shim is needed to explicitly source `.zshrc` for login shells, add it to `claude/herdr/`, update `task tools:herdr` to sync it, and re-test. Do not proceed to 3.4 until sourcing is confirmed.
-- [ ] 3.4 Run all alias checks inside the herdr pane and record output in `04-proofs/verification-transcript.md`:
+- [x] 3.1 Run `task init` (or `brew install herdr && task tools:herdr`) to deploy herdr and its config
+- [x] 3.2 Launch herdr inside iTerm2 (`herdr` in a terminal); open a new pane
+- [x] 3.3 **If `shell_mode = "login"` does not source `.zshrc`** (aliases missing in pane): investigate whether a `.zprofile` shim is needed to explicitly source `.zshrc` for login shells, add it to `claude/herdr/`, update `task tools:herdr` to sync it, and re-test. Do not proceed to 3.4 until sourcing is confirmed.
+- [x] 3.4 Run all alias checks inside the herdr pane and record output in `04-proofs/verification-transcript.md`:
   - `type cc` / `type ccc` / `type ccr` → confirm alias for claude
   - `type ll` / `type ls` / `type cat` → confirm eza/bat aliases
   - `echo $ZSH_THEME` or visually confirm p10k prompt renders
   - `which pyenv` / `which nvm` (source it first if needed) / `which fzf` / `which zoxide`
   - `env | grep -i api_key` → confirm empty
-- [ ] 3.5 Open a separate plain iTerm window (no herdr) and record the same `type cc` / `type ll` checks — confirm no regression
-- [ ] 3.6 Note any iTerm keybinding or rendering issues in the transcript; document workarounds if any
+- [x] 3.5 Open a separate plain iTerm window (no herdr) and record the same `type cc` / `type ll` checks — confirm no regression
+- [x] 3.6 Note any iTerm keybinding or rendering issues in the transcript; document workarounds if any
 
 ---
 
