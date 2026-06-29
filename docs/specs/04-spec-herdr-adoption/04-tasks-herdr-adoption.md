@@ -109,7 +109,7 @@ This task is performed manually and produces the proof transcript. It is the emp
 
 ---
 
-### [ ] 4.0 Document removal path and finalize proof transcript
+### [x] 4.0 Document removal path and finalize proof transcript
 
 #### 4.0 Proof Artifact(s)
 
@@ -119,8 +119,8 @@ This task is performed manually and produces the proof transcript. It is the emp
 
 #### 4.0 Tasks
 
-- [ ] 4.1 Create `docs/specs/04-spec-herdr-adoption/04-proofs/` directory
-- [ ] 4.2 Write `docs/specs/04-spec-herdr-adoption/04-proofs/removal-path.md` with these steps:
+- [x] 4.1 Create `docs/specs/04-spec-herdr-adoption/04-proofs/` directory
+- [x] 4.2 Write `docs/specs/04-spec-herdr-adoption/04-proofs/removal-path.md` with these steps:
   1. Remove `brew "herdr"` from `Brewfile`; run `brew uninstall herdr`
   2. Remove `HERDR_SRC` and `HERDR_DEST` vars from `Taskfile.yml`
   3. Remove `tools:herdr` task from `Taskfile.yml`
@@ -129,4 +129,4 @@ This task is performed manually and produces the proof transcript. It is the emp
   6. Remove the herdr row from `claude/CLAUDE.md` managed-destinations table
   7. Remove `~/.config/herdr/` from the machine: `rm -rf ~/.config/herdr/`
   8. Verify: `DRY_RUN=true task init` — confirm no herdr entries appear
-- [ ] 4.3 Finalize `docs/specs/04-spec-herdr-adoption/04-proofs/verification-transcript.md` with the session output from task 3.0, structured to show each of the five success criteria from the spec
+- [x] 4.3 Finalize `docs/specs/04-spec-herdr-adoption/04-proofs/verification-transcript.md` with the session output from task 3.0, structured to show each of the five success criteria from the spec
