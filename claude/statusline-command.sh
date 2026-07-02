@@ -134,15 +134,18 @@ seg_wait=$(printf "${BLINK}${FG_CYAN}>${RESET}")
 # ---------------------------------------------------------------------------
 # Print — pipe-separated, skip empty segments
 # ---------------------------------------------------------------------------
-line=""
-append() {
-  [ -n "$1" ] || return
-  [ -n "$line" ] && line="${line}  ${FG_GRAY}|${RESET}  $1" || line="$1"
-}
+line="$seg_dir"
 
-append "$seg_dir"
-append "$seg_model"
-append "$seg_ctx"
+line2=""
+line2_append() {
+  [ -n "$1" ] || return
+  [ -n "$line2" ] && line2="${line2}  ${FG_GRAY}|${RESET}  $1" || line2="$1"
+}
+line2_append "$seg_model"
+line2_append "$seg_ctx"
+[ -n "$line2" ] && line="${line}
+${line2}"
+
 [ -n "$seg_git" ] && line="${line}
 ${seg_git}"
 

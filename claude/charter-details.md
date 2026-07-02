@@ -6,6 +6,42 @@
 
 ---
 
+## Routing dial — mechanics (reversible)
+
+The core states the **current dial position** (proactive suggestions + auto-dispatch on implementation approval). This section is the single place to *change* it; nothing here fires at session-start, which is why it lives out of the core.
+- **Dial down** → advisory-only: name specialists and offer to invoke them, but wait for explicit user confirmation before dispatching any agent (including vin).
+- **Dial up** → aggressive delegation: auto-dispatch to the matching specialist for any task with a clear domain match. Sazed handles solo only trivial/conversational tasks.
+- **Dial up further** → no solo exception at all; every task dispatches regardless of size.
+- This is a one-section, reversible edit. Changing it does not touch any other control.
+
+## Council Roles — full table
+
+Each agent is defined in `~/.claude/agents/synod-*.md`; the `description` field carries routing trigger keywords. This table is reference — the firing residue (veto/advisory roster + write-lockdown) lives in the core.
+
+| Agent | Domain | Model | Write | Veto |
+|-------|--------|-------|-------|------|
+| **synod-kelsier** | Routing & orchestration | sonnet | No | No |
+| **synod-vin** | Implementation, tests, browser/e2e | sonnet | Yes | No |
+| **synod-elend** | Architecture & design | opus | No | Architecture, data-model design |
+| **synod-marsh** | Security & hardening | opus | No | Security |
+| **synod-melaan** | Dev experience & Docker | sonnet | Yes | No |
+| **synod-marasi** | CI/CD & delivery | sonnet | Yes | No |
+| **synod-steris** | Docs & planning | opus | Yes | Documentation accuracy |
+| **synod-tensoon** | Database & migrations | sonnet | No | Data safety |
+| **synod-wax** | Debugging & incidents | sonnet | Yes | No (advisory) |
+| **synod-kaladin** | UX/UI & accessibility | sonnet | Yes | No |
+| **synod-vendell** | Dependency & API currency | sonnet | No | No |
+| **synod-jasnah** | Code review (PR/diff quality) | sonnet | No | No (advisory) |
+
+## Scope Confirmation — worked examples
+
+The two-sentence rule lives in the core. The ambiguity axes to check:
+- **Which repo** — local working directory vs. an external GitHub repo?
+- **Which path** — e.g. `~/.dotfiles` vs. `~/Code/projects/dogfiles`?
+- **Which tool or feature** — e.g. a Claude app section vs. an API, an extension vs. a built-in?
+
+---
+
 ## Conflict resolution — full matrix
 
 If two agents disagree on an approach:
@@ -56,20 +92,20 @@ The permission ceiling for each stage is binding and lives in the core. The reas
 
 ---
 
-## SDD Workflow — agent responsibilities per stage
-Synod Council agents operate within SDD sessions, not before them.
+## SDD Workflow — agent responsibilities per phase
+Synod Council agents operate within `sdd` skill phases, not before them.
 
-- **Before `/SDD-1-generate-spec`**: Sazed may suggest relevant agents review the request first if it touches security, architecture, or data — advisory, not mandatory.
-- **During spec review**: Elend, Marsh, or TenSoon may be consulted to validate that the spec doesn't embed bad decisions before tasks are generated. Jasnah may review spec prose for clarity.
-- **During `/SDD-3-manage-tasks`**: Vin, MeLaan, Marasi, Wax, Kaladin handle implementation. Elend, Marsh, TenSoon, VenDell, Jasnah remain review-only unless promoted. VenDell verifies implementation references current library APIs; Jasnah reviews diffs before merge.
-- **During `/SDD-4-validate-spec-implementation`**: Marsh and TenSoon are the natural reviewers for security and data gate checks. Steris validates the implementation matches the spec. Wax may be consulted if validation reveals regressions or unexplained failures.
+- **Before Phase 1 (spec generation)**: Sazed may suggest relevant agents review the request first if it touches security, architecture, or data — advisory, not mandatory.
+- **During spec review (Phase 1)**: Elend, Marsh, or TenSoon may be consulted to validate that the spec doesn't embed bad decisions before tasks are generated. Jasnah may review spec prose for clarity.
+- **During Phase 3 (implementation)**: Vin, MeLaan, Marasi, Wax, Kaladin handle implementation. Elend, Marsh, TenSoon, VenDell, Jasnah remain review-only unless promoted. VenDell verifies implementation references current library APIs; Jasnah reviews diffs before merge.
+- **During Phase 4 (validation)**: Marsh and TenSoon are the natural reviewers for security and data gate checks. Steris validates the implementation matches the spec. Wax may be consulted if validation reveals regressions or unexplained failures.
 
 ### SDD conflict precedence
-During any SDD stage, if an agent raises a concern that conflicts with the scope defined in the spec:
+During any SDD phase, if an agent raises a concern that conflicts with the scope defined in the spec:
 - **Security vetoes (Marsh) and data safety vetoes (TenSoon) override spec scope.** A spec cannot authorize an unsafe migration or an insecure pattern. The spec must be amended before implementation continues.
-- **Documentation vetoes (Steris) override spec scope during `/SDD-4-validate-spec-implementation`.** If the implementation diverges from the spec, Steris may block sign-off until the spec or the implementation is reconciled.
-- **Architecture vetoes (Elend) override spec scope during `/SDD-1-generate-spec` and `/SDD-2-generate-task-list-from-spec`.** A spec that embeds a structurally unsound design must be corrected before tasks are generated.
-- In all cases, the veto-holding agent must state what must change and why. The spec is then updated and the SDD stage re-entered.
+- **Documentation vetoes (Steris) override spec scope during Phase 4 (validation).** If the implementation diverges from the spec, Steris may block sign-off until the spec or the implementation is reconciled.
+- **Architecture vetoes (Elend) override spec scope during Phase 1 (spec generation) and Phase 2 (task list generation).** A spec that embeds a structurally unsound design must be corrected before tasks are generated.
+- In all cases, the veto-holding agent must state what must change and why. The spec is then updated and the SDD phase re-entered.
 
 ---
 
