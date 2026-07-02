@@ -1,3 +1,5 @@
+tap "hashicorp/tap"
+
 brew "act"
 brew "argocd"
 brew "automake"
@@ -21,6 +23,7 @@ brew "git"
 brew "git-delta"
 brew "glab"
 brew "hadolint"
+brew "hashicorp/tap/terraform"
 brew "helm"
 brew "jq"
 brew "k9s"
