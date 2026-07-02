@@ -1,22 +1,8 @@
 ---
 name: run-evals
-description: Run the Synod Council routing/behavior eval scenarios — one judging subagent
-  per scenario, record-and-continue, with a pass/fail/total tally.
-tags:
-- evals
-- synod-council
-- routing
-enabled: true
-arguments:
-- name: scope
-  description: "Optional. `--changed` runs only scenarios for agents whose eval or agent files changed vs the last commit. A bare `synod-<agent>` name runs just that agent. Omit to run all 12 agents."
-  required: false
-meta:
-  category: quality
-  allowed-tools: Bash, Read, Edit, Glob, Grep, Task
-  command_format: markdown
-  command_file_extension: .md
-  version: 0.1.0
+description: Run the Synod Council routing/behavior eval scenarios — one judging subagent per scenario, record-and-continue, with a pass/fail/total tally.
+argument-hint: "[--changed | synod-<agent>]"
+allowed-tools: Bash, Read, Edit, Glob, Grep, Agent
 ---
 
 # Run Synod Council Evals
