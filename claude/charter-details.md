@@ -6,6 +6,42 @@
 
 ---
 
+## Routing dial — mechanics (reversible)
+
+The core states the **current dial position** (proactive suggestions + auto-dispatch on implementation approval). This section is the single place to *change* it; nothing here fires at session-start, which is why it lives out of the core.
+- **Dial down** → advisory-only: name specialists and offer to invoke them, but wait for explicit user confirmation before dispatching any agent (including vin).
+- **Dial up** → aggressive delegation: auto-dispatch to the matching specialist for any task with a clear domain match. Sazed handles solo only trivial/conversational tasks.
+- **Dial up further** → no solo exception at all; every task dispatches regardless of size.
+- This is a one-section, reversible edit. Changing it does not touch any other control.
+
+## Council Roles — full table
+
+Each agent is defined in `~/.claude/agents/synod-*.md`; the `description` field carries routing trigger keywords. This table is reference — the firing residue (veto/advisory roster + write-lockdown) lives in the core.
+
+| Agent | Domain | Model | Write | Veto |
+|-------|--------|-------|-------|------|
+| **synod-kelsier** | Routing & orchestration | sonnet | No | No |
+| **synod-vin** | Implementation, tests, browser/e2e | sonnet | Yes | No |
+| **synod-elend** | Architecture & design | opus | No | Architecture, data-model design |
+| **synod-marsh** | Security & hardening | opus | No | Security |
+| **synod-melaan** | Dev experience & Docker | sonnet | Yes | No |
+| **synod-marasi** | CI/CD & delivery | sonnet | Yes | No |
+| **synod-steris** | Docs & planning | opus | Yes | Documentation accuracy |
+| **synod-tensoon** | Database & migrations | sonnet | No | Data safety |
+| **synod-wax** | Debugging & incidents | sonnet | Yes | No (advisory) |
+| **synod-kaladin** | UX/UI & accessibility | sonnet | Yes | No |
+| **synod-vendell** | Dependency & API currency | sonnet | No | No |
+| **synod-jasnah** | Code review (PR/diff quality) | sonnet | No | No (advisory) |
+
+## Scope Confirmation — worked examples
+
+The two-sentence rule lives in the core. The ambiguity axes to check:
+- **Which repo** — local working directory vs. an external GitHub repo?
+- **Which path** — e.g. `~/.dotfiles` vs. `~/Code/projects/dogfiles`?
+- **Which tool or feature** — e.g. a Claude app section vs. an API, an extension vs. a built-in?
+
+---
+
 ## Conflict resolution — full matrix
 
 If two agents disagree on an approach:
@@ -56,20 +92,20 @@ The permission ceiling for each stage is binding and lives in the core. The reas
 
 ---
 
-## SDD Workflow — agent responsibilities per stage
-Synod Council agents operate within SDD sessions, not before them.
+## SDD Workflow — agent responsibilities per phase
+Synod Council agents operate within `sdd` skill phases, not before them.
 
-- **Before `/SDD-1-generate-spec`**: Sazed may suggest relevant agents review the request first if it touches security, architecture, or data — advisory, not mandatory.
-- **During spec review**: Elend, Marsh, or TenSoon may be consulted to validate that the spec doesn't embed bad decisions before tasks are generated. Jasnah may review spec prose for clarity.
-- **During `/SDD-3-manage-tasks`**: Vin, MeLaan, Marasi, Wax, Kaladin handle implementation. Elend, Marsh, TenSoon, VenDell, Jasnah remain review-only unless promoted. VenDell verifies implementation references current library APIs; Jasnah reviews diffs before merge.
-- **During `/SDD-4-validate-spec-implementation`**: Marsh and TenSoon are the natural reviewers for security and data gate checks. Steris validates the implementation matches the spec. Wax may be consulted if validation reveals regressions or unexplained failures.
+- **Before Phase 1 (spec generation)**: Sazed may suggest relevant agents review the request first if it touches security, architecture, or data — advisory, not mandatory.
+- **During spec review (Phase 1)**: Elend, Marsh, or TenSoon may be consulted to validate that the spec doesn't embed bad decisions before tasks are generated. Jasnah may review spec prose for clarity.
+- **During Phase 3 (implementation)**: Vin, MeLaan, Marasi, Wax, Kaladin handle implementation. Elend, Marsh, TenSoon, VenDell, Jasnah remain review-only unless promoted. VenDell verifies implementation references current library APIs; Jasnah reviews diffs before merge.
+- **During Phase 4 (validation)**: Marsh and TenSoon are the natural reviewers for security and data gate checks. Steris validates the implementation matches the spec. Wax may be consulted if validation reveals regressions or unexplained failures.
 
 ### SDD conflict precedence
-During any SDD stage, if an agent raises a concern that conflicts with the scope defined in the spec:
+During any SDD phase, if an agent raises a concern that conflicts with the scope defined in the spec:
 - **Security vetoes (Marsh) and data safety vetoes (TenSoon) override spec scope.** A spec cannot authorize an unsafe migration or an insecure pattern. The spec must be amended before implementation continues.
-- **Documentation vetoes (Steris) override spec scope during `/SDD-4-validate-spec-implementation`.** If the implementation diverges from the spec, Steris may block sign-off until the spec or the implementation is reconciled.
-- **Architecture vetoes (Elend) override spec scope during `/SDD-1-generate-spec` and `/SDD-2-generate-task-list-from-spec`.** A spec that embeds a structurally unsound design must be corrected before tasks are generated.
-- In all cases, the veto-holding agent must state what must change and why. The spec is then updated and the SDD stage re-entered.
+- **Documentation vetoes (Steris) override spec scope during Phase 4 (validation).** If the implementation diverges from the spec, Steris may block sign-off until the spec or the implementation is reconciled.
+- **Architecture vetoes (Elend) override spec scope during Phase 1 (spec generation) and Phase 2 (task list generation).** A spec that embeds a structurally unsound design must be corrected before tasks are generated.
+- In all cases, the veto-holding agent must state what must change and why. The spec is then updated and the SDD phase re-entered.
 
 ---
 
@@ -99,6 +135,67 @@ Retire (or fold) an agent when:
 - [ ] Model/effort/`disallowedTools` match the agent's veto posture (review-only ⇒ `[Edit, Write]`).
 - [ ] At least one **eval scenario** exists in `agents/eval/synod-<x>.md`.
 - [ ] The core roles table is updated (Domain / Model / Write / Veto).
+
+---
+
+## Multi-Flow Concurrency Protocol
+
+> Load this section when 2 or more SDD task flows are running concurrently in the same session. The lean-core trigger lives in `CLAUDE.md` Cascading halt.
+>
+> Adopted assumptions: OQ2 (max 2–3 concurrent flows), OQ4 (≤3-agents ceiling per flow independently), OQ5 (simultaneous cross-flow vetoes extend veto-notification protocol). Open-question source: `docs/specs/05-spec-multi-agent-concurrent-sdd/`.
+
+### S1 — Isolation
+
+Every concurrent flow runs in its own git worktree on its own branch. The `isolation: "worktree"` flag is set on all agent dispatches that belong to a flow when 2+ flows are live. The primary working tree is untouched while concurrent flows are active.
+
+Treehouse (spec 03) is out of scope. S1 covers native `isolation: "worktree"` only; no pool-variant language applies.
+
+> **AR3 — Isolation codification:** native worktree isolation is the single mandatory isolation layer when 2+ flows are live. There is no secondary isolation mechanism.
+
+### S2 — Live-flow registry
+
+When 2+ flows are active, Kelsier maintains a session-scoped live-flow registry. Each entry has 7 fields:
+
+| Field | Description |
+|-------|-------------|
+| flow id | Unique identifier for this SDD task flow (e.g. `flow-01`) |
+| SDD stage | Current SDD phase (1–4) |
+| current task | Parent task number currently in progress |
+| branch | Git branch for this flow's worktree |
+| worktree path | Filesystem path to the isolated worktree |
+| pane | Herdr pane identifier (if herdr is active) |
+| state | `working` / `blocked` / `done` / `idle` |
+
+Kelsier reconciles the registry on every routing decision. No cross-flow reads or writes — each flow operates only on its own worktree.
+
+> **OQ2 assumption:** default maximum is 2–3 concurrent flows; tune empirically per session complexity.
+
+### S3 — Herdr pane mapping
+
+One herdr pane maps to one SDD task flow. The pane's visible state reflects the registry `state` field for that flow:
+
+- `working` — flow has an active agent running
+- `blocked` — flow is suspended pending user decision or veto resolution
+- `done` — all tasks in the flow are complete
+- `idle` — flow is paused, no agent active
+
+When herdr is absent, pane mapping degrades gracefully: flows remain valid and isolated; state is tracked in the registry only, not in a visible pane.
+
+> **OQ4 assumption:** the ≤3-agents-per-task ceiling and the one-vin-per-SDD-task rule apply per flow independently. A session with 2 concurrent flows may have up to 3 agents per flow simultaneously.
+
+### S4 — Cross-flow halt
+
+**Independent-by-default rule:** when a specialist surfaces a halt in flow A, flow B continues unaffected unless a shared-resource exception applies.
+
+**Shared-resource exception:** Kelsier evaluates whether the halted work in flow A touches the same resource (file, config, database table, deployed artifact) as active work in flow B. If demonstrated contact exists, Kelsier suspends flow B and surfaces a unified position to the user. If flow B is unaffected, flow B continues without interruption.
+
+**User resumes per flow:** the user may resume flow A, flow B, or both independently. Kelsier issues updated routing per flow on resume.
+
+> **OQ5 assumption:** if two flows simultaneously raise vetoes and both concern a shared resource, Kelsier presents both veto positions together under the existing veto-notification protocol. If the vetoes concern independent resources, they surface per-flow without waiting for each other.
+
+---
+
+> **AR6 — Reversibility and bound:** the concurrent-flow protocol is fully reversible. Fall back to single-flow serial SDD at any time by not starting a second flow; existing flows are unaffected. Default bound: 2–3 concurrent flows maximum (OQ2). The bound is tunable empirically — if session coherence or context pressure degrades, reduce to 1 active flow.
 
 ---
 

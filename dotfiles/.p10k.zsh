@@ -45,14 +45,14 @@
     command_execution_time  # duration of the last command
     background_jobs         # presence of background jobs
     direnv                  # direnv status (https://direnv.net/)
-    asdf                    # asdf version manager (https://github.com/asdf-vm/asdf)
-    virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
-    anaconda                # conda environment (https://conda.io/)
-    pyenv                   # python environment (https://github.com/pyenv/pyenv)
-    goenv                   # go environment (https://github.com/syndbg/goenv)
-    nodenv                  # node.js version from nodenv (https://github.com/nodenv/nodenv)
-    nvm                     # node.js version from nvm (https://github.com/nvm-sh/nvm)
-    nodeenv                 # node.js environment (https://github.com/ekalinin/nodeenv)
+    # asdf                  # asdf version manager (https://github.com/asdf-vm/asdf)
+    # virtualenv            # python virtual environment (https://docs.python.org/3/library/venv.html)
+    # anaconda              # conda environment (https://conda.io/)
+    # pyenv                 # python environment (https://github.com/pyenv/pyenv)
+    # goenv                 # go environment (https://github.com/syndbg/goenv)
+    # nodenv                # node.js version from nodenv (https://github.com/nodenv/nodenv)
+    # nvm                   # node.js version from nvm (https://github.com/nvm-sh/nvm)
+    # nodeenv               # node.js environment (https://github.com/ekalinin/nodeenv)
     # node_version          # node.js version
     # go_version            # go version (https://golang.org)
     # rust_version          # rustc version (https://www.rust-lang.org)
@@ -61,16 +61,16 @@
     # laravel_version       # laravel php framework version (https://laravel.com/)
     # java_version          # java version (https://www.java.com/)
     # package               # name@version from package.json (https://docs.npmjs.com/files/package.json)
-    rbenv                   # ruby version from rbenv (https://github.com/rbenv/rbenv)
-    rvm                     # ruby version from rvm (https://rvm.io)
-    fvm                     # flutter version management (https://github.com/leoafarias/fvm)
-    luaenv                  # lua version from luaenv (https://github.com/cehoffman/luaenv)
-    jenv                    # java version from jenv (https://github.com/jenv/jenv)
-    plenv                   # perl version from plenv (https://github.com/tokuhirom/plenv)
-    perlbrew                # perl version from perlbrew (https://github.com/gugod/App-perlbrew)
-    phpenv                  # php version from phpenv (https://github.com/phpenv/phpenv)
-    scalaenv                # scala version from scalaenv (https://github.com/scalaenv/scalaenv)
-    haskell_stack           # haskell version from stack (https://haskellstack.org/)
+    # rbenv                 # ruby version from rbenv (https://github.com/rbenv/rbenv)
+    # rvm                   # ruby version from rvm (https://rvm.io)
+    # fvm                   # flutter version management (https://github.com/leoafarias/fvm)
+    # luaenv                # lua version from luaenv (https://github.com/cehoffman/luaenv)
+    # jenv                  # java version from jenv (https://github.com/jenv/jenv)
+    # plenv                 # perl version from plenv (https://github.com/tokuhirom/plenv)
+    # perlbrew              # perl version from perlbrew (https://github.com/gugod/App-perlbrew)
+    # phpenv                # php version from phpenv (https://github.com/phpenv/phpenv)
+    # scalaenv              # scala version from scalaenv (https://github.com/scalaenv/scalaenv)
+    # haskell_stack         # haskell version from stack (https://haskellstack.org/)
     kubecontext             # current kubernetes context (https://kubernetes.io/)
     terraform               # terraform workspace (https://www.terraform.io)
     # terraform_version     # terraform version (https://www.terraform.io)
@@ -393,10 +393,10 @@
 
     if [[ -n $VCS_STATUS_LOCAL_BRANCH ]]; then
       local branch=${(V)VCS_STATUS_LOCAL_BRANCH}
-      # If local branch name is at most 32 characters long, show it in full.
-      # Otherwise show the first 12 … the last 12.
+      # If local branch name is at most 20 characters long, show it in full.
+      # Otherwise show the first 8 … the last 8.
       # Tip: To always show local branch name in full without truncation, delete the next line.
-      (( $#branch > 32 )) && branch[13,-13]="…"  # <-- this line
+      (( $#branch > 20 )) && branch[9,-9]="…"  # <-- this line
       res+="${clean}${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}${branch//\%/%%}"
     fi
 
