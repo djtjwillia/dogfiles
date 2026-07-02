@@ -103,6 +103,15 @@ tasks:
     cmds:
       - |
         set -euo pipefail
+        # hashicorp/tap/terraform lives in a non-official tap. Machines with
+        # HOMEBREW_REQUIRE_TAP_TRUST enabled refuse to load it until explicitly
+        # trusted. Trust is scoped to this one formula (not the whole tap) per
+        # security review — least privilege. `brew trust --formula` is
+        # idempotent: it exits 0 and no-ops if already trusted.
+        if [ "{{.DRY_RUN}}" != "true" ]; then
+          echo "[brew] Trusting hashicorp/tap/terraform formula"
+          brew trust --formula hashicorp/tap/terraform
+        fi
         if [ "{{.DRY_RUN}}" = "true" ]; then
           if HOMEBREW_NO_AUTO_UPDATE=1 brew bundle check --file Brewfile >/dev/null 2>&1; then
             echo "[ok] brew bundle: all packages satisfied"
