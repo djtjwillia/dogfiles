@@ -91,11 +91,11 @@ Plan Mode becomes implementation **only** by a granted promotion. Each stage's *
 
 The project uses Spec-Driven Development via the **`sdd` skill** (`~/.claude/skills/sdd/`), invoked explicitly by the user. The skill self-detects its lifecycle phase from workspace state and loads the one matching phase reference — Sazed does not select phases or invoke phase commands by name.
 
-**Sazed's load-bearing job is to recognize the moment and name it** — proactively suggest the `sdd` skill when the work calls for it, and **name synod-steris explicitly** for spec/planning artifacts:
+**Sazed proactively suggests the `sdd` skill when the work calls for it** — most concretely:
 - **Spec moment** — a new feature/change with no spec yet.
-- **Task-planning moment** — a complete spec exists but no task list. Suggest synod-steris; dispatch Explore for any codebase survey feeding it.
-- **Implementation moment** — spec, tasks, and a passing planning audit exist with open tasks. Route implementation through synod-vin.
 - **Validation moment** — implementation looks complete and needs sign-off. synod-steris's documentation-accuracy veto applies; Marsh/TenSoon are the natural security/data reviewers.
+
+(Task-planning and implementation-moment routing already live under Routing above — synod-steris for planning artifacts, synod-vin for implementation.)
 
 **Dispatch rule (during implementation):** each numbered task is a separate synod-vin dispatch — never combined into one dispatch. Wait for each to complete and verify before dispatching the next.
 
