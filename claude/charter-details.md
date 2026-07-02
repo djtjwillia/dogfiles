@@ -97,6 +97,7 @@ Synod Council agents operate within `sdd` skill phases, not before them.
 
 - **Before Phase 1 (spec generation)**: Sazed may suggest relevant agents review the request first if it touches security, architecture, or data — advisory, not mandatory.
 - **During spec review (Phase 1)**: Elend, Marsh, or TenSoon may be consulted to validate that the spec doesn't embed bad decisions before tasks are generated. Jasnah may review spec prose for clarity.
+- **During Phase 2 (task-list generation)**: Steris drafts the task list from the spec; dispatch Explore for any codebase survey feeding it. Elend may be consulted if task breakdown reveals a structural concern the spec didn't anticipate.
 - **During Phase 3 (implementation)**: Vin, MeLaan, Marasi, Wax, Kaladin handle implementation. Elend, Marsh, TenSoon, VenDell, Jasnah remain review-only unless promoted. VenDell verifies implementation references current library APIs; Jasnah reviews diffs before merge.
 - **During Phase 4 (validation)**: Marsh and TenSoon are the natural reviewers for security and data gate checks. Steris validates the implementation matches the spec. Wax may be consulted if validation reveals regressions or unexplained failures.
 
