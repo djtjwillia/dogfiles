@@ -1,21 +1,8 @@
 ---
 name: summary
 description: Synthesize the current session into markdown + interactive HTML summary files, then open the HTML in Safari via lavish-axi for live annotation.
-tags:
-- summary
-- docs
-- lavish
-enabled: true
-arguments:
-- name: label
-  description: "Optional. Short label for the summary (e.g. 'auth-refactor'). If omitted, derived from the current git branch by stripping common prefixes (feat/, fix/, chore/, docs/), replacing / and _ with -, and lowercasing. Falls back to 'session' if no branch is determinable."
-  required: false
-meta:
-  category: docs
-  allowed-tools: Bash, Read, Write
-  command_format: markdown
-  command_file_extension: .md
-  version: 0.1.0
+argument-hint: "[label]"
+allowed-tools: Bash, Read, Write
 ---
 
 # /summary — Session Summary
