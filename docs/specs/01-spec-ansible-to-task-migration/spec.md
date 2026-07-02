@@ -1,5 +1,7 @@
 # Spec – Ansible-to-Task Migration
 
+**Status:** ✅ COMPLETE — Taskfile-based provisioning is the live system in this repo (superseded Ansible).
+
 ## 1. Summary
 Migrate the current Mac provisioning workflow from Ansible playbooks to a Taskfile-based runner that preserves the critical capabilities (dotfiles, Homebrew bootstrap, zshrc templating, git/ssh config, and IDE setup) while improving ergonomics. The new system must deliver a single entrypoint (`task init`) with idempotent, safe execution, optional dry-run mode, and richer validation/logging. Configuration secrets move to an untracked `.env`, and the workflow must make it easy to keep Brewfile/dotfiles up to date plus support personal vs. work identities on the same Apple Silicon Mac.
 

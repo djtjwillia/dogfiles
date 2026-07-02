@@ -89,7 +89,7 @@ The `claude/CLAUDE.md` cascading-halt section gains a trigger sentence + pointer
 
 ---
 
-### [ ] 4.0 Deploy and verify all changes via task tools:claude
+### [x] 4.0 Deploy and verify all changes via task tools:claude
 
 Run the dry-run to confirm expected changes, then apply and verify each deployed file matches its source.
 
@@ -102,6 +102,6 @@ Run the dry-run to confirm expected changes, then apply and verify each deployed
 
 #### 4.0 Tasks
 
-- [ ] 4.1 Run `DRY_RUN=true task tools:claude` and confirm the three modified files appear as `[change]` with no unexpected changes
-- [ ] 4.2 Run `task tools:claude` to apply the changes
-- [ ] 4.3 Run `diff claude/CLAUDE.md ~/.claude/CLAUDE.md && diff claude/charter-details.md ~/.claude/charter-details.md && diff claude/agents/synod-kelsier.md ~/.claude/agents/synod-kelsier.md` — all must exit 0
+- [x] 4.1 Run `DRY_RUN=true task tools:claude` and confirm the three modified files appear as `[change]` with no unexpected changes
+- [x] 4.2 Run `task tools:claude` to apply the changes
+- [x] 4.3 Run `diff claude/CLAUDE.md ~/.claude/CLAUDE.md && diff claude/charter-details.md ~/.claude/charter-details.md && diff claude/agents/synod-kelsier.md ~/.claude/agents/synod-kelsier.md` — all must exit 0
