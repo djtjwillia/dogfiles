@@ -90,3 +90,14 @@ source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Tab accepts an autosuggestion if one is shown, otherwise runs normal completion
+_autosuggest_accept_or_complete() {
+  if [[ -n $POSTDISPLAY ]]; then
+    zle autosuggest-accept
+  else
+    zle expand-or-complete
+  fi
+}
+zle -N _autosuggest_accept_or_complete
+bindkey '^I' _autosuggest_accept_or_complete
