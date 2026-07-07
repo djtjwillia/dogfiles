@@ -8,6 +8,8 @@ vars:
   ITERM2_DEST: '{{default "$HOME/Library/Preferences/com.googlecode.iterm2.plist" .ITERM2_DEST}}'
   CLAUDE_SRC: '{{default "claude" .CLAUDE_SRC}}'
   CLAUDE_DEST: '{{default "$HOME/.claude" .CLAUDE_DEST}}'
+  SKILLS_SRC: '{{default (printf "%s/skills" .CLAUDE_SRC) .SKILLS_SRC}}'
+  SKILLS_DEST: '{{default (printf "%s/skills" .CLAUDE_DEST) .SKILLS_DEST}}'
   HERDR_SRC: '{{default "claude/herdr/config.toml" .HERDR_SRC}}'
   HERDR_DEST: '{{default "$HOME/.config/herdr/config.toml" .HERDR_DEST}}'
 
@@ -41,6 +43,7 @@ tasks:
       - task: tools:tmux
       - task: tools:dev-script
       - task: tools:claude
+      - task: tools:claude-skills
       - task: tools:herdr
       - task: tools:node
 
@@ -402,6 +405,62 @@ tasks:
           rsync -a --filter='P .DS_Store' "$src/commands/" "$dest/commands/"
           echo "[claude] Synced commands/ (additive) to $dest/commands/"
         fi
+
+  "tools:claude-skills":
+    desc: Sync Claude skills into ~/.claude/skills (additive top-level, per-skill mirror)
+    cmds:
+      - |
+        set -euo pipefail
+        src="{{.SKILLS_SRC}}"
+        dest="{{.SKILLS_DEST}}"
+        # ~/.claude/skills/ is co-tenanted with skills this repo does not own:
+        # real directories (agent-browser, frontend-design, sdd,
+        # web-design-guidelines) and symlinks to ~/.agents/skills/* (grill-me,
+        # grill-with-docs, grilling, handoff). A bulk mirror like agents/ below
+        # would delete all of those the moment they're absent from this repo.
+        # So this task is ADDITIVE at the top level — it only ever touches
+        # entries that exist under claude/skills/ in the repo — and mirrors
+        # (--delete) only WITHIN each individual repo-owned skill directory,
+        # since the repo is authoritative for that one skill's own contents.
+        [ -d "$src" ] || { echo "[claude-skills] No $src directory; skipping"; exit 0; }
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          for d in "$src"/*/; do
+            [ -e "$d" ] || continue
+            name="$(basename "$d")"
+            if [ -L "$dest/$name" ]; then
+              echo "[change] $name: would replace symlink with directory"
+              continue
+            fi
+            if [ -d "$dest/$name" ]; then
+              changes=$(rsync -a --delete --dry-run --itemize-changes \
+                --filter='P .DS_Store' "$d" "$dest/$name/" 2>/dev/null \
+                | grep -v '^$' | wc -l | tr -d ' ') || true
+              if [ "$changes" -eq 0 ]; then
+                echo "[ok] $name: no changes"
+              else
+                echo "[change] $name: $changes file(s) would change"
+                rsync -a --delete --dry-run --itemize-changes \
+                  --filter='P .DS_Store' "$d" "$dest/$name/" 2>/dev/null \
+                  | grep -v '^$' | sed 's/^/  /'
+              fi
+            else
+              echo "[change] $name: would create (not present)"
+            fi
+          done
+          exit 0
+        fi
+        mkdir -p "$dest"
+        for d in "$src"/*/; do
+          [ -e "$d" ] || continue
+          name="$(basename "$d")"
+          if [ -L "$dest/$name" ]; then
+            echo "[claude-skills] Removing symlink at $dest/$name (repo now owns this skill)"
+            rm "$dest/$name"
+          fi
+          mkdir -p "$dest/$name"
+          rsync -a --delete --filter='P .DS_Store' "$d" "$dest/$name/"
+          echo "[claude-skills] Synced $name/ to $dest/$name/"
+        done
 
   "tools:herdr":
     desc: Sync herdr config into place

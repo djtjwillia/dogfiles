@@ -16,6 +16,7 @@ The following paths are managed destinations, not sources. Editing them directly
 | `~/.claude/statusline-command.sh` | `claude/statusline-command.sh` | `task tools:claude` |
 | `~/.claude/agents/` | `claude/agents/` | `task tools:claude` |
 | `~/.claude/commands/` | `claude/commands/` | `task tools:claude` |
+| `~/.claude/skills/` | `claude/skills/` | `task tools:claude-skills` |
 | `~/.dotfiles/` | `dotfiles/` | `task dotfiles:sync` |
 | `~/.zshrc` | `dotfiles/.zshrc` | `task tools:zshrc` |
 | `~/.gitconfig` (and identity includes) | `dotfiles/gitconfig*` | `task config:git` |
