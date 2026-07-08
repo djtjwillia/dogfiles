@@ -462,6 +462,40 @@ tasks:
           echo "[claude-skills] Synced $name/ to $dest/$name/"
         done
 
+  "tools:claude-skills-external":
+    desc: Install external (non-vendored) Claude Code skills via npx skills add
+    cmds:
+      - |
+        set -euo pipefail
+        # These skills are installed straight from third-party repos via the
+        # vercel-labs/skills npx CLI — they are NOT vendored into claude/skills/
+        # in this repo (see tools:claude-skills for repo-owned skills). Agent
+        # flags below were derived from `npx skills list -g --json` on this
+        # machine and reflect what's actually live; do not change them without
+        # re-verifying against that output.
+        cmds=(
+          "npx skills add anthropics/skills --skill skill-creator -g -a claude-code -y"
+          "npx skills add shadcn/improve -g -a claude-code -y"
+          "npx skills add liatrio-labs/spec-driven-workflow -g -a claude-code -y"
+          "npx skills add vercel-labs/agent-browser -g -a claude-code -a cursor -a github-copilot -a zed -y"
+          "npx skills add anthropics/claude-code --skill frontend-design -g -a claude-code -a cursor -a github-copilot -a zed -y"
+          "npx skills add vercel-labs/agent-skills --skill web-design-guidelines -g -a claude-code -a cursor -a github-copilot -a zed -y"
+          "npx skills add mattpocock/skills --skill grill-me -g -a claude-code -a cursor -a devin -a github-copilot -a windsurf -a zed -y"
+          "npx skills add mattpocock/skills --skill grill-with-docs -g -a claude-code -a cursor -a devin -a github-copilot -a windsurf -a zed -y"
+          "npx skills add mattpocock/skills --skill grilling -g -a claude-code -a cursor -a devin -a github-copilot -a windsurf -a zed -y"
+        )
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          for c in "${cmds[@]}"; do
+            echo "[dry-run] $c"
+          done
+          exit 0
+        fi
+        for c in "${cmds[@]}"; do
+          echo "[claude-skills-external] Running: $c"
+          eval "$c"
+        done
+        echo "[claude-skills-external] Done. See docs/external-skills.md for the full list."
+
   "tools:herdr":
     desc: Sync herdr config into place
     cmds:
