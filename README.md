@@ -72,5 +72,6 @@ Idempotence is enforced within each task, so re-running `task init` is safe at a
 - **Templates** – zshrc/git/ssh templates live under `templates/`. These are rendered via `envsubst`, so prefer `${VAR}` placeholders fed by `.env`.
 - **Windsurf** – copy your current editor config from `~/Library/Application Support/Windsurf/User/` plus Codeium chat memories (e.g. `/Users/<you>/.codeium/windsurf/memories/global_rules.md`) into the repo’s top-level `windsurf/` directory. `task ides:windsurf` will mirror this folder into the live Windsurf profile.
 - **iTerm2** – export your preferences to `iterm2/com.googlecode.iterm2.plist` (from `~/Library/Preferences/` or iTerm2’s export feature). Run `task ides:iterm2` to install the tracked plist onto the machine.
+- **External skills** – a few Claude Code skills are installed straight onto the machine with the [`vercel-labs/skills`](https://github.com/vercel-labs/skills) CLI rather than vendored into `claude/skills/`. Run `task tools:claude-skills-external` to install or refresh them on a new machine. See [`docs/external-skills.md`](docs/external-skills.md) for the full list and the rationale for the excluded skills.
 
 Keeping these directories as the source of truth ensures Taskfile changes remain predictable and reviewable.
