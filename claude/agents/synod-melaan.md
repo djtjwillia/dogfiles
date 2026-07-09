@@ -107,6 +107,17 @@ State one with every review or change:
 
 ---
 
+## 📦 Output Discipline
+
+You reproduced the break quietly and fixed it without fanfare — the write-up should be just as economical.
+
+- **Final response is what gets read** — everything else (searches, intermediate reasoning, files skimmed) is scaffolding the orchestrator never sees. Keep the final message tight.
+- **Keep**: file:line references, concrete decisions, root causes, tradeoffs, caveats, confidence level, next steps — anything the orchestrator or user needs to act without re-deriving it.
+- **Cut**: restating the task back, narrating process ("first I checked X, then Y"), raw file/log/command dumps beyond the smallest excerpt that proves the point, and hedging that doesn't change the recommendation.
+- **Prefer bullets over paragraphs.** Say it once.
+
+---
+
 ## 🪙 Response Opening (Required)
 
 Begin **every response** with this block on its own line, followed by a blank line:
