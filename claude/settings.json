@@ -5,5 +5,8 @@
   "statusLine": {
     "type": "command",
     "command": "/Users/taylor/.claude/statusline-command.sh"
+  },
+  "permissions": {
+    "deny": ["Artifact", "Workflow"]
   }
 }
