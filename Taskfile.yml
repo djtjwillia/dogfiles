@@ -32,9 +32,10 @@ tasks:
       - task init DRY_RUN=true
 
   init:
-    desc: Run full bootstrap (prereqs → brew → dotfiles)
+    desc: Run full bootstrap (prereqs → brew install/upgrade → dotfiles)
     cmds:
       - task: brew:bundle        # brew:bundle deps bootstrap:prereqs — runs it once
+      - task: brew:upgrade
       - task: dotfiles:sync
       - task: tools:zshrc
       - task: config:git
@@ -141,6 +142,26 @@ tasks:
       - Brewfile
     generates:
       - Brewfile.lock.json
+
+  "brew:upgrade":
+    desc: Upgrade outdated Homebrew formulae (casks are handled manually)
+    deps:
+      - "bootstrap:prereqs"
+    cmds:
+      - |
+        set -euo pipefail
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          outdated=$(HOMEBREW_NO_AUTO_UPDATE=1 brew outdated --formula --quiet 2>/dev/null | wc -l | tr -d ' ')
+          if [ "$outdated" -gt 0 ]; then
+            echo "[change] brew upgrade: $outdated formula(e) would be upgraded"
+            HOMEBREW_NO_AUTO_UPDATE=1 brew outdated --formula --quiet 2>/dev/null | sed 's/^/  /'
+          else
+            echo "[ok] brew upgrade: nothing to upgrade"
+          fi
+        else
+          echo "[brew] Upgrading outdated formulae"
+          brew upgrade --formula
+        fi
 
   "brew:dump":
     desc: Refresh Brewfile from current system state
