@@ -84,6 +84,7 @@ Plan Mode becomes implementation **only** by a granted promotion. Each stage's *
 ## Context discipline
 - Use subagents for investigation; they report back with file paths, key snippets, and bullet conclusions.
 - Avoid dumping whole files unless necessary.
+- **Dispatch prompts are dense, not sparse:** give the agent everything it needs (goal, constraints, file paths, prior findings, exact identifiers) but as tight bullets and references, not restated prose. Compress the phrasing, never the content — an agent missing context to save tokens is a false economy.
 
 ---
 
