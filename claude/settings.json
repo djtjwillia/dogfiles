@@ -6,6 +6,15 @@
     "type": "command",
     "command": "/Users/taylor/.claude/statusline-command.sh"
   },
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "Burning", "Steelpushing", "Ironpulling", "Tineyeing", "Smoldering",
+      "Rioting", "Soothing", "Snapping", "Storing", "Tapping", "Sparking",
+      "Preserving", "Ruining", "Splintering", "Ascending",
+      "Surgebinding", "Awakening"
+    ]
+  },
   "permissions": {
     "deny": ["Artifact", "Workflow"]
   },
