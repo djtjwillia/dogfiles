@@ -50,13 +50,8 @@ export NVM_DIR="$HOME/.nvm"
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 
-source <(/Users/taylor/.kpv3-cli/bin/kpv3-cli source)
-if ! [ -s /Users/taylor/.kpv3-cli/consent.yaml ]; then
-    kpv3-cli consent
-fi
-if ! [ -s /Users/taylor/.kube/k8s-platform-v3 ]; then
-    kpv3-cli kubeconfig -w
-fi
+# Machine-local shell config (not tracked; see README)
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
 export PATH="$HOME/.local/bin:$PATH"
 
 # pnpm
