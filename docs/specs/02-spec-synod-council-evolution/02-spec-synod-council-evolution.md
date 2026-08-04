@@ -4,7 +4,7 @@
 
 The **Synod Council** is an 11-agent, Mistborn-themed subagent system distributed via this dotfiles repo as loose files (`claude/CLAUDE.md` holding the Sazed persona + charter, and `claude/agents/synod-*.md` holding the agents). Today the council is **manually consulted** ("if uncertain, consult synod-kelsier first"), the agents are tone-heavy prose without self-verification, the single ~360-line charter loads on every message, and there is no way to measure whether routing actually works.
 
-This spec evolves the council to the structural maturity of Nate Priddy's `plugins/council` — **automatic discipline-based routing, self-verifying agent bodies, a lean always-loaded charter, governance rules, and a measurable eval harness** — **without** adopting plugin packaging and **without** losing the Sazed persona or `synod-*` theming. The primary goal is to make Sazed *auto-dispatch* the correct council member(s) the moment a task touches their discipline, with a documented, reversible token-cost dial.
+This spec evolves the council to the structural maturity of a reference `plugins/council` implementation — **automatic discipline-based routing, self-verifying agent bodies, a lean always-loaded charter, governance rules, and a measurable eval harness** — **without** adopting plugin packaging and **without** losing the Sazed persona or `synod-*` theming. The primary goal is to make Sazed *auto-dispatch* the correct council member(s) the moment a task touches their discipline, with a documented, reversible token-cost dial.
 
 ## Goals
 
@@ -35,7 +35,7 @@ This spec evolves the council to the structural maturity of Nate Priddy's `plugi
 - The system shall preserve, in the rewritten charter: Plan-Mode / no-write default, the 3-agent ceiling, security-first ordering (Marsh consulted before any implementer), and solo handling of trivial/conversational tasks.
 - The system shall ship the **conservative** routing posture as the default: auto-dispatch only on **multi-discipline OR high-blast-radius** triggers (prod, auth, secrets, migrations); single-discipline tasks route directly or are handled solo.
 - The system shall document a clearly-marked, reversible **escape-hatch** charter block describing the **dial-up** from the conservative default to "auto-route on any single-discipline match," stating the token-cost tradeoff in both directions.
-- The system shall port Nate's keyword→agent decision table into Kelsier's body and mirror its triggers across each agent `description`.
+- The system shall port the reference council's keyword→agent decision table into Kelsier's body and mirror its triggers across each agent `description`.
 
 **Proof Artifacts:**
 - Diff: `claude/CLAUDE.md` Prime Directive + Routing sections show auto-dispatch language and the escape-hatch block demonstrates the routing model changed.
@@ -44,7 +44,7 @@ This spec evolves the council to the structural maturity of Nate Priddy's `plugi
 
 ### Unit 2: Agent body standardization (self-verifying agents)
 
-**Purpose:** Upgrade every agent body from tone-heavy prose to a self-verifying structure, adapting Nate's tight sections into the themed voice. Serves every downstream consumer of agent output.
+**Purpose:** Upgrade every agent body from tone-heavy prose to a self-verifying structure, adapting the reference council's tight sections into the themed voice. Serves every downstream consumer of agent output.
 
 **Functional Requirements:**
 - The system shall add a **Coordination** section to each `synod-*.md` containing a *bidirectional* handoff map: who this agent hands work to **and** which agents hand work to it.
@@ -85,7 +85,7 @@ This spec evolves the council to the structural maturity of Nate Priddy's `plugi
 **Purpose:** Make routing and agent behavior measurable and regression-testable. Serves the repo owner (proof + safety net when editing agents).
 
 **Functional Requirements:**
-- The system shall create `claude/agents/eval/synod-<agent>.md` for each agent (4–5 scenarios each), every scenario containing: **Input**, **Expected route**, **Expected behavior**, **Red flags**. Scenarios shall be seeded by porting Nate's eval scenarios via the alias map where an equivalent exists.
+- The system shall create `claude/agents/eval/synod-<agent>.md` for each agent (4–5 scenarios each), every scenario containing: **Input**, **Expected route**, **Expected behavior**, **Red flags**. Scenarios shall be seeded by porting the reference council's eval scenarios via the alias map where an equivalent exists.
 - The system shall create `claude/agents/eval/failures.md` (structured failure log) and `claude/agents/eval/results.md` (append-only run log).
 - The system shall add a **`/run-evals` skill** that, for each scenario, **spawns a judging subagent** which reads the scenario Input, reports which agent *would* be routed to, evaluates the actual/intended behavior against Expected, self-judges pass/fail, and appends a structured result row to `eval/results.md`.
 - The `/run-evals` skill shall accept a `--changed` flag that runs evals only for agents whose files changed (the default recommended workflow, given full-suite token cost).

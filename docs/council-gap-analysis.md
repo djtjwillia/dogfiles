@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-Our local council (`./claude/agents/synod-*.md`, 12 agents) was compared against the reference council at `liatrio/dotfiles-nate-priddy` → `plugins/council/agents/` (20 agents).
+Our local council (`./claude/agents/synod-*.md`, 12 agents) was compared against a reference council (`plugins/council/agents/`, 20 agents) from an external, private/internal dotfiles repo.
 
 > **Scope note (accuracy):** The task framing cited a *public* GitHub URL. The actual repo is **private/internal** (`visibility: internal`) and was reachable only via authenticated `gh api`. The reference directory contains exactly **20** files (the task said "22" — a miscount, confirmed against the directory listing).
 
@@ -155,7 +155,7 @@ Each is scoped to a single file, additive, and reversible. None require renaming
 ## Sources
 
 - **Local:** `/Users/taylor/Code/projects/dogfiles/claude/agents/synod-{kelsier,vin,elend,marsh,melaan,marasi,steris,tensoon,wax,wayne,vendell,jasnah}.md` (12 files, read in full).
-- **Reference:** `liatrio/dotfiles-nate-priddy` @ `main` → `plugins/council/agents/` (20 files: architect, chaos, coder, compliance, database, debugger, devenv, docs, e2e, incident-responder, mcp-builder, performance, pipeline, reviewer, router, security, sre, test-engineer, threat-detection, ux). Private/internal repo; fetched via authenticated `gh api`, summarized via structured digest.
+- **Reference:** an external, private/internal dotfiles repo → `plugins/council/agents/` (20 files: architect, chaos, coder, compliance, database, debugger, devenv, docs, e2e, incident-responder, mcp-builder, performance, pipeline, reviewer, router, security, sre, test-engineer, threat-detection, ux). Fetched via authenticated `gh api`, summarized via structured digest.
 
 ---
 

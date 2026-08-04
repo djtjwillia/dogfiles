@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-The Synod Council — our local set of 12 specialized agents (`./claude/agents/synod-*.md`) — had never been benchmarked against an external decomposition. To find blind spots, synod-steris ran a gap analysis comparing our council against a 20-agent reference council (`liatrio/dotfiles-nate-priddy` → `plugins/council/agents/`, fetched via authenticated `gh api`; the repo is private/internal, and the directory contains exactly 20 agents — not the "22" originally cited).
+The Synod Council — our local set of 12 specialized agents (`./claude/agents/synod-*.md`) — had never been benchmarked against an external decomposition. To find blind spots, synod-steris ran a gap analysis comparing our council against a 20-agent reference council (an external, private/internal dotfiles repo → `plugins/council/agents/`, fetched via authenticated `gh api`; the directory contains exactly 20 agents — not the "22" originally cited).
 
 The two councils share a common design ancestry: identical escalation language, per-agent emoji response markers, Self-Check checklists, HIGH/MEDIUM/LOW confidence levels, fenced output templates, and a router-driven 1–3-agent dispatch model. The difference is **decomposition and coverage, not philosophy**. The reference council optimizes for fine-grained single responsibility (it splits domains we merge — three debug/ops agents, three test agents, three security agents — and carries seven domains with no local home). We optimize for richer, self-enforcing agents with low routing-collision cost.
 
