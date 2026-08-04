@@ -6,7 +6,7 @@ description: Daily morning briefing for Taylor — Slack highlights, calendar, A
 Generate a daily morning briefing for Taylor Williams, a Lead DevOps Engineer and AI Enablement Engineer at Liatrio.
 
 ## Objective
-Check Slack and Google Calendar, summarize what's coming up today, flag anything needing preparation, emit the briefing as your final markdown response (the runner persists it to disk), post the briefing to the #taylor-briefing Slack channel (channel ID: C0B9BRZBGEA), and include daily tidbits to start the morning well.
+Check Slack and Google Calendar, summarize what's coming up today, flag anything needing preparation, emit the briefing as your final markdown response (the runner persists it to disk), post the briefing to the #taylor-briefing Slack channel (channel ID: `<BRIEFING_CHANNEL_ID>` — see Constraints for filling in real IDs locally), and include daily tidbits to start the morning well.
 
 ---
 
@@ -29,9 +29,9 @@ Search for the top 3–5 major news headlines from the past 12 hours. Use web se
 ## Step 2 — Check Slack
 
 Read recent messages from the last 18 hours. Compute the `oldest` Unix timestamp yourself (current time in seconds minus 64800). Read from these channels:
-- **#liatrio-engineering** (channel ID: C07930A44DV)
-- **#liatrio-forge** (channel ID: C0AE9CLD7CH)
-- **#liatrio-announcements** (channel ID: C05JELM6DFT)
+- **#liatrio-engineering** (channel ID: `<ENGINEERING_CHANNEL_ID>`)
+- **#liatrio-forge** (channel ID: `<FORGE_CHANNEL_ID>`)
+- **#liatrio-announcements** (channel ID: `<ANNOUNCEMENTS_CHANNEL_ID>`)
 
 Also scan for any urgent messages or recent mentions directed at Taylor (search: "to:me", recent @mentions).
 
@@ -100,7 +100,7 @@ Structure:
 
 ## Step 5 — Post to #taylor-briefing
 
-Post the formatted briefing to Slack channel **C0B9BRZBGEA** (#taylor-briefing).
+Post the formatted briefing to Slack channel **`<BRIEFING_CHANNEL_ID>`** (#taylor-briefing).
 
 Use mrkdwn formatting:
 - *bold* for section headers and event titles
@@ -114,6 +114,7 @@ Do NOT include any @mention of Taylor in the message — it will not trigger a n
 ---
 
 ## Constraints
+- Operator note: this file ships with placeholder Slack channel IDs (`<BRIEFING_CHANNEL_ID>`, `<ENGINEERING_CHANNEL_ID>`, `<FORGE_CHANNEL_ID>`, `<ANNOUNCEMENTS_CHANNEL_ID>`) — fill in the real channel IDs locally (not tracked in the repo) before running.
 - Be concise. No filler or motivational language.
 - Only flag prep items that are genuinely actionable.
 - If a channel has no notable activity, write "Quiet" — do not omit the section.
