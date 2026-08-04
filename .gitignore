@@ -6,6 +6,12 @@ env/.env
 env/.env.local
 .task
 
+# Machine-local shell overrides (see dotfiles/.zshrc)
+.zshrc.local
+
+# Session summaries can contain decisions/findings not meant for a public repo.
+docs/summaries/
+
 # Never commit private keys, in any form, anywhere in the tree.
 # Public keys (.pub) and allowed_signers are explicitly permitted.
 id_*

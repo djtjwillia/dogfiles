@@ -34,6 +34,7 @@ The mirror-vs-additive split is deliberate. `~/.claude` is co-tenanted with skil
 1. Install [go-task](https://taskfile.dev/): `brew install go-task/tap/go-task`. (`init.sh` also installs it if missing.)
 2. Set up SSH auth and commit-signing keys. If your signing key differs from your auth key, add it with `ssh-add`.
 3. Run `./init.sh` (or `task init` directly). `init.sh` ensures go-task is present, then runs `task init`.
+4. Optional: create `~/.zshrc.local` for machine-local shell config you don't want tracked in the repo (internal tools, per-machine credentials bootstrapping, etc.) — `dotfiles/.zshrc` sources it automatically if present.
 
 `task init` runs, in order:
 
@@ -80,5 +81,3 @@ Keeping these directories as the source of truth keeps Taskfile changes predicta
 - **Persona separation** — work and personal identities are committed as per-identity git includes (`gitconfig-liatrio`, `gitconfig-personal`) plus `allowed_signers`, installed by `config:git`. Git's `includeIf` selects the identity by directory.
 - **Secrets stay out of git** — `.gitignore` blocks private keys (`id_*`, `*_ed25519`, `*_rsa`, `*.pem`, `*.key`) and `.env`; only public `.pub` signing keys are committed. herdr `pane_history` is off so agent output — which can include secrets — is never written to disk.
 - **Source-of-truth discipline** — the repo is canonical. Deployed destinations (`~/.claude`, `~/.dotfiles`, …) are rendered by task targets and never hand-edited.
-</content>
-</invoke>
