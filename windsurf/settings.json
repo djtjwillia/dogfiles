@@ -65,11 +65,6 @@
   "workbench.colorTheme": "Visual Studio Dark",
   "windsurf.explainAndFixInCurrentConversation": true,
   "windsurf.autocompleteSpeed": "fast",
-  "sonarlint.connectedMode.connections.sonarqube": [
-    {
-      "serverUrl": "https://sonarqube.dev.jerseymikes.com"
-    }
-  ],
   "containers.commands.build": "${containerCommand} build --pull --rm -f \"${dockerfile}\" -t ${tag} \"${context}\"",
   "editor.fontSize": 14,
   "editor.fontLigatures": false
