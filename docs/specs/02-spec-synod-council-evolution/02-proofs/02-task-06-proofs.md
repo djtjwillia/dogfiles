@@ -12,7 +12,7 @@
 | Runner command | `claude/commands/run-evals.md` | `/run-evals` — one judging subagent per scenario, `--changed` scope, record-and-continue, end-of-run tally |
 | Distribution | `Taskfile.yml` `tools:claude` | New **additive** `commands/` sync (DRY_RUN branch + real branch) |
 
-Nate Priddy's eval scenarios were **not available locally** (his repo is not checked out on this machine), so scenarios were authored from each agent's own `description` triggers, Operating Principles, and "What You Never Do" lists rather than literally ported. The alias map (kelsier=router, vin=coder, …) is reflected in each file's title for cross-reference. Recorded here per the spec's "seed by porting where an equivalent exists" instruction.
+The reference council's eval scenarios were **not available locally** (that repo is not checked out on this machine), so scenarios were authored from each agent's own `description` triggers, Operating Principles, and "What You Never Do" lists rather than literally ported. The alias map (kelsier=router, vin=coder, …) is reflected in each file's title for cross-reference. Recorded here per the spec's "seed by porting where an equivalent exists" instruction.
 
 ## Coverage of load-bearing controls (sub-task 6.2)
 

@@ -104,7 +104,7 @@ Create the new `claude/agents/synod-jasnah.md` reviewer agent (Jasnah Kholin per
 
 ### [x] 3.0 Standardize agent Group A — Router & review-only agents (kelsier, elend, marsh, tensoon, vendell)
 
-Single combined per-file pass over the five non-writing agents. Rewrite each `description` into dense proactive-delegation triggers (Spec Unit 1) and add standardized body sections — bidirectional Coordination, Self-Check, Confidence levels — plus the `Not in scope:` output line for the review agents (elend, marsh, tensoon). Port Nate's keyword→agent decision table into `synod-kelsier`. Preserve each agent's opus/sonnet tier, `disallowedTools: [Edit, Write]`, color, and veto status. (Spec Unit 1 + Unit 2, this group.)
+Single combined per-file pass over the five non-writing agents. Rewrite each `description` into dense proactive-delegation triggers (Spec Unit 1) and add standardized body sections — bidirectional Coordination, Self-Check, Confidence levels — plus the `Not in scope:` output line for the review agents (elend, marsh, tensoon). Port the reference council's keyword→agent decision table into `synod-kelsier`. Preserve each agent's opus/sonnet tier, `disallowedTools: [Edit, Write]`, color, and veto status. (Spec Unit 1 + Unit 2, this group.)
 
 #### 3.0 Proof Artifact(s)
 
@@ -158,7 +158,7 @@ Single combined per-file pass over the three ops/experience implementers. Rewrit
 
 ### [x] 6.0 Eval harness + `/run-evals` skill
 
-Create the markdown eval harness and the runner command. Per agent (all 12), author `claude/agents/eval/synod-<agent>.md` with 4–5 scenarios (Input / Expected route / Expected behavior / Red flags), seeded by porting Nate's scenarios via the alias map where an equivalent exists. Add `eval/failures.md` and append-only `eval/results.md`. Add a `/run-evals` command (`claude/commands/run-evals.md`) that spawns one judging subagent per scenario (reports would-be route, judges behavior against Expected + Red flags, self-judges pass/fail), supports a `--changed` flag, operates **record-and-continue** (a failure does not halt the run), logs failures to `failures.md`, appends results to `results.md`, and emits an end-of-run pass/fail/total tally. Add the `commands/` sync to the Taskfile. (Spec Unit 4.)
+Create the markdown eval harness and the runner command. Per agent (all 12), author `claude/agents/eval/synod-<agent>.md` with 4–5 scenarios (Input / Expected route / Expected behavior / Red flags), seeded by porting the reference council's scenarios via the alias map where an equivalent exists. Add `eval/failures.md` and append-only `eval/results.md`. Add a `/run-evals` command (`claude/commands/run-evals.md`) that spawns one judging subagent per scenario (reports would-be route, judges behavior against Expected + Red flags, self-judges pass/fail), supports a `--changed` flag, operates **record-and-continue** (a failure does not halt the run), logs failures to `failures.md`, appends results to `results.md`, and emits an end-of-run pass/fail/total tally. Add the `commands/` sync to the Taskfile. (Spec Unit 4.)
 
 #### 6.0 Proof Artifact(s)
 
@@ -169,7 +169,7 @@ Create the markdown eval harness and the runner command. Per agent (all 12), aut
 
 #### 6.0 Tasks
 
-- [x] 6.1 Create `claude/agents/eval/`. For each of the 12 agents, author `eval/synod-<agent>.md` with **4–5 scenarios**, each containing **Input**, **Expected route**, **Expected behavior**, and **Red flags**. Seed by porting Nate's eval scenarios via the alias map where an equivalent exists. Use **synthetic inputs only** — no real credentials, tokens, or private repo contents. *(Nate's repo not local; scenarios authored from each agent's own triggers — noted in proof.)*
+- [x] 6.1 Create `claude/agents/eval/`. For each of the 12 agents, author `eval/synod-<agent>.md` with **4–5 scenarios**, each containing **Input**, **Expected route**, **Expected behavior**, and **Red flags**. Seed by porting the reference council's eval scenarios via the alias map where an equivalent exists. Use **synthetic inputs only** — no real credentials, tokens, or private repo contents. *(Reference repo not available locally; scenarios authored from each agent's own triggers — noted in proof.)*
 - [x] 6.2 Ensure coverage of the load-bearing controls: at least one **security-ordering** scenario (auth/secret → Marsh consulted before any implementer) and explicit, falsifiable **Red flags** per scenario so the judging subagent has concrete failure criteria.
 - [x] 6.3 Create `claude/agents/eval/failures.md` (structured failure-log template: scenario, expected, observed, timestamp-placeholder) and `claude/agents/eval/results.md` (append-only run-log header + row schema).
 - [x] 6.4 Author `claude/commands/run-evals.md` mirroring the `/SDD-*` command format: for each scenario, **spawn one judging subagent** that reads the Input, reports which agent *would* route, judges behavior against Expected + Red flags, and self-judges pass/fail; append a structured row to `results.md`; log failures to `failures.md`; support `--changed` (only scenarios for agents whose files changed); operate **record-and-continue**; emit an end-of-run **passed/failed/total** tally.

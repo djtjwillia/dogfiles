@@ -61,7 +61,7 @@ The eval scenarios are markdown (Input / Expected route / Expected behavior / Re
 
 The brief adds a `synod ↔ descriptive` alias map (kelsier=router, vin=coder, …).
 
-- [x] (A) **Documentation-only** — a reference table in `charter-details.md` for cross-referencing Nate's evals and human readability. Agents keep their `synod-*` names only. (Simplest; no harness behavior change.)
+- [x] (A) **Documentation-only** — a reference table in `charter-details.md` for cross-referencing the reference council's evals and human readability. Agents keep their `synod-*` names only. (Simplest; no harness behavior change.)
 - [ ] (B) **Functional aliases** — descriptive names also resolve as invocable agent references (requires duplicate files or harness support — likely not supported for loose-file agents).
 - [ ] (C) Other (describe)
 
