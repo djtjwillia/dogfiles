@@ -2,8 +2,6 @@
 
 this cowdog has dotfiles!
 
-![hank the cowdog](http://2.bp.blogspot.com/-qsXKNYQ4xZc/TpfFkRYfcqI/AAAAAAAALbY/h8tydti83oA/s1600/hankthecowdog.gif)
-
 Development environment as code. A single `task init` provisions a macOS workstation — Homebrew packages, shell, git identities, terminal — **and** a fully codified [Claude Code](https://docs.anthropic.com/en/docs/claude-code) setup. Both are managed with the same rigor as production infrastructure: idempotent, rendered from a canonical source, reviewable in git, and dry-run-able before anything touches the machine.
 
 The repo is the source of truth. Deployed destinations (`~/.claude`, `~/.dotfiles`, `~/.gitconfig`, …) are outputs — never hand-edited.
