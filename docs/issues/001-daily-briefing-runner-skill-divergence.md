@@ -29,7 +29,7 @@ reference `SKILL.md` in any way. The two define materially different output:
 | Spanish / Costa Rican phrase | ❌ | ✅ |
 | "This day in history" | ❌ | ✅ |
 | AP overnight headlines | ❌ | ✅ |
-| Post to `#taylor-briefing` (`C0B9BRZBGEA`) | ❌ | ✅ |
+| Post to `#taylor-briefing` (`<BRIEFING_CHANNEL_ID>`) | ❌ | ✅ |
 
 The Slack channel lists also differ between the two. As shipped, the 7:30 AM
 job produces the **older, file-only** briefing; the richer `SKILL.md`
