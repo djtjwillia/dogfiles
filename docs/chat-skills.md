@@ -1,7 +1,21 @@
 # Chat skills
 
-`claude/skills-chat/` holds claude.ai-chat / Claude Desktop variants of two of
-this repo's Claude Code skills: `obsidian-summary` and `obsidian-transcript`.
+`claude/skills-chat/` holds five claude.ai-chat / Claude Desktop skills:
+two chat variants of this repo's Claude Code skills, and three vendored
+user-authored custom skills exported from claude.ai.
+
+| Skill | Origin |
+|-------|--------|
+| `obsidian-summary` | Chat variant of the Code skill in `claude/skills/` |
+| `obsidian-transcript` | Chat variant of the Code skill in `claude/skills/` |
+| `humanizer` | User-authored custom skill, exported from claude.ai; canonical copy is now this repo |
+| `prompt-coach` | User-authored custom skill, exported from claude.ai; canonical copy is now this repo |
+| `definitive-docs` | User-authored custom skill, exported from claude.ai; canonical copy is now this repo |
+
+`humanizer`, `prompt-coach`, and `definitive-docs` are also available in
+Claude Code via the `anthropic-skills` plugin, so they are not duplicated
+into `claude/skills/` — the copies here exist solely to produce upload zips
+for the claude.ai / Claude Desktop chat sandbox.
 
 ## Why a separate variant
 
@@ -57,11 +71,10 @@ should repeat.
 
 1. Run `task tools:claude-skills-chat-zip`.
 2. In claude.ai or Claude Desktop, go to **Settings → Capabilities → Skills**.
-3. Upload `dist/skills-chat/obsidian-summary.zip` and/or
-   `dist/skills-chat/obsidian-transcript.zip`.
-4. In a chat, ask Claude to save a summary or transcript to Obsidian. It will
-   produce a downloadable `.md` file and tell you which vault folder to drop
-   it into.
+3. Upload whichever of `dist/skills-chat/{obsidian-summary,obsidian-transcript,
+   humanizer,prompt-coach,definitive-docs}.zip` you need.
+4. In a chat, invoke the skill as usual (e.g. ask Claude to save a summary or
+   transcript to Obsidian, or to humanize some text).
 
 ## Maintaining the chat variants
 
@@ -70,3 +83,19 @@ generated from the Claude Code versions in `claude/skills/`. When the Claude
 Code skill's behavior changes in a way that also applies to chat (e.g. a
 template or callout convention), port the change by hand and note in the
 commit message that it also covers the chat variant.
+
+## Re-importing an exported skill
+
+A `.skill` file downloaded from claude.ai is a zip. To vendor (or re-vendor)
+one into this repo:
+
+1. Unzip it: `unzip some-skill.skill -d /tmp/some-skill`.
+2. Locate the `SKILL.md`:
+   - Plain skill export: `<name>/SKILL.md`.
+   - Plugin-bundle export: `skills/<name>/SKILL.md` (drop the bundle's
+     `.claude-plugin/plugin.json` — we vendor the skill only, not the plugin
+     wrapper).
+3. Copy it byte-for-byte to `claude/skills-chat/<name>/SKILL.md` — do not
+   edit the content while vendoring. Verify with `diff` against the source.
+4. Add a row to the table above and rebuild the zips with
+   `task tools:claude-skills-chat-zip`.

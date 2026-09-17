@@ -16,7 +16,7 @@ The `claude/` directory is a version-controlled Claude Code configuration, synce
 - **`agents/`** — 12 specialist subagent definitions (`synod-*.md`): architecture, security, data safety, CI/CD, docs/planning, debugging, code review, DX, dependency currency, UX, implementation, and routing. Each carries structured frontmatter with routing triggers and write/veto scope. Plus an `eval/` directory for scenario-based routing evals.
 - **`commands/`** — custom slash commands (`run-evals`, `summary`).
 - **`skills/`** — vendored, customized skills: `handoff`, `obsidian-summary`, and `obsidian-transcript`.
-- **`skills-chat/`** — claude.ai-chat / Claude Desktop variants of the `obsidian-summary` and `obsidian-transcript` skills, adapted for a sandbox with no filesystem/git/session-log access. Built into upload-ready zips with `task tools:claude-skills-chat-zip` and uploaded manually via Settings → Capabilities → Skills — see [`docs/chat-skills.md`](docs/chat-skills.md).
+- **`skills-chat/`** — five claude.ai-chat / Claude Desktop skills: chat variants of `obsidian-summary` and `obsidian-transcript` (adapted for a sandbox with no filesystem/git/session-log access), plus three vendored user-authored custom skills exported from claude.ai (`humanizer`, `prompt-coach`, `definitive-docs`). Built into upload-ready zips with `task tools:claude-skills-chat-zip` and uploaded manually via Settings → Capabilities → Skills — see [`docs/chat-skills.md`](docs/chat-skills.md).
 - **`herdr/config.toml`** — herdr config with `pane_history` disabled, so agent output (which can contain secrets) is never written to disk.
 - **`scheduled/`** — scheduled task definitions.
 - **`settings.json`** — Claude Code settings. **`statusline-command.sh`** — a custom statusline.
@@ -30,7 +30,7 @@ The mirror-vs-additive split is deliberate. `~/.claude` is co-tenanted with skil
 
 **External skills** — some Claude Code skills are installed straight from third-party repos via the [`vercel-labs/skills`](https://github.com/vercel-labs/skills) CLI (`task tools:claude-skills-external`) rather than vendored into `claude/skills/`. See [`docs/external-skills.md`](docs/external-skills.md) for the full list and the rationale for what is excluded.
 
-**Chat skills** — `claude/skills-chat/` holds claude.ai-chat / Claude Desktop variants of the Obsidian skills, for the sandbox environment where Claude has no filesystem or git access. See [`docs/chat-skills.md`](docs/chat-skills.md).
+**Chat skills** — `claude/skills-chat/` holds five claude.ai-chat / Claude Desktop skills: `obsidian-summary`, `obsidian-transcript`, `humanizer`, `prompt-coach`, and `definitive-docs`. See [`docs/chat-skills.md`](docs/chat-skills.md).
 
 ## Setup
 
