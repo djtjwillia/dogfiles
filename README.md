@@ -15,7 +15,7 @@ The `claude/` directory is a version-controlled Claude Code configuration, synce
 - **`CLAUDE.md` + `charter-details.md`** — a structured multi-agent operating model. The core rules load on every session; the detail file is referenced on demand to keep context lean. The model is explicit about how the assistant behaves: **plan by default** (no file edits until the user promotes the session), **proactive routing** to specialist subagents by domain, **staged write permissions** (plan → probe → narrow → wide), and **output gates** requiring verification steps and a rollback path on every plan. (It is themed as a "Synod Council" persona; the substance underneath is the operating model, not the theme.)
 - **`agents/`** — 12 specialist subagent definitions (`synod-*.md`): architecture, security, data safety, CI/CD, docs/planning, debugging, code review, DX, dependency currency, UX, implementation, and routing. Each carries structured frontmatter with routing triggers and write/veto scope. Plus an `eval/` directory for scenario-based routing evals.
 - **`commands/`** — custom slash commands (`run-evals`, `summary`).
-- **`skills/`** — a vendored, customized `handoff` skill.
+- **`skills/`** — vendored, customized skills: `handoff` and `obsidian-summary`.
 - **`herdr/config.toml`** — herdr config with `pane_history` disabled, so agent output (which can contain secrets) is never written to disk.
 - **`scheduled/`** — scheduled task definitions.
 - **`settings.json`** — Claude Code settings. **`statusline-command.sh`** — a custom statusline.
