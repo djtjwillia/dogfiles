@@ -10,6 +10,8 @@ vars:
   CLAUDE_DEST: '{{default "$HOME/.claude" .CLAUDE_DEST}}'
   SKILLS_SRC: '{{default (printf "%s/skills" .CLAUDE_SRC) .SKILLS_SRC}}'
   SKILLS_DEST: '{{default (printf "%s/skills" .CLAUDE_DEST) .SKILLS_DEST}}'
+  CHAT_SKILLS_SRC: '{{default (printf "%s/claude/skills-chat" .TASKFILE_DIR) .CHAT_SKILLS_SRC}}'
+  CHAT_SKILLS_OUT: '{{default (printf "%s/dist/skills-chat" .TASKFILE_DIR) .CHAT_SKILLS_OUT}}'
   HERDR_SRC: '{{default "claude/herdr/config.toml" .HERDR_SRC}}'
   HERDR_DEST: '{{default "$HOME/.config/herdr/config.toml" .HERDR_DEST}}'
 
@@ -516,6 +518,37 @@ tasks:
           eval "$c"
         done
         echo "[claude-skills-external] Done. See docs/external-skills.md for the full list."
+
+  "tools:claude-skills-chat-zip":
+    desc: Zip chat-variant skills for manual upload to claude.ai / Claude Desktop
+    cmds:
+      - |
+        set -euo pipefail
+        # skills-chat/ holds claude.ai-chat / Claude Desktop variants of the
+        # Claude Code skills in claude/skills/. These are never synced to
+        # ~/.claude (tools:claude-skills does not pick this directory up) —
+        # they're uploaded manually via Settings → Capabilities → Skills,
+        # which accepts a zip whose top-level folder contains SKILL.md.
+        # Not part of the `init` chain: upload is a manual step.
+        src="{{.CHAT_SKILLS_SRC}}"
+        out="{{.CHAT_SKILLS_OUT}}"
+        [ -d "$src" ] || { echo "[claude-skills-chat-zip] No $src directory; skipping"; exit 0; }
+        if [ "{{.DRY_RUN}}" = "true" ]; then
+          for d in "$src"/*/; do
+            [ -e "$d" ] || continue
+            name="$(basename "$d")"
+            echo "[change] $name: would zip → dist/skills-chat/$name.zip"
+          done
+          exit 0
+        fi
+        mkdir -p "$out"
+        for d in "$src"/*/; do
+          [ -e "$d" ] || continue
+          name="$(basename "$d")"
+          rm -f "$out/$name.zip"
+          ( cd "$src" && zip -r -X "$out/$name.zip" "$name" -x '*.DS_Store' >/dev/null )
+          echo "[claude-skills-chat-zip] Zipped $name/ to $out/$name.zip"
+        done
 
   "tools:herdr":
     desc: Sync herdr config into place

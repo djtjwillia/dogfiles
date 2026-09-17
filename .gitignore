@@ -5,6 +5,7 @@ test.txt
 env/.env
 env/.env.local
 .task
+dist/
 
 # Machine-local shell overrides (see dotfiles/.zshrc)
 .zshrc.local
