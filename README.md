@@ -15,7 +15,8 @@ The `claude/` directory is a version-controlled Claude Code configuration, synce
 - **`CLAUDE.md` + `charter-details.md`** — a structured multi-agent operating model. The core rules load on every session; the detail file is referenced on demand to keep context lean. The model is explicit about how the assistant behaves: **plan by default** (no file edits until the user promotes the session), **proactive routing** to specialist subagents by domain, **staged write permissions** (plan → probe → narrow → wide), and **output gates** requiring verification steps and a rollback path on every plan. (It is themed as a "Synod Council" persona; the substance underneath is the operating model, not the theme.)
 - **`agents/`** — 12 specialist subagent definitions (`synod-*.md`): architecture, security, data safety, CI/CD, docs/planning, debugging, code review, DX, dependency currency, UX, implementation, and routing. Each carries structured frontmatter with routing triggers and write/veto scope. Plus an `eval/` directory for scenario-based routing evals.
 - **`commands/`** — custom slash commands (`run-evals`, `summary`).
-- **`skills/`** — vendored, customized skills: `handoff` and `obsidian-summary`.
+- **`skills/`** — vendored, customized skills: `handoff`, `obsidian-summary`, and `obsidian-transcript`.
+- **`skills-chat/`** — claude.ai-chat / Claude Desktop variants of the `obsidian-summary` and `obsidian-transcript` skills, adapted for a sandbox with no filesystem/git/session-log access. Built into upload-ready zips with `task tools:claude-skills-chat-zip` and uploaded manually via Settings → Capabilities → Skills — see [`docs/chat-skills.md`](docs/chat-skills.md).
 - **`herdr/config.toml`** — herdr config with `pane_history` disabled, so agent output (which can contain secrets) is never written to disk.
 - **`scheduled/`** — scheduled task definitions.
 - **`settings.json`** — Claude Code settings. **`statusline-command.sh`** — a custom statusline.
@@ -28,6 +29,8 @@ The `claude/` directory is a version-controlled Claude Code configuration, synce
 The mirror-vs-additive split is deliberate. `~/.claude` is co-tenanted with skills and commands this repo does not own, so a blanket `--delete` would clobber them. Agents are fully owned (safe to mirror); commands and top-level skills are shared (additive only).
 
 **External skills** — some Claude Code skills are installed straight from third-party repos via the [`vercel-labs/skills`](https://github.com/vercel-labs/skills) CLI (`task tools:claude-skills-external`) rather than vendored into `claude/skills/`. See [`docs/external-skills.md`](docs/external-skills.md) for the full list and the rationale for what is excluded.
+
+**Chat skills** — `claude/skills-chat/` holds claude.ai-chat / Claude Desktop variants of the Obsidian skills, for the sandbox environment where Claude has no filesystem or git access. See [`docs/chat-skills.md`](docs/chat-skills.md).
 
 ## Setup
 
@@ -65,6 +68,7 @@ Every target is idempotent — re-running `task init` is safe at any time.
 - `task config:git` — install base gitconfig + per-identity includes + `allowed_signers`.
 - `task tools:zshrc | tmux | p10k | iterm2 | dev-script | herdr | node` — install individual dotfiles/tools.
 - `task tools:claude` / `task tools:claude-skills` / `task tools:claude-skills-external` — sync Claude config/agents/commands, repo-owned skills, and external skills respectively.
+- `task tools:claude-skills-chat-zip` — zip the claude.ai-chat / Claude Desktop skill variants in `claude/skills-chat/` for manual upload (not part of `task init`).
 
 ### Maintaining assets
 
