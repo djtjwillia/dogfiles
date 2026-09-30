@@ -25,8 +25,14 @@ The following paths are managed destinations, not sources. Editing them directly
 | `~/.local/bin/dev` | `dotfiles/dev` | `task tools:dev-script` |
 | `~/Library/Preferences/com.googlecode.iterm2.plist` | `iterm2/` | `task tools:iterm2` |
 | `~/.config/herdr/config.toml` | `claude/herdr/config.toml` | `task tools:herdr` |
+| Obsidian work vault: template, helper, `.obsidian/` settings, plugin configs | `daily-note/vault/` | `task daily-note:vault` |
+| `~/Library/Application Support/Claude/claude_desktop_config.json` (`mcpServers.things` only) | `daily-note/claude_desktop_config.things.json` | `task daily-note:things-mcp` |
 
 > Note: `~/.config/herdr/` must not be committed to the repo; `pane_history` must remain off in managed config to prevent plaintext agent output (which can include secrets) from being written to disk.
+
+## Daily-note helper
+
+`daily-note/vault/.obsidian/scripts/daily_note.py` is the only thing allowed to edit daily notes programmatically. It must stay idempotent: edits happen only inside `<!-- claude:begin PASS --> … <!-- claude:end PASS -->` markers (plus the one-time `## Risks` carry). Never commit `daily-note.local.json`, `things-sync.json`, or a rendered Granola `data.json`; they hold engagement identifiers and secrets and are gitignored. See `docs/daily-note.md`.
 
 ## Workflow
 

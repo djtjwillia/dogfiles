@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "things": {
+      "command": "/opt/homebrew/bin/uvx",
+      "args": ["--from", "things-mcp==0.8.1", "things-mcp"],
+      "env": {
+        "THINGSDB": "/Users/<you>/Library/Group Containers/JLMPQHK86H.com.culturedcode.ThingsMac/ThingsData-XXXXX/Things Database.thingsdatabase/main.sqlite"
+      }
+    }
+  }
+}

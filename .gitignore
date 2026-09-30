@@ -22,3 +22,9 @@ id_*
 *.key
 !*_ed25519.pub
 !*.pub
+# daily-note: engagement identifiers, sync ledger, and plugin state never leave the vault.
+*.local.json
+!*.local.example.json
+things-sync.json
+daily-note/vault/.obsidian/plugins/granola-sync/data.json
+daily-note/vault/.obsidian/workspace*.json

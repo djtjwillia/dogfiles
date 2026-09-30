@@ -1,0 +1,8 @@
+{
+  "slack_user_id": "UXXXXXXXXXX",
+  "eod_author": "Taylor",
+  "eod_channels": ["#example-team-channel", "#example-project-channel"],
+  "eod_secondary": {"channel": "#example-program-channel", "applies_to": "items for <program name> only"},
+  "things_work_area_id": "XXXXXXXXXXXXXXXXXXXXXX",
+  "things_work_area_title": "Work"
+}
