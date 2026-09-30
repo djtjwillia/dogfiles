@@ -14,6 +14,11 @@ vars:
   CHAT_SKILLS_OUT: '{{default (printf "%s/dist/skills-chat" .TASKFILE_DIR) .CHAT_SKILLS_OUT}}'
   HERDR_SRC: '{{default "claude/herdr/config.toml" .HERDR_SRC}}'
   HERDR_DEST: '{{default "$HOME/.config/herdr/config.toml" .HERDR_DEST}}'
+  DAILY_NOTE_SRC: '{{default "daily-note" .DAILY_NOTE_SRC}}'
+  VAULT_DEST: '{{default "$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/work" .VAULT_DEST}}'
+  CLAUDE_DESKTOP_CONFIG: '{{default "$HOME/Library/Application Support/Claude/claude_desktop_config.json" .CLAUDE_DESKTOP_CONFIG}}'
+  THINGS_MCP_VERSION: '{{default "0.8.1" .THINGS_MCP_VERSION}}'
+  WISPR_VERSION: '{{default "0.1.3" .WISPR_VERSION}}'
 
 silent: true
 
@@ -624,3 +629,297 @@ tasks:
             echo "[node] Node setup complete"
           '
         fi
+
+  "daily-note":
+    desc: "Set up the Obsidian daily-note system (vault files, Wispr plugin, Things MCP). OPT-IN, work Mac only; not part of `task init`"
+    cmds:
+      - task: "daily-note:vault"
+      - task: "daily-note:wispr-plugin"
+      - task: "daily-note:things-mcp"
+
+  "daily-note:vault":
+    desc: Install daily-note template, helper script, Obsidian settings, and plugin configs into the work vault
+    cmds:
+      - |
+        set -euo pipefail
+        SRC="{{.DAILY_NOTE_SRC}}/vault"
+        DEST="{{.VAULT_DEST}}"
+        DRY="{{.DRY_RUN}}"
+        if [ ! -d "$DEST" ]; then
+          echo "[error] vault not found: $DEST"
+          echo "        pass VAULT_DEST=/path/to/vault"
+          exit 1
+        fi
+        # put LABEL SRC DEST MODE — always converge dest to src
+        put() {
+          label="$1"; src="$2"; dest="$3"; mode="$4"
+          if [ ! -f "$dest" ]; then st=create
+          elif cmp -s "$src" "$dest"; then echo "[ok] $label: identical"; return 0
+          else st=update; fi
+          if [ "$DRY" = "true" ]; then
+            echo "[change] $label: would $st"
+          else
+            mkdir -p "$(dirname "$dest")"
+            install -m "$mode" "$src" "$dest"
+            echo "[daily-note] $label: ${st}d"
+          fi
+        }
+        put "daily-note-template.md" "$SRC/daily-note-template.md" "$DEST/daily-note-template.md" 0644
+        put "daily_note.py" "$SRC/.obsidian/scripts/daily_note.py" "$DEST/.obsidian/scripts/daily_note.py" 0755
+        put "daily-notes.json" "$SRC/.obsidian/daily-notes.json" "$DEST/.obsidian/daily-notes.json" 0644
+        put "daily-note.local.example.json" "$SRC/.obsidian/scripts/daily-note.local.example.json" "$DEST/.obsidian/scripts/daily-note.local.example.json" 0644
+
+        # wispr data.json stores latestSyncWatermark — seed only when absent
+        W="$DEST/.obsidian/plugins/wispr-flow-sync/data.json"
+        if [ -f "$W" ]; then
+          echo "[ok] wispr-flow-sync data.json: present, preserved"
+        elif [ "$DRY" = "true" ]; then
+          echo "[change] wispr-flow-sync data.json: would create"
+        else
+          mkdir -p "$(dirname "$W")"
+          install -m 0644 "$SRC/.obsidian/plugins/wispr-flow-sync/data.json" "$W"
+          echo "[daily-note] wispr-flow-sync data.json: created"
+        fi
+
+        # community-plugins.json: union with the existing array, never drop other plugins
+        CP="$DEST/.obsidian/community-plugins.json"
+        WANT="$SRC/.obsidian/community-plugins.json"
+        if [ ! -f "$CP" ]; then
+          if [ "$DRY" = "true" ]; then
+            echo "[change] community-plugins.json: would create"
+          else
+            mkdir -p "$(dirname "$CP")"
+            install -m 0644 "$WANT" "$CP"
+            echo "[daily-note] community-plugins.json: created"
+          fi
+        else
+          if ! jq -e 'type == "array"' "$CP" >/dev/null 2>&1; then
+            echo "[error] $CP is not a JSON array; refusing to modify"
+            exit 1
+          fi
+          merged="$(jq --slurpfile want "$WANT" '. + ($want[0] - .)' "$CP")"
+          if [ "$(jq -c . "$CP")" = "$(printf '%s' "$merged" | jq -c .)" ]; then
+            echo "[ok] community-plugins.json: already lists required plugins"
+          elif [ "$DRY" = "true" ]; then
+            echo "[change] community-plugins.json: would add missing plugin ids"
+          else
+            tmp="$(mktemp "$(dirname "$CP")/.community-plugins.XXXXXX")"
+            printf '%s\n' "$merged" > "$tmp"
+            jq -e . "$tmp" >/dev/null
+            chmod 644 "$tmp"
+            mv "$tmp" "$CP"
+            echo "[daily-note] community-plugins.json: added missing plugin ids"
+          fi
+        fi
+
+        # local engagement config: seed from the example only when absent; never overwrite
+        L="$DEST/.obsidian/scripts/daily-note.local.json"
+        if [ -f "$L" ]; then
+          echo "[ok] daily-note.local.json: present, preserved"
+        elif [ "$DRY" = "true" ]; then
+          echo "[change] daily-note.local.json: would create from example (you must fill it in)"
+        else
+          install -m 0600 "$SRC/.obsidian/scripts/daily-note.local.example.json" "$L"
+          echo "[warn] daily-note.local.json: created from the example with PLACEHOLDER values — edit $L before running the skills"
+        fi
+
+        # granola data.json: render the apiKey from the environment; never echo it
+        T="$SRC/.obsidian/plugins/granola-sync/data.json.tmpl"
+        G="$DEST/.obsidian/plugins/granola-sync/data.json"
+        key_present=no
+        if [ -n "${GRANOLA_API_KEY:-}" ]; then key_present=yes; fi
+        existing_real=no
+        if [ -f "$G" ]; then
+          ek="$(jq -r '.apiKey // ""' "$G" 2>/dev/null || true)"
+          if [ -n "$ek" ] && [ "$ek" != '${GRANOLA_API_KEY}' ]; then existing_real=yes; fi
+          ek=""
+        fi
+        if [ "$existing_real" = "yes" ]; then
+          echo "[ok] granola-sync data.json: existing apiKey preserved (not overwritten)"
+          if [ "$key_present" = "yes" ]; then
+            echo "[warn] granola-sync data.json: GRANOLA_API_KEY ignored; to rotate, clear apiKey in that file and re-run"
+          fi
+        elif [ "$key_present" = "no" ]; then
+          echo "[warn] granola-sync data.json: GRANOLA_API_KEY not set in the environment; skipping (export it and re-run)"
+        elif [ "$DRY" = "true" ]; then
+          echo "[change] granola-sync data.json: would create (key present: yes)"
+        else
+          (
+            # mktemp creates the file 0600 (task's embedded shell has no umask builtin)
+            d="$(dirname "$G")"
+            mkdir -p "$d"
+            tmp="$(mktemp "$d/.data.json.XXXXXX")"
+            trap 'rm -f "$tmp"' EXIT
+            jq '.apiKey = $ENV.GRANOLA_API_KEY' "$T" > "$tmp"
+            v="$(jq -r '.apiKey // ""' "$tmp")"
+            if [ -z "$v" ] || [ "$v" = '${GRANOLA_API_KEY}' ]; then
+              echo "[error] granola-sync data.json: rendered apiKey is empty or a placeholder; nothing written"
+              exit 1
+            fi
+            v=""
+            chmod 600 "$tmp"
+            mv "$tmp" "$G"
+            trap - EXIT
+          )
+          echo "[daily-note] granola-sync data.json: created (mode 600)"
+        fi
+        if [ "$DRY" != "true" ]; then
+          echo "[daily-note] Reload Obsidian (Cmd-R) so plugins re-read data.json; see docs/daily-note.md"
+        fi
+
+  "daily-note:wispr-plugin":
+    desc: Install the pinned Wispr Flow Sync Obsidian plugin (sha256-verified) into the work vault
+    cmds:
+      - |
+        set -euo pipefail
+        VER="{{.WISPR_VERSION}}"
+        DEST="{{.VAULT_DEST}}"
+        DRY="{{.DRY_RUN}}"
+        HASHES="{{.DAILY_NOTE_SRC}}/wispr-flow-sync-$VER.sha256"
+        case "$HASHES" in /*) ;; *) HASHES="$PWD/$HASHES" ;; esac
+        if [ ! -f "$HASHES" ]; then
+          echo "[error] no committed checksums for version $VER: $HASHES"
+          echo "        a human must review that release's main.js and commit its sha256 file first"
+          exit 1
+        fi
+        if [ ! -d "$DEST" ]; then
+          echo "[error] vault not found: $DEST (pass VAULT_DEST=/path/to/vault)"
+          exit 1
+        fi
+        PDIR="$DEST/.obsidian/plugins/wispr-flow-sync"
+        installed="$(jq -r '.version // ""' "$PDIR/manifest.json" 2>/dev/null || true)"
+        if [ "$installed" = "$VER" ] && [ -f "$PDIR/main.js" ]; then
+          if ( cd "$PDIR" && shasum -a 256 -c "$HASHES" >/dev/null 2>&1 ); then
+            echo "[ok] wispr-flow-sync $VER: installed, checksums match"
+            exit 0
+          fi
+          echo "[warn] wispr-flow-sync $VER: installed files do NOT match the committed sha256 (modified or tampered); reinstalling"
+        fi
+        if [ "$DRY" = "true" ]; then
+          echo "[change] wispr-flow-sync $VER: would download, verify sha256, and install to $PDIR"
+          exit 0
+        fi
+        tmpd="$(mktemp -d)"
+        trap 'rm -rf "$tmpd"' EXIT
+        BASE="https://github.com/madforstrength/obsidian-wispr-flow-sync/releases/download/$VER"
+        for f in main.js manifest.json; do
+          curl -fsSL --proto '=https' --tlsv1.2 -o "$tmpd/$f" "$BASE/$f"
+        done
+        if ! ( cd "$tmpd" && shasum -a 256 -c "$HASHES" >/dev/null 2>&1 ); then
+          echo "[error] wispr-flow-sync $VER: sha256 mismatch on downloaded files; NOT installing"
+          exit 1
+        fi
+        mkdir -p "$PDIR"
+        mv "$tmpd/main.js" "$PDIR/main.js"
+        mv "$tmpd/manifest.json" "$PDIR/manifest.json"
+        echo "[daily-note] wispr-flow-sync $VER: installed to $PDIR (checksums verified)"
+
+  "daily-note:things-mcp":
+    desc: Pin and register the Things 3 MCP server in Claude Desktop config (quit Claude Desktop first)
+    cmds:
+      - |
+        set -euo pipefail
+        VER="{{.THINGS_MCP_VERSION}}"
+        CFG="{{.CLAUDE_DESKTOP_CONFIG}}"
+        DRY="{{.DRY_RUN}}"
+        OVERRIDE="{{default "" .THINGSDB}}"
+        if [ -z "$OVERRIDE" ]; then OVERRIDE="${THINGSDB:-}"; fi
+        UVX="$(command -v uvx)" || { echo "[error] uvx not found (brew install uv; it is in the Brewfile)"; exit 1; }
+        if pgrep -x Claude >/dev/null 2>&1; then
+          echo "[warn] Claude Desktop appears to be running — quit it (Cmd-Q) before applying; it can overwrite the config on exit"
+        fi
+
+        # THINGSDB: override, else the single ThingsData-* folder on this Mac
+        if [ -n "$OVERRIDE" ]; then
+          DB="$OVERRIDE"
+          if [ ! -e "$DB" ]; then echo "[warn] THINGSDB override does not exist: $DB"; fi
+        else
+          GC="$HOME/Library/Group Containers/JLMPQHK86H.com.culturedcode.ThingsMac"
+          matches="$(ls -d "$GC"/ThingsData-*/"Things Database.thingsdatabase/main.sqlite" 2>/dev/null || true)"
+          n=0
+          if [ -n "$matches" ]; then n="$(printf '%s\n' "$matches" | wc -l | tr -d ' ')"; fi
+          if [ "$n" = "1" ]; then
+            DB="$matches"
+          else
+            if [ "$n" = "0" ]; then
+              echo "[error] no Things database found (missing, or blocked by macOS privacy): $GC"
+              echo "        grant your terminal Full Disk Access, or pass THINGSDB=/full/path/to/main.sqlite"
+            else
+              echo "[error] $n Things databases found; pass THINGSDB= to choose one:"
+              printf '%s\n' "$matches" | sed 's/^/  /'
+            fi
+            if [ "$DRY" = "true" ]; then
+              echo "[change] things-mcp: THINGSDB unresolved (dry-run continues with a placeholder)"
+              DB="<unresolved>"
+            else
+              exit 1
+            fi
+          fi
+        fi
+
+        if [ "$DRY" != "true" ]; then
+          echo "[daily-note] Pre-warming things-mcp==$VER (uvx cache)"
+          "$UVX" --from "things-mcp==$VER" python -c 'pass' </dev/null
+        else
+          echo "[change] things-mcp==$VER: would pre-warm the uvx cache"
+        fi
+
+        entry="$(jq -n --arg cmd "$UVX" --arg spec "things-mcp==$VER" --arg db "$DB" \
+          '{command: $cmd, args: ["--from", $spec, "things-mcp"], env: {THINGSDB: $db}}')"
+
+        if [ -f "$CFG" ]; then
+          if ! jq -e 'type == "object" and ((.mcpServers // {}) | type == "object")' "$CFG" >/dev/null 2>&1; then
+            echo "[error] $CFG is not a valid JSON object config; aborting without changes"
+            exit 1
+          fi
+          current="$(jq -S -c '.mcpServers.things // null' "$CFG")"
+          wanted="$(printf '%s' "$entry" | jq -S -c .)"
+          if [ "$current" = "$wanted" ]; then
+            echo "[ok] claude_desktop_config.json: mcpServers.things already current"
+            status=ok
+          else
+            status=change
+          fi
+        else
+          status=create
+        fi
+
+        if [ "${status:-}" != "ok" ]; then
+          if [ "$DRY" = "true" ]; then
+            echo "[change] claude_desktop_config.json: would $status mcpServers.things:"
+            printf '%s' "$entry" | jq . | sed 's/^/  /'
+          else
+            if [ "$status" = "create" ]; then
+              mkdir -p "$(dirname "$CFG")"
+              install -m 0600 /dev/null "$CFG"
+              printf '{}\n' > "$CFG"
+            fi
+            bak="$CFG.bak.$(date +%Y%m%d-%H%M%S)"
+            cp -p "$CFG" "$bak"
+            chmod 600 "$bak"
+            tmp="$(mktemp "$(dirname "$CFG")/.claude_desktop_config.XXXXXX")"
+            trap 'rm -f "$tmp"' EXIT
+            jq --argjson e "$entry" '.mcpServers = ((.mcpServers // {}) + {things: $e})' "$CFG" > "$tmp"
+            jq -e . "$tmp" >/dev/null
+            jq -n -e --slurpfile a "$CFG" --slurpfile b "$tmp" \
+              'def n: .mcpServers |= ((. // {}) | del(.things)); ($a[0] | n) == ($b[0] | n)' >/dev/null \
+              || { echo "[error] merge would change keys other than mcpServers.things; aborting"; exit 1; }
+            chmod 600 "$tmp"
+            mv "$tmp" "$CFG"
+            trap - EXIT
+            echo "[daily-note] claude_desktop_config.json: set mcpServers.things (backup: $bak)"
+            printf '%s' "$entry" | jq . | sed 's/^/  /'
+          fi
+        fi
+
+        real_uvx="$(realpath "$UVX" 2>/dev/null || echo "$UVX")"
+        echo ""
+        echo "[daily-note] Full Disk Access (manual; this task never changes it). Grant in this order and test after each:"
+        echo "  1. /Applications/Claude.app"
+        echo "  2. only if Things reads still fail (\"unable to open database file\"):"
+        echo "     $real_uvx"
+        for py in /opt/homebrew/opt/python@*/Frameworks/Python.framework/Versions/*/Resources/Python.app; do
+          if [ -e "$py" ]; then realpath "$py"; fi
+        done | sort -u | sed 's/^/     /'
+        echo "  WARNING: see docs/daily-note.md (Security) — FDA for uvx/Python.app is broad."
+        echo "  Then quit Claude Desktop fully (Cmd-Q) and reopen it."
