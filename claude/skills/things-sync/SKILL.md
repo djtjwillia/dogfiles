@@ -25,10 +25,16 @@ Takes the unchecked `- [ ]` lines under `## Open loops` and `## Action items` (a
 
 1. `DATE=${1:-$(TZ=America/Denver date +%F)}`; `python3 $S things-extract $DATE` → JSON array of pending tasks: `key`, `section`, `title`, `notes`, `deadline`, `tags`, `line`. Already-sent keys (ledger) and lines carrying `⇢things` are excluded. Empty array → report "nothing to send" and stop. If the note for DATE doesn't exist, say so and stop.
 2. Check the Things tools are present (ToolSearch above). If absent → go to **Fallback**.
-3. Dedupe against open Things to-dos: for each task, `search_todos` with `dn-<key>` first; a hit means it is already there. If none, `search_todos` with 3–4 distinctive words from `title` and treat an open to-do with the same normalized title (case/whitespace-insensitive) as already sent. Either way include its key in step 5 so the note gets marked, but do not create a duplicate. If `search_todos` errors with `unable to open database file`, reads are blocked (see Troubleshooting) — continue with ledger-only dedupe and say so in the summary.
+3. Dedupe against open Things to-dos, in three tiers:
+   - **(a) Exact key** — `search_todos` with `dn-<key>`; a hit means it is already there.
+   - **(b) Exact title** — otherwise `search_todos` with 3–4 distinctive words from `title`; an open to-do with the same normalized title (case/whitespace-insensitive) counts as already sent.
+   - **(c) Intent** — once per run, call `search_todos("ref: dn-")` to list the open to-dos this system created (ignore anything without a `ref: dn-` line) and compare each pending task's full `line` against those titles + notes. The same deliverable, or the same person + ask, is a probable duplicate even if the wording differs. It is also a probable duplicate when the same note has a ` ⇢things` line (ticked or not) about the same commitment.
+   - Exact hits (a/b): include the key in step 5 so the note gets marked, but create nothing.
+   - Probable duplicates (c): never guess. Ask once with a single AskUserQuestion covering all of them — "create anyway" / "skip — already covered by <Things title>". Skipped items are not marked or ledgered; tell Taylor to tick or delete the note line. If AskUserQuestion is unavailable (headless), skip the probable duplicates and list them with their matching Things titles in the summary.
+   - If `search_todos` errors with `unable to open database file`, reads are blocked (see Troubleshooting) — continue with ledger-only dedupe and say so in the summary.
 4. Create the rest with `add_todo`: `title`, `notes` (verbatim, including the `ref:` line), `tags` (list), `deadline` (only when present). No `list`, no `when`. One call per task; keep going if one fails and note it in the summary.
 5. `python3 $S things-mark $DATE key1 key2 …` for every key created or found-existing. This writes the ledger and appends ` ⇢things` to the lines (the ledger is authoritative — markers can be lost when a pass re-renders its block; the ledger prevents re-sends).
-6. Summary: `N created, M already in Things, K failed` and the created titles with deadlines.
+6. Summary: `N created, M already in Things, S skipped as duplicates, K failed`, the created titles with deadlines, and for each skipped item the covering Things title.
 
 ## Fallback (Things MCP unavailable)
 
