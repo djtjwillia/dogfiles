@@ -367,7 +367,7 @@ tasks:
         fi
 
   "tools:claude":
-    desc: Sync Claude config, agents, and commands into place
+    desc: Sync Claude config, agents, commands, and hooks into place
     cmds:
       - |
         set -euo pipefail
@@ -415,6 +415,23 @@ tasks:
               echo "[change] commands/: would create and populate"
             fi
           fi
+          if [ -d "$src/hooks" ]; then
+            if [ -d "$dest/hooks" ]; then
+              changes=$(rsync -a --dry-run --itemize-changes \
+                --filter='P .DS_Store' "$src/hooks/" "$dest/hooks/" 2>/dev/null \
+                | grep -v '^$' | wc -l | tr -d ' ') || true
+              if [ "$changes" -eq 0 ]; then
+                echo "[ok] hooks/: no changes"
+              else
+                echo "[change] hooks/: $changes file(s) would change"
+                rsync -a --dry-run --itemize-changes \
+                  --filter='P .DS_Store' "$src/hooks/" "$dest/hooks/" 2>/dev/null \
+                  | grep -v '^$' | sed 's/^/  /'
+              fi
+            else
+              echo "[change] hooks/: would create and populate"
+            fi
+          fi
           exit 0
         fi
         mkdir -p "$dest"
@@ -431,6 +448,13 @@ tasks:
           mkdir -p "$dest/commands/"
           rsync -a --filter='P .DS_Store' "$src/commands/" "$dest/commands/"
           echo "[claude] Synced commands/ (additive) to $dest/commands/"
+        fi
+        # hooks/ is ADDITIVE — no --delete; ~/.claude/hooks may hold hooks this repo does not own.
+        # rsync -a preserves the executable bit on hook scripts.
+        if [ -d "$src/hooks" ]; then
+          mkdir -p "$dest/hooks/"
+          rsync -a --filter='P .DS_Store' "$src/hooks/" "$dest/hooks/"
+          echo "[claude] Synced hooks/ (additive) to $dest/hooks/"
         fi
 
   "tools:claude-skills":
