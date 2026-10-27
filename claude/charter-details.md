@@ -74,11 +74,13 @@ The operative rule lives in the core. The reasoning: when a specialist surfaces 
 ---
 
 ## Agent model allocation (rationale)
-Model assignments are structurally enforced via the `model` field in each agent's frontmatter:
-- **opus** (with `effort: high`): synod-marsh, synod-elend — the two highest-stakes review-only veto-holders (security, architecture), where depth of critique justifies the cost and they sit on the critical path before implementers.
-- **sonnet**: all others — implementation and coordination agents, plus synod-tensoon (data-safety veto, retained) and synod-jasnah (advisory code review). Both keep their charter roles; Sonnet-tier reasoning is sufficient at their dispatch frequency, and the cost of Opus there was not justified.
+Model assignments are structurally enforced via the `model` field in each agent's frontmatter. The posture is capability-tiered, not slug-pinned:
+- **Highest-reasoning review tier** (with `effort: high`): synod-marsh, synod-elend — the two highest-stakes review-only veto-holders. Depth of critique justifies the cost; both sit on the critical path before implementers.
+- **Default implementation and coordination tier**: all other synod agents — including synod-tensoon (data-safety veto, retained) and synod-jasnah (advisory code review). Charter roles unchanged.
 
-*Rationale:* opus agents are never write-enabled; their cost is justified by depth of critique. Opus is reserved for the veto-holders whose mistakes are most expensive and least reversible. Trigger breadth for synod-elend and synod-tensoon was also tightened so Opus/review fires on genuine structural and migration risk, not routine work. Revisit on model changes.
+*Rationale.* The highest-reasoning tier is reserved for veto-holders whose mistakes are most expensive and least reversible. These agents are never write-enabled; cost is justified by critique depth. Trigger breadth for synod-elend and synod-tensoon was tightened so this tier fires on genuine structural and migration risk, not routine work. Review on each model-family refresh.
+
+*Current slug mapping (as of 2026-10-15):* highest-reasoning tier → `opus`; default tier → `sonnet` (Claude Code frontmatter aliases). Replace the specific slugs when the model lineup changes; the capability posture stays.
 
 ---
 
@@ -92,12 +94,45 @@ The permission ceiling for each stage is binding and lives in the core. The reas
 
 ---
 
+## Stage-signal spec (deferred)
+
+> **Status: decision deferred** until slice 3 (write-gate hook) is scoped. Neither option is adopted.
+
+The planned write-gate hook needs a machine-readable signal of the current promotion stage. Two candidate designs:
+- **Option A — Sazed writes the signal.** On every promotion, Sazed writes the new stage to `~/.cache/synod/stage` (just the word `PLAN` / `PROBE` / `NARROW` / `WIDE`); the hook reads it. Simpler; honour-system (Sazed can forget).
+- **Option B — Hook detects the phrase.** A `UserPromptSubmit` hook pattern-matches the promotion phrases ("you may implement", "proceed to write", "make the edits", etc.) and updates the file. Automatic; false-positive regex risk (*"let's not implement that yet"* is tricky).
+
+---
+
+## MCP trust tiers — full table
+
+The core carries the trigger (tier definitions, announce-on-first-invocation, unclassified ⇒ Tier C); this is the per-server detail. **synod-marsh owns Tier B → Tier C reclassification calls** when a new MCP server appears or an existing server adds mutation tools.
+
+> **Initial classification below is proposed by Sazed and pending Marsh review — Marsh has not yet been dispatched for this.**
+>
+> **Absolute rule: any MCP server whose tools are not yet classified defaults to Tier C (veto-gated) until Marsh reviews.**
+
+| MCP server | Tier A (ambient reads) | Tier B (advisory writes) | Tier C (veto-gated) |
+|------------|------------------------|--------------------------|---------------------|
+| `cursor-origin` (git host on Origin) | get_repository, get_file_contents, list_pull_requests, pull_request_read, compare_commits, checks_read | create_pull_request, update_pull_request, create_pull_request_comment, update_pull_request_labels | merge_pull_request, update_pull_request_base, dismiss_pull_request_review, remove_pull_request_reviewers |
+| `cursor-subscriptions` (event subscriptions) | list_subscriptions | subscribe_github_pr, subscribe_github_ci, subscribe_slack_thread, subscribe_slack_channel, subscribe_linear_issue, subscribe_linear_comment, subscribe_origin_pr, subscribe_origin_ci | none presently |
+| `cursor-app-control` (local Cursor UI) | none (all are actions) | rename_chat, open_resource, open_automation, cursor_dialog, install_plugin | move_agent_to_root, move_agent_to_cloned_root, create_repo |
+| `plugin-linear-linear` | *(read-only tools, when enumerated)* | *(updates)* | *(destructive operations)* |
+| `plugin-supabase-supabase` | search_docs, list_organizations, get_organization, list_projects, get_project, list_tables, list_extensions, list_migrations, query_logs, get_advisors, get_project_url, get_publishable_keys, generate_typescript_types, list_edge_functions, get_edge_function, list_branches | create_branch, deploy_edge_function, rebase_branch | execute_sql (mutating), apply_migration, create_project, pause_project, restore_project, delete_branch, merge_branch, reset_branch, confirm_cost |
+| `plugin-slack-slack` | slack_search_public, slack_search_channels, slack_search_users, slack_read_channel, slack_read_thread, slack_read_canvas, slack_read_user_profile, slack_list_channel_members, slack_read_file, slack_read_list, slack_list_user_channels, slack_get_reactions, slack_search_emojis | slack_send_message, slack_schedule_message, slack_add_reaction, slack_add_list_record, slack_update_list_record, slack_update_list, slack_update_canvas, slack_send_message_draft | slack_create_conversation, slack_create_list, slack_create_canvas, slack_search_public_and_private, slack_get_file_upload_url, slack_complete_file_upload |
+| `plugin-atlassian-atlassian` | *(reads)* | *(updates)* | *(deletes / transitions)* |
+| `plugin-upwork-upwork` | *(reads)* | *(updates)* | *(destructive)* |
+
+- `plugin-linear-linear`, `plugin-atlassian-atlassian`, `plugin-upwork-upwork`: tool names were not enumerated at classification time — **Tier C applies to every tool** until Marsh enumerates and classifies them.
+
+---
+
 ## SDD Workflow — agent responsibilities per phase
 Synod Council agents operate within `sdd` skill phases, not before them.
 
 - **Before Phase 1 (spec generation)**: Sazed may suggest relevant agents review the request first if it touches security, architecture, or data — advisory, not mandatory.
 - **During spec review (Phase 1)**: Elend, Marsh, or TenSoon may be consulted to validate that the spec doesn't embed bad decisions before tasks are generated. Jasnah may review spec prose for clarity.
-- **During Phase 2 (task-list generation)**: Steris drafts the task list from the spec; dispatch Explore for any codebase survey feeding it. Elend may be consulted if task breakdown reveals a structural concern the spec didn't anticipate.
+- **During Phase 2 (task-list generation)**: Steris drafts the task list from the spec; for any codebase survey feeding it, dispatch an explore-shaped subagent (Claude Code's `Task` tool with `subagent_type: "general-purpose"`, or an explicit `explore` subagent type when available). Elend may be consulted if task breakdown reveals a structural concern the spec didn't anticipate.
 - **During Phase 3 (implementation)**: Vin, MeLaan, Marasi, Wax, Kaladin handle implementation. Elend, Marsh, TenSoon, VenDell, Jasnah remain review-only unless promoted. VenDell verifies implementation references current library APIs; Jasnah reviews diffs before merge.
 - **During Phase 4 (validation)**: Marsh and TenSoon are the natural reviewers for security and data gate checks. Steris validates the implementation matches the spec. Wax may be consulted if validation reveals regressions or unexplained failures.
 
@@ -141,62 +176,9 @@ Retire (or fold) an agent when:
 
 ## Multi-Flow Concurrency Protocol
 
-> Load this section when 2 or more SDD task flows are running concurrently in the same session. The lean-core trigger lives in `CLAUDE.md` Cascading halt.
->
-> Adopted assumptions: OQ2 (max 2–3 concurrent flows), OQ4 (≤3-agents ceiling per flow independently), OQ5 (simultaneous cross-flow vetoes extend veto-notification protocol). Open-question source: `docs/specs/05-spec-multi-agent-concurrent-sdd/`.
+**Isolation + registry.** Concurrent flows run in separate git worktrees on their own branches. Each flow owns its own `TodoWrite` list. When ≥2 flows are live in the same session, Kelsier maintains a lightweight session-scoped registry with 5 fields per flow: `flow id`, `worktree path`, `SDD stage`, `state` (`working` / `blocked` / `done` / `idle`), and `last-touched paths` (the set of file paths the flow has edited in the current session). The primary working tree is untouched while concurrent flows are active.
 
-### S1 — Isolation
-
-Every concurrent flow runs in its own git worktree on its own branch. The `isolation: "worktree"` flag is set on all agent dispatches that belong to a flow when 2+ flows are live. The primary working tree is untouched while concurrent flows are active.
-
-Treehouse (spec 03) is out of scope. S1 covers native `isolation: "worktree"` only; no pool-variant language applies.
-
-> **AR3 — Isolation codification:** native worktree isolation is the single mandatory isolation layer when 2+ flows are live. There is no secondary isolation mechanism.
-
-### S2 — Live-flow registry
-
-When 2+ flows are active, Kelsier maintains a session-scoped live-flow registry. Each entry has 7 fields:
-
-| Field | Description |
-|-------|-------------|
-| flow id | Unique identifier for this SDD task flow (e.g. `flow-01`) |
-| SDD stage | Current SDD phase (1–4) |
-| current task | Parent task number currently in progress |
-| branch | Git branch for this flow's worktree |
-| worktree path | Filesystem path to the isolated worktree |
-| pane | Herdr pane identifier (if herdr is active) |
-| state | `working` / `blocked` / `done` / `idle` |
-
-Kelsier reconciles the registry on every routing decision. No cross-flow reads or writes — each flow operates only on its own worktree.
-
-> **OQ2 assumption:** default maximum is 2–3 concurrent flows; tune empirically per session complexity.
-
-### S3 — Herdr pane mapping
-
-One herdr pane maps to one SDD task flow. The pane's visible state reflects the registry `state` field for that flow:
-
-- `working` — flow has an active agent running
-- `blocked` — flow is suspended pending user decision or veto resolution
-- `done` — all tasks in the flow are complete
-- `idle` — flow is paused, no agent active
-
-When herdr is absent, pane mapping degrades gracefully: flows remain valid and isolated; state is tracked in the registry only, not in a visible pane.
-
-> **OQ4 assumption:** the ≤3-agents-per-task ceiling and the one-vin-per-SDD-task rule apply per flow independently. A session with 2 concurrent flows may have up to 3 agents per flow simultaneously.
-
-### S4 — Cross-flow halt
-
-**Independent-by-default rule:** when a specialist surfaces a halt in flow A, flow B continues unaffected unless a shared-resource exception applies.
-
-**Shared-resource exception:** Kelsier evaluates whether the halted work in flow A touches the same resource (file, config, database table, deployed artifact) as active work in flow B. If demonstrated contact exists, Kelsier suspends flow B and surfaces a unified position to the user. If flow B is unaffected, flow B continues without interruption.
-
-**User resumes per flow:** the user may resume flow A, flow B, or both independently. Kelsier issues updated routing per flow on resume.
-
-> **OQ5 assumption:** if two flows simultaneously raise vetoes and both concern a shared resource, Kelsier presents both veto positions together under the existing veto-notification protocol. If the vetoes concern independent resources, they surface per-flow without waiting for each other.
-
----
-
-> **AR6 — Reversibility and bound:** the concurrent-flow protocol is fully reversible. Fall back to single-flow serial SDD at any time by not starting a second flow; existing flows are unaffected. Default bound: 2–3 concurrent flows maximum (OQ2). The bound is tunable empirically — if session coherence or context pressure degrades, reduce to 1 active flow.
+**Cross-flow halt.** When a specialist surfaces a halt in flow A, flow B continues unaffected unless the shared-resource test fires: Kelsier compares flow A's halted work against flow B's `last-touched paths` set. If any path overlaps, flow B suspends and Kelsier presents a unified position to the user. If the sets are disjoint, flow B continues. The user may resume per flow; Kelsier re-issues routing per flow on resume. The ≤3-agents ceiling applies per flow independently. If two flows simultaneously raise vetoes on overlapping paths, Kelsier presents both positions under the existing veto-notification protocol.
 
 ---
 

@@ -37,6 +37,7 @@ You own:
 - Supply chain and dependency risk
 - CVE triage and remediation guidance
 - Config hardening and least-privilege enforcement
+- **MCP permission tiering** — you own the Tier B → Tier C reclassification call when a new MCP server appears in the session or an existing server adds mutation tools (full table: `charter-details.md` → "MCP trust tiers — full table")
 
 You are consulted **before** implementation agents when security is in scope. Your findings gate their work.
 
