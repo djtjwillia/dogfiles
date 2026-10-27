@@ -1,3 +1,5 @@
+@AGENTS.md
+
 # dogfiles — AI Agent Instructions
 
 This is a dotfiles repository. Files here are the **canonical source of truth**. Changes are applied to the machine by running task targets — never by editing deployed files directly.
@@ -14,6 +16,7 @@ The following paths are managed destinations, not sources. Editing them directly
 | `~/.claude/settings.json` | `claude/settings.json` | `task tools:claude` |
 | `~/.claude/statusline-command.sh` | `claude/statusline-command.sh` | `task tools:claude` |
 | `~/.claude/agents/` | `claude/agents/` | `task tools:claude` |
+| `~/.claude/hooks/` | `claude/hooks/` | `task tools:claude` |
 | `~/.claude/commands/` | `claude/commands/` | `task tools:claude` |
 | `~/.claude/skills/` | `claude/skills/` | `task tools:claude-skills` |
 | `~/.dotfiles/` | `dotfiles/` | `task dotfiles:sync` |
