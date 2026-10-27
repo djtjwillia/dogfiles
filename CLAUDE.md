@@ -11,7 +11,6 @@ The following paths are managed destinations, not sources. Editing them directly
 | Destination | Source in this repo | Task target |
 |-------------|---------------------|-------------|
 | `~/.claude/CLAUDE.md` | `claude/CLAUDE.md` | `task tools:claude` |
-| `~/.claude/charter-details.md` | `claude/charter-details.md` | `task tools:claude` |
 | `~/.claude/settings.json` | `claude/settings.json` | `task tools:claude` |
 | `~/.claude/statusline-command.sh` | `claude/statusline-command.sh` | `task tools:claude` |
 | `~/.claude/agents/` | `claude/agents/` | `task tools:claude` |
