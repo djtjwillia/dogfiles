@@ -37,13 +37,11 @@ mkdir -p docs/summaries
 
 ## Step 1 — Synthesize the session
 
-Review the full conversation context and produce content for each of these sections. Omit a section if it has no content (Synod Council Findings if no agents ran; SDD Task Status if no SDD work occurred).
+Review the full conversation context and produce content for each of these sections. Omit a section if it has no content (SDD Task Status if no SDD work occurred).
 
 **Overview** — 1-2 sentences describing what the session accomplished, including branch or project context.
 
 **Decisions Made** — bulleted list of concrete decisions with a brief rationale for each.
-
-**Synod Council Findings** — if any Synod Council agents were dispatched, list each agent's name and a brief summary of their findings. Omit this section entirely if no agents ran.
 
 **SDD Task Status** — if any SDD tasks were active during the session, list each task with its status: `pending`, `in-progress`, or `complete`. Omit this section entirely if no SDD work occurred.
 

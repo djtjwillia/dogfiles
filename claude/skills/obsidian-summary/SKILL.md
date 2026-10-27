@@ -67,7 +67,7 @@ Ask only about components that are genuinely ambiguous — one question at a tim
 
 Use the template for the inferred type. Apply Obsidian-flavoured markdown throughout:
 
-- Use `[[wikilinks]]` when referencing other notes that likely exist in the vault (agents by name, specs by number, previous sessions by label)
+- Use `[[wikilinks]]` when referencing other notes that likely exist in the vault (specs by number, previous sessions by label)
 - Use `> [!type]` callouts for decisions, risks, warnings, and tips — choose the type that fits: `note`, `tip`, `warning`, `important`, `danger`, `question`
 - Use Dataview-compatible frontmatter properties (typed: dates as `YYYY-MM-DD`, arrays as YAML lists)
 - Use `%%hidden comments%%` for internal notes not meant for reading view
@@ -88,8 +88,6 @@ engagement: <slug, if this project maps to a 20-engagements entry — omit other
 tags:
   - claude-code
   - <project>
-agents:
-  - <list of Synod Council agents invoked, or empty>
 sdd-spec: <spec number if applicable, e.g. "08", or omit>
 status: complete
 ---
@@ -109,15 +107,6 @@ One or two sentences. The task or problem, framed for someone reading cold.
 | | | |
 
 %%Omit this section if no explicit decisions were made%%
-
-## Agent Findings
-%%Omit entirely if no Synod Council agents were invoked%%
-
-### [[synod-<name>]]
-- Finding
-
-> [!warning] <agent name>: <risk title>
-> Use for any finding flagged as a risk or blocker.
 
 ## Task Status
 - [x] Completed task

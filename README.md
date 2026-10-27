@@ -12,9 +12,9 @@ The `claude/` directory is a version-controlled Claude Code configuration, synce
 
 **What lives in `claude/`:**
 
-- **`CLAUDE.md` + `charter-details.md`** — a structured multi-agent operating model. The core rules load on every session; the detail file is referenced on demand to keep context lean. The model is explicit about how the assistant behaves: **plan by default** (no file edits until the user promotes the session), **proactive routing** to specialist subagents by domain, **staged write permissions** (plan → probe → narrow → wide), and **output gates** requiring verification steps and a rollback path on every plan. (It is themed as a "Synod Council" persona; the substance underneath is the operating model, not the theme.)
-- **`agents/`** — 12 specialist subagent definitions (`synod-*.md`): architecture, security, data safety, CI/CD, docs/planning, debugging, code review, DX, dependency currency, UX, implementation, and routing. Each carries structured frontmatter with routing triggers and write/veto scope. Plus an `eval/` directory for scenario-based routing evals.
-- **`commands/`** — custom slash commands (`run-evals`, `summary`).
+- **`CLAUDE.md`** — the Sazed persona and operating rules. The core rule is **plan by default**: no file edits until the user promotes the session.
+- **`agents/`** — currently empty. The Synod council of specialist subagents is retired; `task tools:claude` still mirrors this directory, so the deployed `~/.claude/agents/` is pruned to match. The archived council, charter, and eval harness live in [`archive/synod/`](archive/synod/).
+- **`commands/`** — custom slash commands (`summary`).
 - **`skills/`** — vendored, customized skills: `handoff`, `obsidian-summary`, `obsidian-transcript`, and the `execute-github-issue` workflow skill (claim an issue, plan, approval gate, implement, review, PR linked to the issue, CI to green). Also `obsidian-daily-note` and `things-sync` (morning/evening daily-note passes and the daily-note → Things 3 push; see [`docs/daily-note.md`](docs/daily-note.md)).
 - **`skills-chat/`** — five claude.ai-chat / Claude Desktop skills: chat variants of `obsidian-summary` and `obsidian-transcript` (adapted for a sandbox with no filesystem/git/session-log access), plus three vendored user-authored custom skills exported from claude.ai (`humanizer`, `prompt-coach`, `definitive-docs`). Built into upload-ready zips with `task tools:claude-skills-chat-zip` and uploaded manually via Settings → Capabilities → Skills — see [`docs/chat-skills.md`](docs/chat-skills.md).
 - **`herdr/config.toml`** — herdr config with `pane_history` disabled, so agent output (which can contain secrets) is never written to disk.
@@ -26,7 +26,7 @@ The `claude/` directory is a version-controlled Claude Code configuration, synce
 - `task tools:claude` installs the config files, **mirrors** `agents/` (`rsync --delete` — pruning agents removed from the repo), and **additively** syncs `commands/`.
 - `task tools:claude-skills` syncs repo-owned skills: additive at the top level, per-skill mirror within each owned skill directory.
 
-The mirror-vs-additive split is deliberate. `~/.claude` is co-tenanted with skills and commands this repo does not own, so a blanket `--delete` would clobber them. Agents are fully owned (safe to mirror); commands and top-level skills are shared (additive only).
+The mirror-vs-additive split is deliberate. `~/.claude` is co-tenanted with skills and commands this repo does not own, so a blanket `--delete` would clobber them. `agents/` is fully owned (safe to mirror); commands and top-level skills are shared (additive only).
 
 **Daily note** — `daily-note/` is an opt-in, work-Mac-only module (not part of `task init`): Obsidian daily-note template and helper, Granola/Wispr plugin config, pinned Things 3 MCP registration, and Cowork scheduled-task prompts. Run `task daily-note` (or `daily-note:vault` / `daily-note:wispr-plugin` / `daily-note:things-mcp`; all support `DRY_RUN=true`). See [`docs/daily-note.md`](docs/daily-note.md).
 
@@ -69,7 +69,7 @@ Every target is idempotent — re-running `task init` is safe at any time.
 - `task brew:bundle` / `task brew:dump` / `task brew:upgrade` — install from, refresh, or upgrade the Brewfile.
 - `task config:git` — install base gitconfig + per-identity includes + `allowed_signers`.
 - `task tools:zshrc | tmux | p10k | iterm2 | dev-script | herdr | node` — install individual dotfiles/tools.
-- `task tools:claude` / `task tools:claude-skills` / `task tools:claude-skills-external` — sync Claude config/agents/commands, repo-owned skills, and external skills respectively.
+- `task tools:claude` / `task tools:claude-skills` / `task tools:claude-skills-external` — sync Claude config, agents mirror, and commands, repo-owned skills, and external skills respectively.
 - `task daily-note` (and `daily-note:vault | wispr-plugin | things-mcp`) — opt-in Obsidian daily-note setup for the work Mac; not part of `task init`. See [`docs/daily-note.md`](docs/daily-note.md).
 - `task tools:claude-skills-chat-zip` — zip the claude.ai-chat / Claude Desktop skill variants in `claude/skills-chat/` for manual upload (not part of `task init`).
 
